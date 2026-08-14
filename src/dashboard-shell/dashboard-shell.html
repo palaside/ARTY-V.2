@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARTY V.2 · SilentArc Dashboard Shell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./dashboard-shell.css" />
+  </head>
+  <body>
+    <main class="shell" data-shell="silentarc">
+      <header class="top-rail zone" aria-label="Top Command Rail">
+        <div class="rail-block identity-block">
+          <div class="eyeline">ARTY V.2 / SILENTARC</div>
+          <div class="title-row">
+            <h1>FO / FDC Operational Overview</h1>
+            <span class="state-chip state-live">LIVE SHELL</span>
+          </div>
+          <div class="identity-subline">
+            <span>ADMIN / OWN REVIEW</span>
+            <span>DOMAIN PLACEMENT UNDER REVIEW</span>
+          </div>
+        </div>
+
+        <div class="rail-block session-block">
+          <div class="micro-label">SESSION / ENVIRONMENT</div>
+          <div class="micro-grid">
+            <span>OWNER MODE</span>
+            <span>CONTROLLED BUILD</span>
+            <span id="mode-readout">TARGET ACQUISITION</span>
+            <span>UTC+07</span>
+            <span id="clock-readout">--:--:--</span>
+          </div>
+          <div class="rail-underline" aria-hidden="true"></div>
+        </div>
+
+        <div class="rail-block command-block">
+          <div class="micro-label">WORKSPACE VIEW</div>
+          <div class="action-row">
+            <button type="button" class="command-button mode-button is-selected" data-mode="target">FO + FDC</button>
+            <button type="button" class="command-button mode-button" data-mode="spatial">Surveillance</button>
+            <button type="button" class="command-button mode-button" data-mode="readiness">Howitzer</button>
+            <button type="button" class="command-button mode-button" data-mode="ammo">กระสุน</button>
+          </div>
+          <div class="command-footnote">WORKSPACE VIEW ONLY / SHARED SUPPORT PERSISTS</div>
+        </div>
+      </header>
+
+      <section class="operations-stack zone" aria-labelledby="operations-stack-title">
+        <div class="zone-header">
+          <p class="zone-kicker">Z3 / Primary Operations</p>
+          <h2 id="operations-stack-title">FO Workspace</h2>
+        </div>
+        <div class="ops-overview-strip">
+          <div class="overview-cell">
+            <span class="micro-label">ACTIVE DOMAIN SLOT A</span>
+            <strong id="slot-a-name">FO / PRIMARY ACTIVE</strong>
+          </div>
+          <div class="overview-cell">
+            <span class="micro-label">ACTIVE DOMAIN SLOT B</span>
+            <strong id="slot-b-name">FDC / SECONDARY ACTIVE</strong>
+          </div>
+          <div class="overview-cell">
+            <span class="micro-label">SHARED LAYER LOAD</span>
+            <strong id="shared-load">STABLE</strong>
+          </div>
+        </div>
+        <div class="ops-grid">
+          <article class="ops-module ops-module-large ops-module-anchor" id="slot-a-card">
+            <div class="module-topline">
+              <span class="state-chip state-live" id="slot-a-state">PRIMARY ACTIVE</span>
+              <span class="micro-label" id="slot-a-role">DOMAIN SLOT / A</span>
+            </div>
+            <h3 id="slot-a-title">Forward Observer workspace</h3>
+            <p id="slot-a-copy">Observation, target acquisition, correction flow, and target confirmation remain primary in the default overview.</p>
+            <div class="module-ruler" aria-hidden="true">
+              <span id="slot-a-ruler-1">ENTRY</span>
+              <span id="slot-a-ruler-2">WORKSPACE</span>
+              <span id="slot-a-ruler-3">HANDOFF</span>
+            </div>
+            <div class="module-footer">
+              <span id="slot-a-reason">USER SELECTED DEFAULT PAIR</span>
+              <button type="button" class="inline-action">Inspect</button>
+            </div>
+          </article>
+
+          <article class="ops-module ops-module-tall" id="slot-b-card">
+            <div class="module-topline">
+              <span class="state-chip state-stale" id="slot-b-state">SECONDARY ACTIVE</span>
+              <span class="micro-label" id="slot-b-role">DOMAIN SLOT / B</span>
+            </div>
+            <h3 id="slot-b-title">FDC workspace</h3>
+            <p id="slot-b-copy">Decision core stays visible beside FO so target intake and fire workflow remain connected in one screen.</p>
+          </article>
+
+          <article class="ops-module" id="slot-stage-card">
+            <div class="module-topline">
+              <span class="state-chip state-warning" id="stage-state">STAGED</span>
+              <span class="micro-label">DOMAIN SLOT / CANDIDATE</span>
+            </div>
+            <h3 id="stage-title">Surveillance staged</h3>
+            <p id="stage-copy">Spatial validation workspace remains ready to promote when target truth or coordinate validation becomes the bottleneck.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="identity-cluster zone" aria-labelledby="identity-cluster-title">
+        <div class="zone-header">
+          <p class="zone-kicker">Z2 / Identity + Mode</p>
+          <h2 id="identity-cluster-title">Role and workspace legend</h2>
+        </div>
+        <div class="identity-core">
+          <div class="identity-callout">
+            <span class="micro-label">ACTIVE ROLE</span>
+            <strong>ADMIN / OWN</strong>
+          </div>
+          <div class="identity-divider" aria-hidden="true"></div>
+          <div class="identity-callout">
+            <span class="micro-label">AUTH MODEL</span>
+            <strong>STANDALONE PLACEHOLDER</strong>
+          </div>
+        </div>
+        <div class="mode-rack">
+          <button type="button" class="mode-tile is-active">ADMIN / OWN</button>
+          <button type="button" class="mode-tile">DASHBOARD</button>
+          <button type="button" class="mode-tile">USER SPACE</button>
+        </div>
+        <div class="identity-footer-note">ROLE LAYER STAYS SHARED / DOMAIN PLACEMENT REMAINS UNDER REVIEW</div>
+        <div class="identity-footer-note">ACTIVE / STAGED / ON CALL = VIEW STATE ONLY</div>
+        <div class="placement-list">
+          <div class="placement-row"><span>FO</span><strong id="placement-fo">PRIMARY ACTIVE</strong></div>
+          <div class="placement-row"><span>FDC</span><strong id="placement-fdc">SECONDARY ACTIVE</strong></div>
+          <div class="placement-row"><span>SURVEILLANCE</span><strong id="placement-surv">STAGED</strong></div>
+          <div class="placement-row"><span>HOWITZER</span><strong id="placement-how">ON CALL</strong></div>
+          <div class="placement-row"><span>กระสุน</span><strong id="placement-ammo">ON CALL</strong></div>
+          <div class="placement-row"><span>SHARED SUPPORT RAILS</span><strong>Z1 + Z5 + Z7 + Z8</strong></div>
+          <div class="placement-row"><span>SHARED TACTICAL MAP</span><strong>Z4 ONLY</strong></div>
+        </div>
+      </section>
+
+      <section class="situational-panel zone" aria-labelledby="situational-title" data-motion-zone="shared-surface">
+        <div class="zone-header">
+          <p class="zone-kicker">Z4 / Shared Situational Panel</p>
+          <h2 id="situational-title">Shared Tactical Map</h2>
+        </div>
+        <div class="panel-status-row">
+          <span id="situational-state" class="state-chip state-live">LIVE</span>
+          <span class="micro-label" id="situational-emphasis">OBSERVER / TARGET / IMPACT CONTEXT</span>
+        </div>
+        <div class="placeholder-grid">
+          <div class="coordinate-overlay" aria-hidden="true"></div>
+          <div class="situational-rulers" aria-hidden="true">
+            <span>NORTH / 000</span>
+            <span>SECTOR / SHARED-01</span>
+            <span>FRAME / GRID-LOCK</span>
+          </div>
+          <div class="situational-corners" aria-hidden="true">
+            <span>TL</span><span>TR</span><span>BL</span><span>BR</span>
+          </div>
+          <div class="placeholder-content">
+            <span class="placeholder-tag">SHARED TACTICAL MAP</span>
+            <strong>Common tactical view for cross-domain reference</strong>
+            <p>This surface is the shared tactical and spatial view. It is not the entirety of the shared layer, but one shared operational surface inside it.</p>
+          </div>
+          <div class="placeholder-footer">
+            <span>X: 17.440 / Y: 09.220</span>
+            <span>VIEW: TACTICAL MAP</span>
+            <span>FEED: NONE</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="status-stack zone" aria-labelledby="status-stack-title">
+        <div class="zone-header">
+          <p class="zone-kicker">Z5 / Live Status</p>
+          <h2 id="status-stack-title">Shared safety and status</h2>
+        </div>
+        <div class="status-summary-band">
+          <div>
+            <span class="micro-label" id="status-band-label-1">GLOBAL STATUS</span>
+            <strong id="status-band-value-1">03</strong>
+          </div>
+          <div>
+            <span class="micro-label" id="status-band-label-2">SAFETY</span>
+            <strong id="status-band-value-2">01</strong>
+          </div>
+        </div>
+        <ul class="status-list">
+          <li class="status-item is-live"><span>Core channel</span><strong>ONLINE</strong><em>SEV-01</em></li>
+          <li class="status-item is-warning"><span>Queue pressure</span><strong>MODERATE</strong><em>SEV-02</em></li>
+          <li class="status-item is-critical"><span>Override path</span><strong>LOCK REVIEW</strong><em>SEV-03</em></li>
+          <li class="status-item is-stale"><span>Remote feed</span><strong>NO INPUT</strong><em>SEV-00</em></li>
+        </ul>
+      </aside>
+
+      <section class="workflow-panel zone" aria-labelledby="workflow-panel-title">
+        <div class="zone-header">
+          <p class="zone-kicker">Z6 / Workflow Snapshot</p>
+          <h2 id="workflow-panel-title">FDC Workspace</h2>
+        </div>
+        <ol class="workflow-list">
+          <li><span>01</span><div><strong id="wf-title-1">FDC intake ready</strong><p id="wf-copy-1">Decision core receives confirmed target context without leaving the shared overview.</p></div></li>
+          <li><span>02</span><div><strong id="wf-title-2">Shared workflow continuity</strong><p id="wf-copy-2">Target and fire workflow remain visible in the same shell without page break.</p></div></li>
+          <li><span>03</span><div><strong id="wf-title-3">Staged domain waiting</strong><p id="wf-copy-3">Surveillance remains next in line if spatial validation becomes the bottleneck.</p></div></li>
+        </ol>
+      </section>
+
+      <section class="telemetry-panel zone" aria-labelledby="telemetry-panel-title">
+        <div class="zone-header">
+          <p class="zone-kicker">Z7 / Telemetry Placeholder</p>
+          <h2 id="telemetry-panel-title">Shared Technical Readouts</h2>
+        </div>
+        <div class="telemetry-frame">
+          <div class="telemetry-axis" aria-hidden="true"></div>
+          <div class="telemetry-copy">
+            <span class="state-chip state-stale" id="telemetry-state">SUPPORT</span>
+            <p id="telemetry-copy">Shared readouts reprioritize by workspace mode.</p>
+          </div>
+          <div class="metric-row">
+            <div><span class="micro-label" id="metric-label-1">RANGE</span><strong id="metric-value-1">-- m</strong></div>
+            <div><span class="micro-label" id="metric-label-2">DIR</span><strong id="metric-value-2">-- mil</strong></div>
+            <div><span class="micro-label" id="metric-label-3">TOF</span><strong id="metric-value-3">-- s</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="event-rail zone" aria-labelledby="event-rail-title">
+        <div class="zone-header">
+          <p class="zone-kicker">Z8 / Event Rail</p>
+          <h2 id="event-rail-title">Shared Event / Alert / Output Rail</h2>
+        </div>
+        <div class="event-rail-header-band">
+          <span class="micro-label" id="event-header-left">EVENT / ALERT / OUTPUT</span>
+          <span class="micro-label" id="event-header-right">SHARED SUPPORT RAIL</span>
+        </div>
+        <div class="event-log" id="event-log">
+          <div class="event-row"><span>00:00:00</span><p>Shell initialized in presentation-only mode.</p><em>BOOT</em></div>
+          <div class="event-row"><span>00:00:00</span><p>No live engines attached. Placeholder integrity preserved.</p><em>SAFE</em></div>
+          <div class="event-row"><span>00:00:00</span><p>Owner can cycle surface state from the command rail.</p><em>CONTROL</em></div>
+        </div>
+      </aside>
+    </main>
+
+    <script src="./dashboard-shell.js"></script>
+  </body>
+</html>
