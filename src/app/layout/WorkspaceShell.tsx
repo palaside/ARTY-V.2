@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import { defaultSession } from '../auth/auth-state';
 import { canViewPanel, panelOrder } from '../auth/role-visibility';
 import { FdcWorkspace } from '@/domains/fdc/FdcWorkspace';
 import { FoWorkspace } from '@/domains/fo/FoWorkspace';
 import { HowitzerWorkspace } from '@/domains/howitzer/HowitzerWorkspace';
 
-const panelContent: Record<string, { title: string; detail?: string; node?: JSX.Element }> = {
+const panelContent: Record<string, { title: string; detail?: string; node?: ReactNode }> = {
   FO: { title: 'FO Workspace', node: <FoWorkspace /> },
   FDC: { title: 'FDC Workspace', node: <FdcWorkspace /> },
   SURVEILLANCE: { title: 'Surveillance Workspace', detail: 'Survey / Map / ทบ.344 document workflow' },

@@ -35,3 +35,7 @@ coverage/
 # Local runtime caches
 .cache/
 .turbo/
+node_modules/
+dist/
+package-lock.json
+*.tsbuildinfo
