@@ -1,0 +1,106 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, Sarabun, system-ui, sans-serif;
+  background: #040404;
+  color: #f2f5f3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(206, 222, 98, 0.08), transparent 28%),
+    linear-gradient(180deg, #040404, #0a0d0c);
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.route-card,
+.workspace-panel,
+.document-shell {
+  border: 1px solid #2b4034;
+  background: rgba(18, 20, 19, 0.82);
+  backdrop-filter: blur(12px);
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(206, 222, 98, 0.05), 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.route-card {
+  padding: 16px;
+}
+
+.route-card--workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.route-kicker {
+  color: #cede62;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.workspace-shell {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.workspace-panel {
+  min-height: 120px;
+  padding: 12px;
+}
+
+.workspace-panel > header {
+  color: #3be099;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.workspace-panel__meta {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #98a79c;
+}
+
+.document-shell {
+  padding: 16px;
+}
+
+.document-shell__header {
+  margin-bottom: 12px;
+}
+
+.domain-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.domain-workspace__header h3,
+.document-shell__header h2,
+.route-card h2 {
+  margin: 4px 0 0;
+}
+
+.domain-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #c8d1cb;
+}
+
+.domain-stack {
+  display: grid;
+  gap: 12px;
+}
