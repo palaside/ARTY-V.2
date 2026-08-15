@@ -1,9 +1,118 @@
-export function DashboardPage() {
+import { useMemo, useState } from 'react';
+import { authenticate, mockAccounts } from '@/app/auth/auth-state';
+import type { AuthSession, UserRole } from '@/app/auth/auth-types';
+
+type DashboardPageProps = {
+  session: AuthSession;
+  onAuthenticated: (session: AuthSession) => void;
+};
+
+const roleCatalog: Array<{
+  role: UserRole;
+  label: string;
+  detail: string;
+}> = [
+  { role: 'FO', label: '????????????????', detail: '????? ??????????? ?????? Target ???? workflow ????' },
+  { role: 'FDC', label: 'FDC', detail: 'Decision core ?????? fire workflow, safety gate ??? mission state' },
+  { role: 'SURVEILLANCE', label: 'Surveillance', detail: '????????? ????? ??? ???? ????????? ??.344' },
+  { role: 'HOWITZER', label: '???????', detail: '?????????? M.17 ??????? ?????????????????????????' },
+  { role: 'WEAPONS', label: '??????', detail: '?????????? ???? compatibility ???????????????????' },
+  { role: 'ADMIN', label: 'Admin / OWN', detail: '??????????? ?????? ????????????? workspace' },
+];
+
+export function DashboardPage({ session, onAuthenticated }: DashboardPageProps) {
+  const [selectedRole, setSelectedRole] = useState<UserRole>('FO');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [status, setStatus] = useState<string | null>(null);
+
+  const availableAccounts = useMemo(
+    () => mockAccounts.filter((account) => account.role === selectedRole && account.enabled),
+    [selectedRole],
+  );
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const nextSession = authenticate(username, password, selectedRole);
+
+    if (!nextSession) {
+      setStatus('?????????????????????????????????????? ????????????????????????');
+      return;
+    }
+
+    setStatus(null);
+    onAuthenticated(nextSession);
+  };
+
   return (
-    <section className="route-card" aria-label="dashboard-page">
-      <span className="route-kicker">Dashboard</span>
-      <h2>Entry / Login Surface</h2>
-      <p>ใช้เลือกหมวด เข้าสู่ระบบ และพาผู้ใช้เข้าสู่ workspace ที่ถูกต้อง</p>
+    <section className="dashboard-layout" aria-label="dashboard-page">
+      <article className="route-card dashboard-identity">
+        <span className="route-kicker">Dashboard</span>
+        <h2>Operational Entry Surface</h2>
+        <p>
+          ?????????????????????????????????????? ??????????? login ??????????????????????? role ?????????
+        </p>
+
+        <div className="role-card-grid">
+          {roleCatalog.map((item) => (
+            <button
+              key={item.role}
+              type="button"
+              className={`role-card${selectedRole === item.role ? ' role-card--active' : ''}`}
+              onClick={() => setSelectedRole(item.role)}
+            >
+              <strong>{item.label}</strong>
+              <span>{item.detail}</span>
+            </button>
+          ))}
+        </div>
+      </article>
+
+      <article className="route-card login-panel">
+        <span className="route-kicker">Login</span>
+        <h2>{roleCatalog.find((item) => item.role === selectedRole)?.label}</h2>
+        <p>??????????????????????????????????? ??? role ?????? ?????????????????????????????</p>
+
+        <form className="login-form" onSubmit={handleSubmit}>
+          <label>
+            Username
+            <input value={username} onChange={(event) => setUsername(event.target.value)} placeholder="username" />
+          </label>
+
+          <label>
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="password"
+            />
+          </label>
+
+          <button type="submit" className="primary-button">
+            Login to {selectedRole}
+          </button>
+        </form>
+
+        <div className="login-helper">
+          <p className="route-kicker">Enabled Accounts</p>
+          {availableAccounts.length ? (
+            <ul className="domain-list">
+              {availableAccounts.map((account) => (
+                <li key={account.username}>
+                  {account.username} / {account.password}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>????????????????????????????????</p>
+          )}
+        </div>
+
+        {status ? <p className="status-banner status-banner--danger">{status}</p> : null}
+        {session.role ? <p className="status-banner status-banner--success">Current session: {session.role}</p> : null}
+      </article>
     </section>
   );
 }
