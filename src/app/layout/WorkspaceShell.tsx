@@ -1,6 +1,6 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { PanelKey, UserRole } from '../auth/auth-types';
-import { canViewPanel, panelOrder } from '../auth/role-visibility';
+import { canViewPanel, filterVisibleEvents, panelOrder } from '../auth/role-visibility';
 import { FdcWorkspace } from '@/domains/fdc/FdcWorkspace';
 import { FoWorkspace } from '@/domains/fo/FoWorkspace';
 import { CounterBatteryDocument } from '@/domains/howitzer/documents/CounterBatteryDocument';
@@ -54,6 +54,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     setRoleView,
   } = useSharedOperationalState();
   const [activePanel, setActivePanel] = useState<PanelKey>(() => readInitialPanel(role, visiblePanels));
+  const visibleEvents = filterVisibleEvents(role, eventLog);
 
   useEffect(() => {
     if (!visiblePanels.includes(activePanel)) {
@@ -317,4 +318,5 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     </div>
   );
 }
+
 

@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { filterVisibleEvents } from '@/app/auth/role-visibility';
 import { useSharedOperationalState } from '@/shared/state/shared-operational-context';
 
 export function FdcWorkspace() {
@@ -14,7 +16,9 @@ export function FdcWorkspace() {
     setMinQeLocked,
     completeMission,
     queueReport,
+    roleView,
   } = useSharedOperationalState();
+  const visibleEvents = useMemo(() => filterVisibleEvents(roleView, eventLog), [eventLog, roleView]);
 
   return (
     <section className="domain-workspace" aria-label="fdc-workspace">
@@ -77,8 +81,8 @@ export function FdcWorkspace() {
 
         <div className="status-tile">
           <span className="route-kicker">Latest Event</span>
-          <strong>{eventLog[0]?.severity ?? 'NONE'}</strong>
-          <p>{eventLog[0]?.message ?? 'No shared event yet'}</p>
+          <strong>{visibleEvents[0]?.severity ?? 'NONE'}</strong>
+          <p>{visibleEvents[0]?.message ?? 'No shared event yet'}</p>
         </div>
       </div>
     </section>

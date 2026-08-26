@@ -14,3 +14,17 @@ export const panelOrder: PanelKey[] = ['FO', 'FDC', 'SURVEILLANCE', 'HOWITZER', 
 export function canViewPanel(role: UserRole, panel: PanelKey): boolean {
   return visibilityMatrix[role].includes(panel);
 }
+
+type EventSource = UserRole | 'SYSTEM';
+
+export function canViewEventSource(role: UserRole, source: EventSource): boolean {
+  if (source === 'SYSTEM' || role === 'ADMIN') {
+    return true;
+  }
+
+  return source === role;
+}
+
+export function filterVisibleEvents<T extends { source: EventSource }>(role: UserRole, events: T[]): T[] {
+  return events.filter((entry) => canViewEventSource(role, entry.source));
+}

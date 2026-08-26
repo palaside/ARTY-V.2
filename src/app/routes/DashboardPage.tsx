@@ -102,7 +102,7 @@ export function DashboardPage({ accounts, session, onAuthenticated }: DashboardP
             <ul className="domain-list">
               {availableAccounts.map((account) => (
                 <li key={account.username}>
-                  {account.username} / {account.password}
+                  <strong>{account.username}</strong> — {account.label}
                 </li>
               ))}
             </ul>

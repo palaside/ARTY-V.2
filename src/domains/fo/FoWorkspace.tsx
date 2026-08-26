@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
+import { filterVisibleEvents } from '@/app/auth/role-visibility';
 import { useSharedOperationalState } from '@/shared/state/shared-operational-context';
 
 export function FoWorkspace() {
-  const { activateMission, clearTarget, eventLog, missionId, missionStatus, setActiveTarget, setOpenDocument } =
+  const { activateMission, clearTarget, eventLog, missionId, missionStatus, roleView, setActiveTarget, setOpenDocument } =
     useSharedOperationalState();
   const [sequence, setSequence] = useState(1);
+  const visibleEvents = useMemo(() => filterVisibleEvents(roleView, eventLog), [eventLog, roleView]);
 
   const previewTarget = useMemo(
     () => ({
@@ -68,8 +70,8 @@ export function FoWorkspace() {
 
       <div className="event-log-panel">
         <span className="route-kicker">FO Event Feed</span>
-        {eventLog.length ? (
-          eventLog.slice(0, 4).map((entry) => (
+        {visibleEvents.length ? (
+          visibleEvents.slice(0, 4).map((entry) => (
             <p key={entry.id}>
               {entry.createdAt} [{entry.source}] {entry.message}
             </p>
