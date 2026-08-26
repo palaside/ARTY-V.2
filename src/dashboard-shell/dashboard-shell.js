@@ -15,36 +15,68 @@ const stateLogCopy = {
 };
 
 const modeConfigs = {
-  target: {
-    modeReadout: "TARGET ACQUISITION",
+  fo: {
+    modeReadout: "FO WORKSPACE",
     slotAName: "FO / PRIMARY ACTIVE",
     slotBName: "FDC / SECONDARY ACTIVE",
-    sharedLoad: "STABLE",
+    sharedLoad: "TARGET FOCUS",
     slotAState: ["PRIMARY ACTIVE", "state-live"],
-    slotARole: "USER SELECTED DEFAULT",
+    slotARole: "FO / PRIMARY",
     slotATitle: "Forward Observer workspace",
-    slotACopy: "Observation, target acquisition, correction flow, and target confirmation remain primary in the default overview.",
-    slotAReason: "PRIMARY ACTIVE / TARGET WORKFLOW",
+    slotACopy: "Observation, target acquisition, correction flow, and target confirmation stay primary in the FO workspace.",
+    slotAReason: "FO WORKSPACE / PRIMARY",
     slotARulers: ["OBSERVE", "TARGET", "HANDOFF"],
     slotBState: ["SECONDARY ACTIVE", "state-stale"],
-    slotBRole: "DECISION CORE / VISIBLE",
+    slotBRole: "FDC / SHARED READOUT",
     slotBTitle: "FDC workspace",
-    slotBCopy: "Decision core receives confirmed target context without leaving the shared overview.",
+    slotBCopy: "Decision core remains visible beside FO so target intake and fire workflow stay connected in one screen.",
     stageState: ["STAGED", "state-warning"],
     stageTitle: "Surveillance staged",
-    stageCopy: "Spatial validation workspace remains ready to promote when target truth becomes the bottleneck.",
+    stageCopy: "Spatial validation workspace stays ready to promote when target truth becomes the bottleneck.",
     placements: { fo: "PRIMARY ACTIVE", fdc: "SECONDARY ACTIVE", surv: "STAGED", how: "ON CALL", ammo: "ON CALL" },
     situational: "OBSERVER / TARGET / IMPACT CONTEXT",
-    status: ["ACTIVE FLAGS", "03", "CRITICAL", "01"],
+    status: ["FO FOCUS", "03", "SHARED", "01"],
     workflow: [
-      ["FDC intake ready", "Decision core receives confirmed target context without leaving the shared overview."],
-      ["Shared workflow continuity", "Target and fire workflow remain visible in the same shell without page break."],
+      ["FO workspace active", "Observation and target acquisition remain the primary surface in this mode."],
+      ["FDC stays visible", "Decision core remains nearby so handoff is immediate when the target is ready."],
       ["Staged domain waiting", "Surveillance remains next in line if spatial validation becomes the bottleneck."],
     ],
     telemetryState: ["SUPPORT", "state-stale"],
     telemetryCopy: "Readouts stay shared and change emphasis by mode rather than moving into one domain only.",
     metrics: [["RANGE", "-- m"], ["DIR", "-- mil"], ["TOF", "-- s"]],
-    eventHeaders: ["TARGET WORKFLOW / DESC", "OVERRIDE GATE / PASSIVE"],
+    eventHeaders: ["FO WORKFLOW / DESC", "SHARED ROUTE / PASSIVE"],
+    classes: { a: "is-promoted", b: "", status: "", workflow: "" },
+  },
+  fdc: {
+    modeReadout: "FDC WORKSPACE",
+    slotAName: "FDC / PRIMARY ACTIVE",
+    slotBName: "FO / SECONDARY ACTIVE",
+    sharedLoad: "DECISION CORE",
+    slotAState: ["PRIMARY ACTIVE", "state-live"],
+    slotARole: "FDC / PRIMARY",
+    slotATitle: "FDC workspace",
+    slotACopy: "Decision core receives confirmed target context and keeps fire workflow centered on the FDC workspace.",
+    slotAReason: "FDC WORKSPACE / PRIMARY",
+    slotARulers: ["DECIDE", "CHECK", "EXECUTE"],
+    slotBState: ["SECONDARY ACTIVE", "state-stale"],
+    slotBRole: "FO / SHARED READOUT",
+    slotBTitle: "Forward Observer workspace",
+    slotBCopy: "Observation and target acquisition stay visible beside the decision core so the handoff stays explicit.",
+    stageState: ["STAGED", "state-warning"],
+    stageTitle: "Surveillance staged",
+    stageCopy: "Spatial validation workspace remains ready to promote when target truth or coordinates become the bottleneck.",
+    placements: { fo: "SECONDARY ACTIVE", fdc: "PRIMARY ACTIVE", surv: "STAGED", how: "ON CALL", ammo: "ON CALL" },
+    situational: "MISSION / TARGET / SAFETY CONTEXT",
+    status: ["FDC FOCUS", "03", "SHARED", "02"],
+    workflow: [
+      ["FDC workspace active", "Decision core stays centered while target intake and fire workflow remain visible."],
+      ["FO remains visible", "Observation context stays nearby so the handoff stays explicit."],
+      ["Validation still staged", "Surveillance remains next in line if coordinate truth becomes the bottleneck."],
+    ],
+    telemetryState: ["SUPPORT", "state-stale"],
+    telemetryCopy: "Readouts shift toward mission state, target intake, and safety gating in FDC mode.",
+    metrics: [["MISSION", "READY"], ["TARGET", "--"], ["SAFETY", "LOCK"]],
+    eventHeaders: ["FDC WORKFLOW / DESC", "OVERRIDE GATE / PASSIVE"],
     classes: { a: "is-promoted", b: "", status: "", workflow: "" },
   },
   spatial: {
@@ -301,7 +333,7 @@ function wireStateActions() {
 function boot() {
   updateClock();
   wireStateActions();
-  setMode("target");
+  setMode("fo");
   window.setInterval(updateClock, 1000);
 }
 
