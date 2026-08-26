@@ -55,6 +55,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
   } = useSharedOperationalState();
   const [activePanel, setActivePanel] = useState<PanelKey>(() => readInitialPanel(role, visiblePanels));
   const visibleEvents = filterVisibleEvents(role, eventLog);
+  const latestVisibleEvent = visibleEvents[0];
 
   useEffect(() => {
     if (!visiblePanels.includes(activePanel)) {
@@ -161,17 +162,46 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
             <p>Shared map engine เดียวกัน แต่เปิดเผยข้อมูลตามสิทธิ์ role และ cross-domain workflow</p>
           )}
           <figure className="shared-map-frame" aria-label="shared-tactical-map-reference">
+            <div className="shared-map-rail shared-map-rail--top" aria-hidden="true">
+              <span>NORTH / 000</span>
+              <span>SECTOR / SHARED-01</span>
+              <span>FRAME / GRID-LOCK</span>
+            </div>
             <img
               src={sharedMapGridReference}
               alt="Shared tactical map reference image"
               className="shared-map-image"
             />
+            <div className="shared-map-overlay" aria-hidden="true">
+              <span className="shared-map-crosshair shared-map-crosshair--vertical" />
+              <span className="shared-map-crosshair shared-map-crosshair--horizontal" />
+              <span className="shared-map-core" />
+              <span className="shared-map-label shared-map-label--left">SHARED TACTICAL MAP</span>
+              <span className="shared-map-label shared-map-label--bottom">Common tactical view for authorized roles only</span>
+            </div>
             <figcaption className="shared-map-caption">
               <span className="route-kicker">Map Reference</span>
               <strong>{mapScopeLabel}</strong>
               <span>{role === 'FO' ? 'Hidden operational detail / public-safe view only' : 'Shared tactical layer preview'}</span>
             </figcaption>
           </figure>
+          <div className="workspace-readout-grid">
+            <div className="status-tile">
+              <span className="route-kicker">Scope</span>
+              <strong>{mapScopeLabel}</strong>
+              <p>{role === 'FO' ? 'Restricted observer view' : 'Shared layer with segmented disclosure'}</p>
+            </div>
+            <div className="status-tile">
+              <span className="route-kicker">Latest Event</span>
+              <strong>{latestVisibleEvent?.severity ?? 'NONE'}</strong>
+              <p>{latestVisibleEvent?.message ?? 'No visible shared event yet'}</p>
+            </div>
+            <div className="status-tile">
+              <span className="route-kicker">Readout</span>
+              <strong>{role === 'FO' ? 'FO / MAP ONLY' : 'AUTHORIZED READOUT'}</strong>
+              <p>{role === 'FO' ? 'Observer + target context only' : 'Mission / target / safety context available'}</p>
+            </div>
+          </div>
           <div className="shared-status-grid">
             <div className="status-tile">
               <span className="route-kicker">Role View</span>
@@ -231,6 +261,23 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     if (activePanel === 'DOCUMENT') {
       return (
         <div className="document-preview">
+          <div className="workspace-readout-grid workspace-readout-grid--document">
+            <div className="status-tile">
+              <span className="route-kicker">Mode</span>
+              <strong>Document View</strong>
+              <p>{role === 'FO' ? 'FO document access is limited in this shell' : 'Role-bound preview / print surface'}</p>
+            </div>
+            <div className="status-tile">
+              <span className="route-kicker">Queue</span>
+              <strong>{reportQueue.length}</strong>
+              <p>Queued outputs ready for document workflow</p>
+            </div>
+            <div className="status-tile">
+              <span className="route-kicker">Role</span>
+              <strong>{role}</strong>
+              <p>{role === 'FDC' ? 'Decision core' : role === 'HOWITZER' ? 'Section workflow' : 'Scoped workspace'}</p>
+            </div>
+          </div>
           <div className="document-switcher">
             {role === 'SURVEILLANCE' ? (
               <>
@@ -303,8 +350,8 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
           <p className="workspace-panel__meta">Visible for role: {role}</p>
           <div className="event-log-panel event-log-panel--compact">
             <span className="route-kicker">Shared Event Log</span>
-            {eventLog.length ? (
-              eventLog.slice(0, 3).map((entry) => (
+            {visibleEvents.length ? (
+              visibleEvents.slice(0, 3).map((entry) => (
                 <p key={entry.id}>
                   {entry.createdAt} [{entry.severity}] {entry.source}: {entry.message}
                 </p>

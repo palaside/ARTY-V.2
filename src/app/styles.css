@@ -293,6 +293,17 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+.workspace-readout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 14px 0 12px;
+}
+
+.workspace-readout-grid--document {
+  margin-top: 0;
+}
+
 .status-tile {
   border: 1px solid rgba(43, 64, 52, 0.8);
   background: rgba(9, 10, 10, 0.6);
@@ -345,6 +356,7 @@ body {
   margin: 6px 0 14px;
   border: 1px solid rgba(43, 64, 52, 0.82);
   background: #030405;
+  min-height: 360px;
   box-shadow: 0 0 0 1px rgba(124, 255, 178, 0.08), 0 20px 42px rgba(0, 0, 0, 0.42);
 }
 
@@ -359,6 +371,92 @@ body {
   mix-blend-mode: screen;
 }
 
+.shared-map-rail {
+  position: absolute;
+  inset: 14px 16px auto 16px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(200, 209, 203, 0.92);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.shared-map-rail span {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+}
+
+.shared-map-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.shared-map-crosshair {
+  position: absolute;
+  display: block;
+  background: rgba(59, 224, 153, 0.34);
+  box-shadow: 0 0 18px rgba(59, 224, 153, 0.22);
+}
+
+.shared-map-crosshair--vertical {
+  inset: 0 auto 0 50%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+.shared-map-crosshair--horizontal {
+  inset: 50% 0 auto 0;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.shared-map-core {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: min(30vw, 280px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(59, 224, 153, 0.24) 0%, rgba(59, 224, 153, 0.1) 25%, rgba(59, 224, 153, 0.04) 44%, transparent 66%);
+  filter: blur(2px);
+  mix-blend-mode: screen;
+  opacity: 0.82;
+}
+
+.shared-map-label {
+  position: absolute;
+  z-index: 2;
+  color: rgba(224, 242, 232, 0.92);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.shared-map-label--left {
+  left: 18px;
+  bottom: 92px;
+  font-size: 12px;
+}
+
+.shared-map-label--bottom {
+  left: 18px;
+  bottom: 24px;
+  max-width: 45%;
+  font-size: 10px;
+  color: #b8c0bb;
+}
+
 .shared-map-image {
   display: block;
   width: 100%;
@@ -370,6 +468,7 @@ body {
 .shared-map-caption {
   position: absolute;
   inset: auto 14px 14px 14px;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   gap: 4px;
