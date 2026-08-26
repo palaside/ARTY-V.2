@@ -9,6 +9,7 @@ import { HowitzerWorkspace } from '@/domains/howitzer/HowitzerWorkspace';
 import { Form344201Document } from '@/domains/surveillance/documents/Form344201Document';
 import { Form344202Document } from '@/domains/surveillance/documents/Form344202Document';
 import { useSharedOperationalState, type DocumentKey } from '@/shared/state/shared-operational-context';
+import sharedMapGridReference from '../../../references/shared-map-grid.png';
 
 const workspaceStorageKey = (role: UserRole) => `arty-v2-workspace-${role}`;
 
@@ -38,7 +39,20 @@ function readInitialPanel(role: UserRole, visiblePanels: PanelKey[]): PanelKey {
 
 export function WorkspaceShell({ role }: WorkspaceShellProps) {
   const visiblePanels = panelOrder.filter((panel) => canViewPanel(role, panel));
-  const { openDocument, roleView, mapZoom, setMapZoom, setOpenDocument, setRoleView } = useSharedOperationalState();
+  const {
+    activeTarget,
+    eventLog,
+    fireLocked,
+    fireMissionStatus,
+    mapZoom,
+    missionId,
+    openDocument,
+    reportQueue,
+    roleView,
+    setMapZoom,
+    setOpenDocument,
+    setRoleView,
+  } = useSharedOperationalState();
   const [activePanel, setActivePanel] = useState<PanelKey>(() => readInitialPanel(role, visiblePanels));
 
   useEffect(() => {
@@ -72,6 +86,13 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
   const selectDocument = (document: DocumentKey) => {
     setOpenDocument(document);
     setActivePanel('DOCUMENT');
+  };
+
+  const visibleMapLayers = () => {
+    if (role === 'FO') return ['Observer Point', 'Active Target', 'Impact Context'];
+    if (role === 'FDC') return ['FO Observation', 'Active Target', 'Mission State', 'Safety State'];
+    if (role === 'ADMIN') return ['All Operational Domains', 'All Shared Layers', 'All System States'];
+    return ['Own Domain Layer', 'Active Target Context', 'Mission Context'];
   };
 
   const renderPanelBody = () => {
@@ -118,6 +139,18 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     }
 
     if (activePanel === 'MAP') {
+      const mapScopeLabel =
+        role === 'FO'
+          ? 'FO / RESTRICTED'
+          : role === 'FDC'
+            ? 'FDC / DECISION CORE'
+            : role === 'ADMIN'
+              ? 'ADMIN / FULL VIEW'
+              : 'ROLE / SEGMENTED VIEW';
+      const visibleLayers = role === 'FO'
+        ? ['Observer Point', 'Active Target']
+        : visibleMapLayers();
+
       return (
         <div className="workspace-intro">
           <header>Shared Tactical Map</header>
@@ -126,12 +159,49 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
           ) : (
             <p>Shared map engine เดียวกัน แต่เปิดเผยข้อมูลตามสิทธิ์ role และ cross-domain workflow</p>
           )}
+          <figure className="shared-map-frame" aria-label="shared-tactical-map-reference">
+            <img
+              src={sharedMapGridReference}
+              alt="Shared tactical map reference image"
+              className="shared-map-image"
+            />
+            <figcaption className="shared-map-caption">
+              <span className="route-kicker">Map Reference</span>
+              <strong>{mapScopeLabel}</strong>
+              <span>{role === 'FO' ? 'Hidden operational detail / public-safe view only' : 'Shared tactical layer preview'}</span>
+            </figcaption>
+          </figure>
           <div className="shared-status-grid">
             <div className="status-tile">
               <span className="route-kicker">Role View</span>
               <strong>{roleView}</strong>
-              <p>Shared engine / segmented visibility</p>
+              <p>{role === 'FO' ? 'Restricted observer view' : 'Shared engine / segmented visibility'}</p>
             </div>
+            {role !== 'FO' ? (
+              <>
+                <div className="status-tile">
+                  <span className="route-kicker">Mission</span>
+                  <strong>{missionId ?? 'No Mission'}</strong>
+                  <p>{fireMissionStatus}</p>
+                </div>
+                <div className="status-tile">
+                  <span className="route-kicker">Target Layer</span>
+                  <strong>{activeTarget?.id ?? 'No Target'}</strong>
+                  <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'Waiting for shared target'}</p>
+                </div>
+                <div className="status-tile">
+                  <span className="route-kicker">Safety Layer</span>
+                  <strong>{fireLocked ? 'LOCKED' : 'READY'}</strong>
+                  <p>Safety state visible to authorized roles</p>
+                </div>
+              </>
+            ) : (
+              <div className="status-tile">
+                <span className="route-kicker">Target Layer</span>
+                <strong>{activeTarget?.id ?? 'No Target'}</strong>
+                <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'Waiting for shared target'}</p>
+              </div>
+            )}
             <div className="status-tile">
               <span className="route-kicker">Zoom</span>
               <strong>{mapZoom.toFixed(1)}x</strong>
@@ -144,6 +214,14 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
                 </button>
               </div>
             </div>
+          </div>
+
+          <div className="map-layer-list">
+            {visibleLayers.map((layer) => (
+              <span key={layer} className="pill pill--success">
+                {layer}
+              </span>
+            ))}
           </div>
         </div>
       );
@@ -180,6 +258,18 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
             ) : null}
           </div>
           {role === 'FO' ? <p className="document-note">FO ไม่มีสิทธิ์ preview เอกสารข้ามหมวดใน shell นี้</p> : renderDocument()}
+          <div className="event-log-panel">
+            <span className="route-kicker">Report Queue</span>
+            {reportQueue.length ? (
+              reportQueue.slice(0, 3).map((item) => (
+                <p key={item.id}>
+                  {item.document} — {item.source} — {item.status}
+                </p>
+              ))
+            ) : (
+              <p>ยังไม่มีรายการ report queue</p>
+            )}
+          </div>
         </div>
       );
     }
@@ -210,8 +300,21 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
         <div className="workspace-panel-surface">
           {renderPanelBody()}
           <p className="workspace-panel__meta">Visible for role: {role}</p>
+          <div className="event-log-panel event-log-panel--compact">
+            <span className="route-kicker">Shared Event Log</span>
+            {eventLog.length ? (
+              eventLog.slice(0, 3).map((entry) => (
+                <p key={entry.id}>
+                  {entry.createdAt} [{entry.severity}] {entry.source}: {entry.message}
+                </p>
+              ))
+            ) : (
+              <p>ยังไม่มี event ใน shared layer</p>
+            )}
+          </div>
         </div>
       </article>
     </div>
   );
 }
+

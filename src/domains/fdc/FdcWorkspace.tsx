@@ -3,14 +3,17 @@ import { useSharedOperationalState } from '@/shared/state/shared-operational-con
 export function FdcWorkspace() {
   const {
     activeTarget,
+    eventLog,
     fireLocked,
+    fireMissionStatus,
     minQeLocked,
     missionId,
     missionStatus,
+    reportQueue,
     setFireLocked,
     setMinQeLocked,
     completeMission,
-    setOpenDocument,
+    queueReport,
   } = useSharedOperationalState();
 
   return (
@@ -30,7 +33,7 @@ export function FdcWorkspace() {
         <div className="status-tile">
           <span className="route-kicker">Mission</span>
           <strong>{missionId ?? 'No mission'}</strong>
-          <p>{missionStatus}</p>
+          <p>{missionStatus} / {fireMissionStatus}</p>
         </div>
 
         <div className="status-tile">
@@ -39,7 +42,7 @@ export function FdcWorkspace() {
           <p>
             {activeTarget
               ? `${activeTarget.easting} / ${activeTarget.northing} / ALT ${activeTarget.altitude}`
-              : '??????????? FO ???? shared target source'}
+              : 'รอ Target จาก FO หรือ Target List shared source'}
           </p>
         </div>
 
@@ -57,12 +60,26 @@ export function FdcWorkspace() {
         <button type="button" className="ghost-button" onClick={() => setMinQeLocked(!minQeLocked)}>
           Toggle Min QE
         </button>
-        <button type="button" className="ghost-button" onClick={() => setOpenDocument('DEPUTY_REPORT')}>
+        <button type="button" className="ghost-button" onClick={() => queueReport('DEPUTY_REPORT', 'FDC')}>
           Queue Report Preview
         </button>
-        <button type="button" className="primary-button" onClick={completeMission}>
+        <button type="button" className="primary-button" onClick={() => completeMission('FDC')}>
           Complete Mission
         </button>
+      </div>
+
+      <div className="shared-status-grid">
+        <div className="status-tile">
+          <span className="route-kicker">Report Queue</span>
+          <strong>{reportQueue.length}</strong>
+          <p>{reportQueue[0] ? `${reportQueue[0].document} from ${reportQueue[0].source}` : 'No report queued'}</p>
+        </div>
+
+        <div className="status-tile">
+          <span className="route-kicker">Latest Event</span>
+          <strong>{eventLog[0]?.severity ?? 'NONE'}</strong>
+          <p>{eventLog[0]?.message ?? 'No shared event yet'}</p>
+        </div>
       </div>
     </section>
   );

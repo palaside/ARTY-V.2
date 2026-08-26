@@ -10,23 +10,45 @@ import type { UserRole } from '@/app/auth/auth-types';
 export type DocumentKey = 'FORM_344_201' | 'FORM_344_202' | 'DEPUTY_REPORT' | 'COUNTER_BATTERY';
 
 type MissionStatus = 'idle' | 'active' | 'complete';
+type FireMissionStatus = 'no_target' | 'target_ready' | 'fire_solution_review' | 'fire_locked' | 'complete';
+type OperationalSource = UserRole | 'SYSTEM';
+
+export type EventLogEntry = {
+  id: string;
+  source: OperationalSource;
+  message: string;
+  severity: 'INFO' | 'WARNING' | 'CRITICAL';
+  createdAt: string;
+};
+
+export type ReportQueueItem = {
+  id: string;
+  document: DocumentKey;
+  source: UserRole;
+  status: 'queued' | 'preview';
+};
 
 type SharedOperationalContextValue = {
   missionId: string | null;
   missionStatus: MissionStatus;
+  fireMissionStatus: FireMissionStatus;
   activeTarget: ActiveTarget | null;
   minQeLocked: boolean;
   fireLocked: boolean;
   openDocument: DocumentKey | null;
+  eventLog: EventLogEntry[];
+  reportQueue: ReportQueueItem[];
   mapZoom: number;
   roleView: UserRole;
-  activateMission: (missionId: string) => void;
-  completeMission: () => void;
-  setActiveTarget: (target: ActiveTarget) => void;
-  clearTarget: () => void;
+  activateMission: (missionId: string, source?: OperationalSource) => void;
+  completeMission: (source?: OperationalSource) => void;
+  setActiveTarget: (target: ActiveTarget, source?: OperationalSource) => void;
+  clearTarget: (source?: OperationalSource) => void;
   setFireLocked: (locked: boolean) => void;
   setMinQeLocked: (locked: boolean) => void;
   setOpenDocument: (document: DocumentKey | null) => void;
+  queueReport: (document: DocumentKey, source: UserRole) => void;
+  addEvent: (source: EventLogEntry['source'], message: string, severity?: EventLogEntry['severity']) => void;
   setRoleView: (role: UserRole) => void;
   setMapZoom: (zoom: number) => void;
 };
@@ -42,10 +64,13 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
 
   const [missionId, setMissionId] = useState<string | null>(missionStore.missionId);
   const [missionStatus, setMissionStatus] = useState<MissionStatus>(missionStore.status);
+  const [fireMissionStatus, setFireMissionStatus] = useState<FireMissionStatus>('no_target');
   const [activeTarget, setActiveTargetState] = useState<ActiveTarget | null>(targetStore.activeTarget);
   const [minQeLocked, setMinQeLockedState] = useState<boolean>(safetyStore.minQeLocked);
   const [fireLocked, setFireLockedState] = useState<boolean>(safetyStore.fireLocked);
   const [openDocument, setOpenDocumentState] = useState<DocumentKey | null>(documentStore.openDocument as DocumentKey | null);
+  const [eventLog, setEventLog] = useState<EventLogEntry[]>([]);
+  const [reportQueue, setReportQueue] = useState<ReportQueueItem[]>([]);
   const [roleView, setRoleViewState] = useState<UserRole>(mapStore.roleView as UserRole);
   const [mapZoom, setMapZoomState] = useState<number>(mapStore.zoom);
 
@@ -53,33 +78,134 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
     () => ({
       missionId,
       missionStatus,
+      fireMissionStatus,
       activeTarget,
       minQeLocked,
       fireLocked,
       openDocument,
+      eventLog,
+      reportQueue,
       roleView,
       mapZoom,
-      activateMission: (nextMissionId: string) => {
+      activateMission: (nextMissionId: string, source = 'SYSTEM') => {
         setMissionId(nextMissionId);
         setMissionStatus('active');
+        setEventLog((entries) => [
+          {
+            id: `EVT-${Date.now()}-${entries.length + 1}`,
+            source,
+            message: `Mission ${nextMissionId} activated`,
+            severity: 'INFO',
+            createdAt: new Date().toLocaleTimeString('th-TH'),
+          },
+          ...entries,
+        ]);
       },
-      completeMission: () => {
+      completeMission: (source = 'SYSTEM') => {
         setMissionStatus('complete');
+        setFireMissionStatus('complete');
+        setEventLog((entries) => [
+          {
+            id: `EVT-${Date.now()}-${entries.length + 1}`,
+            source,
+            message: 'Fire mission marked complete',
+            severity: 'INFO',
+            createdAt: new Date().toLocaleTimeString('th-TH'),
+          },
+          ...entries,
+        ]);
       },
-      setActiveTarget: (target: ActiveTarget) => {
+      setActiveTarget: (target: ActiveTarget, source = 'SYSTEM') => {
         setActiveTargetState(target);
+        setFireMissionStatus('target_ready');
+        setEventLog((entries) => [
+          {
+            id: `EVT-${Date.now()}-${entries.length + 1}`,
+            source,
+            message: `Target ${target.id} confirmed into shared target data`,
+            severity: 'INFO',
+            createdAt: new Date().toLocaleTimeString('th-TH'),
+          },
+          ...entries,
+        ]);
       },
-      clearTarget: () => {
+      clearTarget: (source = 'SYSTEM') => {
         setActiveTargetState(null);
+        setFireMissionStatus('no_target');
+        setEventLog((entries) => [
+          {
+            id: `EVT-${Date.now()}-${entries.length + 1}`,
+            source,
+            message: 'Shared target cleared',
+            severity: 'WARNING',
+            createdAt: new Date().toLocaleTimeString('th-TH'),
+          },
+          ...entries,
+        ]);
       },
       setFireLocked: (locked: boolean) => {
         setFireLockedState(locked);
+        setFireMissionStatus(locked ? 'fire_locked' : activeTarget ? 'fire_solution_review' : 'no_target');
+        setEventLog((entries) => [
+          {
+            id: `EVT-${Date.now()}-${entries.length + 1}`,
+            source: 'FDC',
+            message: locked ? 'FIRE LOCKED by safety gate' : 'FIRE lock released for review',
+            severity: locked ? 'CRITICAL' : 'INFO',
+            createdAt: new Date().toLocaleTimeString('th-TH'),
+          },
+          ...entries,
+        ]);
       },
       setMinQeLocked: (locked: boolean) => {
         setMinQeLockedState(locked);
+        setEventLog((entries) => [
+          {
+            id: `EVT-${Date.now()}-${entries.length + 1}`,
+            source: 'FDC',
+            message: locked ? 'Minimum QE interlock active' : 'Minimum QE interlock clear',
+            severity: locked ? 'WARNING' : 'INFO',
+            createdAt: new Date().toLocaleTimeString('th-TH'),
+          },
+          ...entries,
+        ]);
       },
       setOpenDocument: (document: DocumentKey | null) => {
         setOpenDocumentState(document);
+      },
+      queueReport: (document: DocumentKey, source: UserRole) => {
+        setOpenDocumentState(document);
+        setReportQueue((items) => [
+          {
+            id: `RPT-${Date.now()}-${items.length + 1}`,
+            document,
+            source,
+            status: 'queued',
+          },
+          ...items,
+        ]);
+        setEventLog((entries) => [
+          {
+            id: `EVT-${Date.now()}-${entries.length + 1}`,
+            source,
+            message: `${document} queued for preview/export`,
+            severity: 'INFO',
+            createdAt: new Date().toLocaleTimeString('th-TH'),
+          },
+          ...entries,
+        ]);
+      },
+      addEvent: (source: EventLogEntry['source'], message: string, severity = 'INFO') => {
+        setEventLog((entries) => [
+          {
+            id: `EVT-${Date.now()}-${entries.length + 1}`,
+            source,
+            message,
+            severity,
+            createdAt: new Date().toLocaleTimeString('th-TH'),
+          },
+          ...entries,
+        ]);
       },
       setRoleView: (role: UserRole) => {
         setRoleViewState(role);
@@ -88,7 +214,19 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
         setMapZoomState(zoom);
       },
     }),
-    [activeTarget, fireLocked, mapZoom, minQeLocked, missionId, missionStatus, openDocument, roleView],
+    [
+      activeTarget,
+      eventLog,
+      fireLocked,
+      fireMissionStatus,
+      mapZoom,
+      minQeLocked,
+      missionId,
+      missionStatus,
+      openDocument,
+      reportQueue,
+      roleView,
+    ],
   );
 
   return <SharedOperationalContext.Provider value={value}>{children}</SharedOperationalContext.Provider>;

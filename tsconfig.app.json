@@ -10,6 +10,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "tsBuildInfoFile": "C:/Users/EVE/Documents/Codex/2026-08-14/new-chat/tmp/tsconfig.app.tsbuildinfo",
     "jsx": "react-jsx",
     "strict": true,
     "baseUrl": ".",

@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { useSharedOperationalState } from '@/shared/state/shared-operational-context';
 
 export function FoWorkspace() {
-  const { activateMission, clearTarget, missionId, missionStatus, setActiveTarget, setOpenDocument } = useSharedOperationalState();
+  const { activateMission, clearTarget, eventLog, missionId, missionStatus, setActiveTarget, setOpenDocument } =
+    useSharedOperationalState();
   const [sequence, setSequence] = useState(1);
 
   const previewTarget = useMemo(
@@ -16,8 +17,8 @@ export function FoWorkspace() {
   );
 
   const handleCreateTarget = () => {
-    activateMission(`MIS-${String(sequence).padStart(3, '0')}`);
-    setActiveTarget(previewTarget);
+    activateMission(`MIS-${String(sequence).padStart(3, '0')}`, 'FO');
+    setActiveTarget(previewTarget, 'FO');
     setOpenDocument(null);
     setSequence((current) => current + 1);
   };
@@ -39,7 +40,7 @@ export function FoWorkspace() {
         <button type="button" className="primary-button" onClick={handleCreateTarget}>
           Create Shared Target
         </button>
-        <button type="button" className="ghost-button" onClick={clearTarget}>
+        <button type="button" className="ghost-button" onClick={() => clearTarget('FO')}>
           Clear Target
         </button>
       </div>
@@ -58,6 +59,24 @@ export function FoWorkspace() {
             {previewTarget.easting} / {previewTarget.northing} / ALT {previewTarget.altitude}
           </p>
         </div>
+      </div>
+
+      <div className="opsec-panel">
+        <span className="route-kicker">OPSEC Shared Map Rule</span>
+        <p>FO เห็นเฉพาะตำแหน่งผู้ตรวจการณ์ เป้าหมาย และ impact context ที่จำเป็น ไม่เห็น FDC / Surveillance / ส่วนยิง / กระสุน</p>
+      </div>
+
+      <div className="event-log-panel">
+        <span className="route-kicker">FO Event Feed</span>
+        {eventLog.length ? (
+          eventLog.slice(0, 4).map((entry) => (
+            <p key={entry.id}>
+              {entry.createdAt} [{entry.source}] {entry.message}
+            </p>
+          ))
+        ) : (
+          <p>ยังไม่มี event จาก workflow</p>
+        )}
       </div>
     </section>
   );
