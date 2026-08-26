@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 import { filterVisibleEvents } from '@/app/auth/role-visibility';
 import { useSharedOperationalState } from '@/shared/state/shared-operational-context';
 
-export function FdcWorkspace() {
+type FdcWorkspaceProps = {
+  mode?: 'full' | 'preview';
+};
+
+export function FdcWorkspace({ mode = 'full' }: FdcWorkspaceProps) {
   const {
     activeTarget,
     eventLog,
@@ -19,12 +23,14 @@ export function FdcWorkspace() {
     roleView,
   } = useSharedOperationalState();
   const visibleEvents = useMemo(() => filterVisibleEvents(roleView, eventLog), [eventLog, roleView]);
+  const isFullAccess = mode === 'full';
 
   return (
-    <section className="domain-workspace" aria-label="fdc-workspace">
+    <section className={`domain-workspace${isFullAccess ? '' : ' domain-workspace--preview'}`} aria-label="fdc-workspace">
       <header className="domain-workspace__header">
         <span className="route-kicker">FDC</span>
         <h3>Fire Direction Center Workspace</h3>
+        <span className="route-kicker">{isFullAccess ? 'DECISION CORE' : 'READ-ONLY PREVIEW'}</span>
       </header>
       <ul className="domain-list">
         <li>Target intake and mission state</li>
@@ -57,20 +63,27 @@ export function FdcWorkspace() {
         </div>
       </div>
 
-      <div className="control-row">
-        <button type="button" className="ghost-button" onClick={() => setFireLocked(!fireLocked)}>
-          Toggle Fire Lock
-        </button>
-        <button type="button" className="ghost-button" onClick={() => setMinQeLocked(!minQeLocked)}>
-          Toggle Min QE
-        </button>
-        <button type="button" className="ghost-button" onClick={() => queueReport('DEPUTY_REPORT', 'FDC')}>
-          Queue Report Preview
-        </button>
-        <button type="button" className="primary-button" onClick={() => completeMission('FDC')}>
-          Complete Mission
-        </button>
-      </div>
+      {isFullAccess ? (
+        <div className="control-row">
+          <button type="button" className="ghost-button" onClick={() => setFireLocked(!fireLocked)}>
+            Toggle Fire Lock
+          </button>
+          <button type="button" className="ghost-button" onClick={() => setMinQeLocked(!minQeLocked)}>
+            Toggle Min QE
+          </button>
+          <button type="button" className="ghost-button" onClick={() => queueReport('DEPUTY_REPORT', 'FDC')}>
+            Queue Report Preview
+          </button>
+          <button type="button" className="primary-button" onClick={() => completeMission('FDC')}>
+            Complete Mission
+          </button>
+        </div>
+      ) : (
+        <div className="opsec-panel opsec-panel--preview">
+          <span className="route-kicker">FDC Readout</span>
+          <p>Read-only FDC preview keeps mission, target, and safety state visible without exposing edit controls to other roles.</p>
+        </div>
+      )}
 
       <div className="shared-status-grid">
         <div className="status-tile">

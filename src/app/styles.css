@@ -234,6 +234,158 @@ body {
   padding: 16px;
 }
 
+.workspace-split {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(420px, 1.2fr) minmax(280px, 0.95fr);
+  gap: 12px;
+  position: relative;
+  padding-top: 28px;
+}
+
+.workspace-split__rail {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(420px, 1.2fr) minmax(280px, 0.95fr);
+  gap: 12px;
+  pointer-events: none;
+  padding: 0 0 8px;
+}
+
+.workspace-split__rail span {
+  display: flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 4px 10px 6px;
+  border: 1px solid rgba(43, 64, 52, 0.6);
+  border-bottom-width: 2px;
+  background: rgba(4, 7, 8, 0.62);
+  color: rgba(228, 235, 231, 0.92);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.65);
+}
+
+.workspace-split__rail span:nth-child(1) {
+  color: #8cf0c3;
+  border-color: rgba(59, 224, 153, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(59, 224, 153, 0.08);
+}
+
+.workspace-split__rail span:nth-child(2) {
+  justify-content: center;
+  color: #cede62;
+  border-color: rgba(206, 222, 98, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(206, 222, 98, 0.08);
+}
+
+.workspace-split__rail span:nth-child(3) {
+  justify-content: flex-end;
+  padding-right: 2px;
+  color: #f4e7a2;
+  border-color: rgba(138, 133, 43, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(138, 133, 43, 0.08);
+}
+
+.workspace-split__panel,
+.workspace-split__center {
+  min-width: 0;
+}
+
+.workspace-split__panel {
+  border: 1px solid rgba(43, 64, 52, 0.82);
+  background: rgba(9, 10, 10, 0.62);
+  backdrop-filter: blur(12px);
+  border-radius: 8px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.workspace-split__panel--fo {
+  box-shadow:
+    inset 0 0 0 1px rgba(59, 224, 153, 0.08),
+    0 0 0 1px rgba(59, 224, 153, 0.04);
+}
+
+.workspace-split__panel--fo::before,
+.workspace-split__panel--fdc::before,
+.workspace-split__center::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, rgba(206, 222, 98, 0.24), transparent);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.workspace-split__panel--fdc {
+  box-shadow:
+    inset 0 0 0 1px rgba(206, 222, 98, 0.08),
+    0 0 0 1px rgba(206, 222, 98, 0.04);
+}
+
+.workspace-split__panel--fdc::before {
+  background: linear-gradient(180deg, transparent, rgba(255, 85, 0, 0.24), transparent);
+}
+
+.workspace-split__panel--fdc.is-restricted {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(8, 9, 9, 0.74);
+}
+
+.workspace-split__center {
+  border: 1px solid rgba(206, 222, 98, 0.22);
+  background: rgba(6, 8, 8, 0.76);
+  backdrop-filter: blur(12px);
+  border-radius: 8px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(124, 255, 178, 0.06),
+    0 0 0 1px rgba(124, 255, 178, 0.04);
+}
+
+.workspace-split__center::before {
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent, rgba(59, 224, 153, 0.28), transparent);
+}
+
+.workspace-lock-card {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  color: #c8d1cb;
+}
+
+.workspace-lock-card h3 {
+  margin: 4px 0 0;
+}
+
+.workspace-lock-card p {
+  margin: 0;
+  color: #b8c0bb;
+  line-height: 1.5;
+}
+
+.workspace-lock-card__note {
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 85, 0, 0.42);
+  background: rgba(255, 85, 0, 0.08);
+  color: #ffb37f;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .workspace-panel {
   min-height: 120px;
   padding: 12px;
@@ -244,6 +396,11 @@ body {
   color: #3be099;
   font-weight: 700;
   margin-bottom: 8px;
+}
+
+.workspace-intro--map {
+  display: flex;
+  flex-direction: column;
 }
 
 .workspace-panel__meta {
@@ -330,6 +487,11 @@ body {
 
 .opsec-panel {
   border-color: rgba(255, 85, 0, 0.42);
+}
+
+.opsec-panel--preview {
+  border-color: rgba(206, 222, 98, 0.42);
+  background: rgba(206, 222, 98, 0.06);
 }
 
 .opsec-panel p,

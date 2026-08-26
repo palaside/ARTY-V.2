@@ -47,10 +47,33 @@ export function DashboardPage({ accounts, session, onAuthenticated }: DashboardP
   };
 
   return (
-    <section className="dashboard-layout" aria-label="dashboard-page">
+    <section className="route-card route-card--workspace" aria-label="dashboard-page">
+      <span className="route-kicker">Dashboard</span>
+      <h2>Operational Entry Surface</h2>
+      <p>นี่คือจุดคัดกรองหมวดและเข้าสู่ระบบ โดยแยก role boundary ออกจาก workspace จริงตั้งแต่ต้นทาง</p>
+
+      <div className="workspace-readout-grid">
+        <div className="status-tile">
+          <span className="route-kicker">Selected Role</span>
+          <strong>{roleCatalog.find((item) => item.role === selectedRole)?.label}</strong>
+          <p>{roleCatalog.find((item) => item.role === selectedRole)?.detail}</p>
+        </div>
+        <div className="status-tile">
+          <span className="route-kicker">Enabled Accounts</span>
+          <strong>{availableAccounts.length}</strong>
+          <p>เฉพาะบัญชีที่ตรง role และยังไม่ถูกตัดสัญญาณ</p>
+        </div>
+        <div className="status-tile">
+          <span className="route-kicker">Current Session</span>
+          <strong>{session.role ?? 'NONE'}</strong>
+          <p>{session.username ? `User: ${session.username}` : 'ยังไม่ได้เข้าสู่ระบบ'}</p>
+        </div>
+      </div>
+
+      <div className="dashboard-layout">
       <article className="route-card dashboard-identity">
         <span className="route-kicker">Dashboard</span>
-        <h2>Operational Entry Surface</h2>
+        <h2>Role Selection Hub</h2>
         <p>
           เลือกหมวดงานทางซ้าย แล้วเข้าสู่ระบบด้วยบัญชีที่ตรงกับหมวดนั้นเท่านั้น
         </p>
@@ -114,6 +137,7 @@ export function DashboardPage({ accounts, session, onAuthenticated }: DashboardP
         {status ? <p className="status-banner status-banner--danger">{status}</p> : null}
         {session.role ? <p className="status-banner status-banner--success">Current session: {session.role}</p> : null}
       </article>
+      </div>
     </section>
   );
 }

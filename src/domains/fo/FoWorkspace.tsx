@@ -2,7 +2,11 @@ import { useMemo, useState } from 'react';
 import { filterVisibleEvents } from '@/app/auth/role-visibility';
 import { useSharedOperationalState } from '@/shared/state/shared-operational-context';
 
-export function FoWorkspace() {
+type FoWorkspaceProps = {
+  mode?: 'full' | 'preview';
+};
+
+export function FoWorkspace({ mode = 'full' }: FoWorkspaceProps) {
   const { activateMission, clearTarget, eventLog, missionId, missionStatus, roleView, setActiveTarget, setOpenDocument } =
     useSharedOperationalState();
   const [sequence, setSequence] = useState(1);
@@ -25,11 +29,14 @@ export function FoWorkspace() {
     setSequence((current) => current + 1);
   };
 
+  const isFullAccess = mode === 'full';
+
   return (
-    <section className="domain-workspace" aria-label="fo-workspace">
+    <section className={`domain-workspace${isFullAccess ? '' : ' domain-workspace--preview'}`} aria-label="fo-workspace">
       <header className="domain-workspace__header">
         <span className="route-kicker">FO</span>
         <h3>Forward Observer Workspace</h3>
+        <span className="route-kicker">{isFullAccess ? 'FULL ACCESS' : 'READ-ONLY PREVIEW'}</span>
       </header>
       <ul className="domain-list">
         <li>Grid / Polar / Shift target acquisition</li>
@@ -38,14 +45,21 @@ export function FoWorkspace() {
         <li>Restricted map visibility per OPSEC rule</li>
       </ul>
 
-      <div className="control-row">
-        <button type="button" className="primary-button" onClick={handleCreateTarget}>
-          Create Shared Target
-        </button>
-        <button type="button" className="ghost-button" onClick={() => clearTarget('FO')}>
-          Clear Target
-        </button>
-      </div>
+      {isFullAccess ? (
+        <div className="control-row">
+          <button type="button" className="primary-button" onClick={handleCreateTarget}>
+            Create Shared Target
+          </button>
+          <button type="button" className="ghost-button" onClick={() => clearTarget('FO')}>
+            Clear Target
+          </button>
+        </div>
+      ) : (
+        <div className="opsec-panel opsec-panel--preview">
+          <span className="route-kicker">FO Readout</span>
+          <p>Read-only FO preview keeps target context visible without exposing FDC details or interactive fire controls.</p>
+        </div>
+      )}
 
       <div className="shared-status-grid">
         <div className="status-tile">

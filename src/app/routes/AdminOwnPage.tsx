@@ -35,11 +35,33 @@ export function AdminOwnPage({ accounts, session, onAccountsChanged, onOpenWorks
     );
   };
 
+  const enabledAccounts = accounts.filter((account) => account.enabled);
+  const disabledAccounts = accounts.filter((account) => !account.enabled);
+  const managedAccounts = accounts.filter((account) => account.role !== 'ADMIN');
+
   return (
     <section className="route-card admin-layout" aria-label="admin-own-page">
       <span className="route-kicker">Admin / OWN</span>
       <h2>Access Control Surface</h2>
       <p>เจ้าของระบบจัดการบัญชีผู้ใช้รายหมวด ตัดสัญญาณการเข้าใช้งาน และเปิด workspace เพื่อตรวจสอบสิทธิ์ได้จากจุดเดียว</p>
+
+      <div className="workspace-readout-grid">
+        <div className="status-tile">
+          <span className="route-kicker">Managed Accounts</span>
+          <strong>{managedAccounts.length}</strong>
+          <p>บัญชีที่อยู่ใต้การควบคุมของ owner</p>
+        </div>
+        <div className="status-tile">
+          <span className="route-kicker">Enabled</span>
+          <strong>{enabledAccounts.length}</strong>
+          <p>บัญชีที่ยังเข้าสู่ระบบได้</p>
+        </div>
+        <div className="status-tile">
+          <span className="route-kicker">Disabled</span>
+          <strong>{disabledAccounts.length}</strong>
+          <p>บัญชีที่ถูกตัดสัญญาณชั่วคราว</p>
+        </div>
+      </div>
 
       <div className="account-table" role="table" aria-label="account-table">
         {accounts.map((account) => (

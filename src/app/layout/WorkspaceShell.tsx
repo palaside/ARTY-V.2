@@ -77,6 +77,150 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     if (role === 'FDC' && !openDocument) setOpenDocument('DEPUTY_REPORT');
   }, [openDocument, role, setOpenDocument]);
 
+  const mapScopeLabel =
+    role === 'FO'
+      ? 'FO / RESTRICTED'
+      : role === 'FDC'
+        ? 'FDC / DECISION CORE'
+        : role === 'ADMIN'
+          ? 'ADMIN / FULL VIEW'
+          : 'ROLE / SEGMENTED VIEW';
+
+  const visibleLayers =
+    role === 'FO'
+      ? ['Observer Point', 'Active Target']
+      : visibleMapLayers();
+
+  const renderSharedMapPanel = () => (
+    <div className="workspace-intro workspace-intro--map">
+      <header>Shared Tactical Map</header>
+      {role === 'FO' ? (
+        <p>FO เห็นเฉพาะข้อมูลที่จำเป็นต่อการสังเกตการณ์และ target acquisition ไม่เห็นตำแหน่งหมวดอื่นตามกฎ OPSEC</p>
+      ) : (
+        <p>Shared map engine เดียวกัน แต่เปิดเผยข้อมูลตามสิทธิ์ role และ cross-domain workflow</p>
+      )}
+      <figure className="shared-map-frame" aria-label="shared-tactical-map-reference">
+        <div className="shared-map-rail shared-map-rail--top" aria-hidden="true">
+          <span>NORTH / 000</span>
+          <span>SECTOR / SHARED-01</span>
+          <span>FRAME / GRID-LOCK</span>
+        </div>
+        <img src={sharedMapGridReference} alt="Shared tactical map reference image" className="shared-map-image" />
+        <div className="shared-map-overlay" aria-hidden="true">
+          <span className="shared-map-crosshair shared-map-crosshair--vertical" />
+          <span className="shared-map-crosshair shared-map-crosshair--horizontal" />
+          <span className="shared-map-core" />
+          <span className="shared-map-label shared-map-label--left">SHARED TACTICAL MAP</span>
+          <span className="shared-map-label shared-map-label--bottom">Common tactical view for authorized roles only</span>
+        </div>
+        <figcaption className="shared-map-caption">
+          <span className="route-kicker">Map Reference</span>
+          <strong>{mapScopeLabel}</strong>
+          <span>{role === 'FO' ? 'Hidden operational detail / public-safe view only' : 'Shared tactical layer preview'}</span>
+        </figcaption>
+      </figure>
+      <div className="workspace-readout-grid">
+        <div className="status-tile">
+          <span className="route-kicker">Scope</span>
+          <strong>{mapScopeLabel}</strong>
+          <p>{role === 'FO' ? 'Restricted observer view' : 'Shared layer with segmented disclosure'}</p>
+        </div>
+        <div className="status-tile">
+          <span className="route-kicker">Latest Event</span>
+          <strong>{latestVisibleEvent?.severity ?? 'NONE'}</strong>
+          <p>{latestVisibleEvent?.message ?? 'No visible shared event yet'}</p>
+        </div>
+        <div className="status-tile">
+          <span className="route-kicker">Readout</span>
+          <strong>{role === 'FO' ? 'FO / MAP ONLY' : 'AUTHORIZED READOUT'}</strong>
+          <p>{role === 'FO' ? 'Observer + target context only' : 'Mission / target / safety context available'}</p>
+        </div>
+      </div>
+      <div className="shared-status-grid">
+        <div className="status-tile">
+          <span className="route-kicker">Role View</span>
+          <strong>{roleView}</strong>
+          <p>{role === 'FO' ? 'Restricted observer view' : 'Shared engine / segmented visibility'}</p>
+        </div>
+        {role !== 'FO' ? (
+          <>
+            <div className="status-tile">
+              <span className="route-kicker">Mission</span>
+              <strong>{missionId ?? 'No Mission'}</strong>
+              <p>{fireMissionStatus}</p>
+            </div>
+            <div className="status-tile">
+              <span className="route-kicker">Target Layer</span>
+              <strong>{activeTarget?.id ?? 'No Target'}</strong>
+              <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'Waiting for shared target'}</p>
+            </div>
+            <div className="status-tile">
+              <span className="route-kicker">Safety Layer</span>
+              <strong>{fireLocked ? 'LOCKED' : 'READY'}</strong>
+              <p>Safety state visible to authorized roles</p>
+            </div>
+          </>
+        ) : (
+          <div className="status-tile">
+            <span className="route-kicker">Target Layer</span>
+            <strong>{activeTarget?.id ?? 'No Target'}</strong>
+            <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'Waiting for shared target'}</p>
+          </div>
+        )}
+        <div className="status-tile">
+          <span className="route-kicker">Zoom</span>
+          <strong>{mapZoom.toFixed(1)}x</strong>
+          <div className="control-row control-row--tight">
+            <button type="button" className="ghost-button" onClick={() => setMapZoom(Math.max(0.5, mapZoom - 0.5))}>
+              -
+            </button>
+            <button type="button" className="ghost-button" onClick={() => setMapZoom(mapZoom + 0.5)}>
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="map-layer-list">
+        {visibleLayers.map((layer) => (
+          <span key={layer} className="pill pill--success">
+            {layer}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderSplitWorkspace = () => {
+    const foMode = role === 'FO' || role === 'FDC' || role === 'ADMIN' ? 'full' : 'preview';
+    const fdcMode = role === 'FO' ? 'restricted' : 'full';
+
+    return (
+      <div className="workspace-split" aria-label="fo-fdc-split-workspace">
+        <div className="workspace-split__rail" aria-hidden="true">
+          <span>FO WORKSPACE / RESTRICTED</span>
+          <span>SHARED STATE / MAP</span>
+          <span>FDC WORKSPACE / DECISION CORE</span>
+        </div>
+        <div className="workspace-split__panel workspace-split__panel--fo">
+          <FoWorkspace mode={foMode} />
+        </div>
+        <div className="workspace-split__center">{renderSharedMapPanel()}</div>
+        <div className={`workspace-split__panel workspace-split__panel--fdc${fdcMode === 'restricted' ? ' is-restricted' : ''}`}>
+          {fdcMode === 'restricted' ? (
+            <div className="workspace-lock-card" aria-label="fdc-workspace-restricted">
+              <span className="route-kicker">FDC</span>
+              <h3>Fire Direction Center Workspace</h3>
+              <p>FO perspective cannot inspect FDC operational details. Shared map stays visible, FDC internals stay hidden.</p>
+              <div className="workspace-lock-card__note">ROLE GATE / OPSEC PROTECTED</div>
+            </div>
+          ) : (
+            <FdcWorkspace mode="full" />
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderDocument = () => {
     if (openDocument === 'FORM_344_201') return <Form344201Document />;
     if (openDocument === 'FORM_344_202') return <Form344202Document />;
@@ -90,16 +234,15 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     setActivePanel('DOCUMENT');
   };
 
-  const visibleMapLayers = () => {
+  function visibleMapLayers() {
     if (role === 'FO') return ['Observer Point', 'Active Target', 'Impact Context'];
     if (role === 'FDC') return ['FO Observation', 'Active Target', 'Mission State', 'Safety State'];
     if (role === 'ADMIN') return ['All Operational Domains', 'All Shared Layers', 'All System States'];
     return ['Own Domain Layer', 'Active Target Context', 'Mission Context'];
-  };
+  }
 
   const renderPanelBody = () => {
-    if (activePanel === 'FO') return <FoWorkspace />;
-    if (activePanel === 'FDC') return <FdcWorkspace />;
+    if (activePanel === 'FO' || activePanel === 'FDC') return renderSplitWorkspace();
     if (activePanel === 'HOWITZER') return <HowitzerWorkspace />;
 
     if (activePanel === 'SURVEILLANCE') {
@@ -141,121 +284,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     }
 
     if (activePanel === 'MAP') {
-      const mapScopeLabel =
-        role === 'FO'
-          ? 'FO / RESTRICTED'
-          : role === 'FDC'
-            ? 'FDC / DECISION CORE'
-            : role === 'ADMIN'
-              ? 'ADMIN / FULL VIEW'
-              : 'ROLE / SEGMENTED VIEW';
-      const visibleLayers = role === 'FO'
-        ? ['Observer Point', 'Active Target']
-        : visibleMapLayers();
-
-      return (
-        <div className="workspace-intro">
-          <header>Shared Tactical Map</header>
-          {role === 'FO' ? (
-            <p>FO เห็นเฉพาะข้อมูลที่จำเป็นต่อการสังเกตการณ์และ target acquisition ไม่เห็นตำแหน่งหมวดอื่นตามกฎ OPSEC</p>
-          ) : (
-            <p>Shared map engine เดียวกัน แต่เปิดเผยข้อมูลตามสิทธิ์ role และ cross-domain workflow</p>
-          )}
-          <figure className="shared-map-frame" aria-label="shared-tactical-map-reference">
-            <div className="shared-map-rail shared-map-rail--top" aria-hidden="true">
-              <span>NORTH / 000</span>
-              <span>SECTOR / SHARED-01</span>
-              <span>FRAME / GRID-LOCK</span>
-            </div>
-            <img
-              src={sharedMapGridReference}
-              alt="Shared tactical map reference image"
-              className="shared-map-image"
-            />
-            <div className="shared-map-overlay" aria-hidden="true">
-              <span className="shared-map-crosshair shared-map-crosshair--vertical" />
-              <span className="shared-map-crosshair shared-map-crosshair--horizontal" />
-              <span className="shared-map-core" />
-              <span className="shared-map-label shared-map-label--left">SHARED TACTICAL MAP</span>
-              <span className="shared-map-label shared-map-label--bottom">Common tactical view for authorized roles only</span>
-            </div>
-            <figcaption className="shared-map-caption">
-              <span className="route-kicker">Map Reference</span>
-              <strong>{mapScopeLabel}</strong>
-              <span>{role === 'FO' ? 'Hidden operational detail / public-safe view only' : 'Shared tactical layer preview'}</span>
-            </figcaption>
-          </figure>
-          <div className="workspace-readout-grid">
-            <div className="status-tile">
-              <span className="route-kicker">Scope</span>
-              <strong>{mapScopeLabel}</strong>
-              <p>{role === 'FO' ? 'Restricted observer view' : 'Shared layer with segmented disclosure'}</p>
-            </div>
-            <div className="status-tile">
-              <span className="route-kicker">Latest Event</span>
-              <strong>{latestVisibleEvent?.severity ?? 'NONE'}</strong>
-              <p>{latestVisibleEvent?.message ?? 'No visible shared event yet'}</p>
-            </div>
-            <div className="status-tile">
-              <span className="route-kicker">Readout</span>
-              <strong>{role === 'FO' ? 'FO / MAP ONLY' : 'AUTHORIZED READOUT'}</strong>
-              <p>{role === 'FO' ? 'Observer + target context only' : 'Mission / target / safety context available'}</p>
-            </div>
-          </div>
-          <div className="shared-status-grid">
-            <div className="status-tile">
-              <span className="route-kicker">Role View</span>
-              <strong>{roleView}</strong>
-              <p>{role === 'FO' ? 'Restricted observer view' : 'Shared engine / segmented visibility'}</p>
-            </div>
-            {role !== 'FO' ? (
-              <>
-                <div className="status-tile">
-                  <span className="route-kicker">Mission</span>
-                  <strong>{missionId ?? 'No Mission'}</strong>
-                  <p>{fireMissionStatus}</p>
-                </div>
-                <div className="status-tile">
-                  <span className="route-kicker">Target Layer</span>
-                  <strong>{activeTarget?.id ?? 'No Target'}</strong>
-                  <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'Waiting for shared target'}</p>
-                </div>
-                <div className="status-tile">
-                  <span className="route-kicker">Safety Layer</span>
-                  <strong>{fireLocked ? 'LOCKED' : 'READY'}</strong>
-                  <p>Safety state visible to authorized roles</p>
-                </div>
-              </>
-            ) : (
-              <div className="status-tile">
-                <span className="route-kicker">Target Layer</span>
-                <strong>{activeTarget?.id ?? 'No Target'}</strong>
-                <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'Waiting for shared target'}</p>
-              </div>
-            )}
-            <div className="status-tile">
-              <span className="route-kicker">Zoom</span>
-              <strong>{mapZoom.toFixed(1)}x</strong>
-              <div className="control-row control-row--tight">
-                <button type="button" className="ghost-button" onClick={() => setMapZoom(Math.max(0.5, mapZoom - 0.5))}>
-                  -
-                </button>
-                <button type="button" className="ghost-button" onClick={() => setMapZoom(mapZoom + 0.5)}>
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="map-layer-list">
-            {visibleLayers.map((layer) => (
-              <span key={layer} className="pill pill--success">
-                {layer}
-              </span>
-            ))}
-          </div>
-        </div>
-      );
+      return renderSharedMapPanel();
     }
 
     if (activePanel === 'DOCUMENT') {
