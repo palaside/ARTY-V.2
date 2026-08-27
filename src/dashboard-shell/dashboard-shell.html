@@ -14,13 +14,20 @@
       <header class="top-rail zone" aria-label="Top Command Rail">
         <div class="rail-block identity-block">
           <div class="eyeline">ARTY V.2 / SILENTARC</div>
-          <div class="title-row">
-            <h1>FO Workspace / FDC Workspace</h1>
-            <span class="state-chip state-live">LIVE SHELL</span>
+          <div class="title-row workspace-pair" aria-label="Workspace boundary">
+            <div class="workspace-claim workspace-claim-fo">
+              <span class="micro-label">FO WORKSPACE</span>
+              <strong>Primary observer surface</strong>
+            </div>
+            <div class="workspace-divider" aria-hidden="true"></div>
+            <div class="workspace-claim workspace-claim-fdc">
+              <span class="micro-label">FDC WORKSPACE</span>
+              <strong>Decision core surface</strong>
+            </div>
           </div>
           <div class="identity-subline">
             <span>ADMIN / OWN REVIEW</span>
-            <span>DOMAIN PLACEMENT UNDER REVIEW</span>
+            <span>ROLE BOUNDARIES LOCKED / SHARED MAP REMAINS CENTRAL</span>
           </div>
         </div>
 
@@ -61,7 +68,7 @@
           </div>
           <div class="overview-cell">
             <span class="micro-label">ACTIVE DOMAIN SLOT B</span>
-            <strong id="slot-b-name">FDC / SECONDARY ACTIVE</strong>
+            <strong id="slot-b-name">FDC / RESTRICTED</strong>
           </div>
           <div class="overview-cell">
             <span class="micro-label">SHARED LAYER LOAD</span>
@@ -89,20 +96,20 @@
 
           <article class="ops-module ops-module-tall" id="slot-b-card">
             <div class="module-topline">
-              <span class="state-chip state-stale" id="slot-b-state">SECONDARY ACTIVE</span>
-              <span class="micro-label" id="slot-b-role">DOMAIN SLOT / B</span>
+              <span class="state-chip state-locked" id="slot-b-state">LOCKED</span>
+              <span class="micro-label" id="slot-b-role">OPSEC / REDACTED</span>
             </div>
-            <h3 id="slot-b-title">FDC workspace</h3>
-            <p id="slot-b-copy">Decision core stays visible beside FO so target intake and fire workflow remain connected in one screen.</p>
+            <h3 id="slot-b-title">Restricted workspace</h3>
+            <p id="slot-b-copy">FDC internals are hidden in FO perspective. Shared map remains the only shared surface in this view.</p>
           </article>
 
           <article class="ops-module" id="slot-stage-card">
             <div class="module-topline">
-              <span class="state-chip state-warning" id="stage-state">STAGED</span>
+              <span class="state-chip state-locked" id="stage-state">LOCKED</span>
               <span class="micro-label">DOMAIN SLOT / CANDIDATE</span>
             </div>
-            <h3 id="stage-title">Surveillance staged</h3>
-            <p id="stage-copy">Spatial validation workspace remains ready to promote when target truth or coordinate validation becomes the bottleneck.</p>
+            <h3 id="stage-title">Other domains locked</h3>
+            <p id="stage-copy">Surveillance, Howitzer, and Weapons details stay redacted from the FO surface.</p>
           </article>
         </div>
       </section>
@@ -128,14 +135,14 @@
           <button type="button" class="mode-tile">DASHBOARD</button>
           <button type="button" class="mode-tile">USER SPACE</button>
         </div>
-        <div class="identity-footer-note">ROLE LAYER STAYS SHARED / DOMAIN PLACEMENT REMAINS UNDER REVIEW</div>
+        <div class="identity-footer-note">ROLE LAYER STAYS SHARED / DOMAIN PLACEMENT IS LOCKED</div>
         <div class="identity-footer-note">ACTIVE / STAGED / ON CALL = VIEW STATE ONLY</div>
         <div class="placement-list">
           <div class="placement-row"><span>FO</span><strong id="placement-fo">PRIMARY ACTIVE</strong></div>
-          <div class="placement-row"><span>FDC</span><strong id="placement-fdc">SECONDARY ACTIVE</strong></div>
-          <div class="placement-row"><span>SURVEILLANCE</span><strong id="placement-surv">STAGED</strong></div>
-          <div class="placement-row"><span>HOWITZER</span><strong id="placement-how">ON CALL</strong></div>
-          <div class="placement-row"><span>กระสุน</span><strong id="placement-ammo">ON CALL</strong></div>
+          <div class="placement-row"><span>FDC</span><strong id="placement-fdc">LOCKED</strong></div>
+          <div class="placement-row"><span>SURVEILLANCE</span><strong id="placement-surv">LOCKED</strong></div>
+          <div class="placement-row"><span>HOWITZER</span><strong id="placement-how">LOCKED</strong></div>
+          <div class="placement-row"><span>กระสุน</span><strong id="placement-ammo">LOCKED</strong></div>
           <div class="placement-row"><span>SHARED SUPPORT RAILS</span><strong>Z1 + Z5 + Z7 + Z8</strong></div>
           <div class="placement-row"><span>SHARED TACTICAL MAP</span><strong>Z4 ONLY</strong></div>
         </div>

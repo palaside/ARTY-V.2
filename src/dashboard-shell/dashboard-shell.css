@@ -202,6 +202,43 @@ textarea {
   gap: var(--space-4);
 }
 
+.workspace-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0;
+  margin-top: 2px;
+  background: var(--border-subtle);
+}
+
+.workspace-claim {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), transparent 36%),
+    var(--surface-panel-strong);
+}
+
+.workspace-claim strong {
+  font-size: clamp(1rem, 1.25vw, 1.28rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.workspace-claim-fo {
+  border-left: 2px solid rgba(0, 255, 102, 0.36);
+}
+
+.workspace-claim-fdc {
+  border-left: 2px solid rgba(255, 85, 0, 0.34);
+}
+
+.workspace-divider {
+  background: linear-gradient(180deg, rgba(124, 255, 178, 0.24), rgba(255, 255, 255, 0.04), rgba(255, 85, 0, 0.24));
+}
+
 .identity-subline,
 .command-footnote,
 .identity-footer-note {
@@ -217,6 +254,7 @@ textarea {
   display: flex;
   justify-content: space-between;
   gap: var(--space-3);
+  flex-wrap: wrap;
 }
 
 .rail-underline {
@@ -840,6 +878,7 @@ p {
   .placeholder-footer,
   .situational-rulers,
   .identity-subline,
+  .workspace-pair,
   .module-ruler,
   .title-row,
   .micro-grid,
@@ -856,6 +895,14 @@ p {
 
   .mode-rack {
     grid-template-columns: 1fr;
+  }
+
+  .workspace-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-divider {
+    display: none;
   }
 
   .workflow-list li,
