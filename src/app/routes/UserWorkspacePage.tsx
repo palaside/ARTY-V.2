@@ -6,9 +6,15 @@ type UserWorkspacePageProps = {
   session: AuthSession;
   workspaceRole: UserRole | null;
   onBackToDashboard: () => void;
+  onBackToAdmin: () => void;
 };
 
-export function UserWorkspacePage({ session, workspaceRole, onBackToDashboard }: UserWorkspacePageProps) {
+export function UserWorkspacePage({
+  session,
+  workspaceRole,
+  onBackToDashboard,
+  onBackToAdmin,
+}: UserWorkspacePageProps) {
   const activeRole = workspaceRole ?? session.role;
 
   if (!activeRole) {
@@ -44,7 +50,14 @@ export function UserWorkspacePage({ session, workspaceRole, onBackToDashboard }:
           <strong>ON</strong>
           <p>Mission / target / event state ถูกดึงจากแกนกลางร่วม</p>
         </div>
+      </div>
+      {session.role === 'ADMIN' ? (
+        <div className="control-row">
+          <button type="button" className="ghost-button" onClick={onBackToAdmin}>
+            Back to Admin / OWN
+          </button>
         </div>
+      ) : null}
       <WorkspaceShell role={activeRole} />
     </section>
   );

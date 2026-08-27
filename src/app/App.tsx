@@ -164,6 +164,9 @@ export function App() {
           <UserWorkspacePage
             session={session}
             workspaceRole={workspaceRole}
+            onBackToAdmin={() => {
+              setScreen('ADMIN');
+            }}
             onBackToDashboard={() => {
               setWorkspaceRole(null);
               setScreen('DASHBOARD');
