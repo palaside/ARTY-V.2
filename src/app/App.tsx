@@ -12,6 +12,7 @@ type PersistedAppState = {
   screen: Screen;
   session: AuthSession;
   accounts: MockUserAccount[];
+  workspaceRole: UserRole | null;
 };
 
 const STORAGE_KEY = 'arty-v2-app-state';
@@ -52,6 +53,7 @@ export function App() {
   const [screen, setScreen] = useState<Screen>(persistedState?.screen ?? 'DASHBOARD');
   const [session, setSession] = useState<AuthSession>(persistedState?.session ?? defaultSession);
   const [accounts, setAccounts] = useState<MockUserAccount[]>(() => normalizeAccounts(persistedState?.accounts));
+  const [workspaceRole, setWorkspaceRole] = useState<UserRole | null>(persistedState?.workspaceRole ?? null);
 
   useEffect(() => {
     globalThis.localStorage?.setItem(
@@ -60,9 +62,10 @@ export function App() {
         screen,
         session,
         accounts,
+        workspaceRole,
       } satisfies PersistedAppState),
     );
-  }, [accounts, screen, session]);
+  }, [accounts, screen, session, workspaceRole]);
 
   const title = useMemo(() => {
     if (screen === 'ADMIN') {
@@ -70,23 +73,24 @@ export function App() {
     }
 
     if (screen === 'USER') {
-      return `ARTY V.2 — ${session.role ?? 'Workspace'}`;
+      if (session.role === 'ADMIN' && workspaceRole) {
+        return `ARTY V.2 — ${workspaceRole} Preview`;
+      }
+
+      return `ARTY V.2 — ${workspaceRole ?? session.role ?? 'Workspace'}`;
     }
 
     return 'ARTY V.2 — Dashboard';
-  }, [screen, session.role]);
+  }, [screen, session.role, workspaceRole]);
 
   const handleAuthenticated = (nextSession: AuthSession) => {
     setSession(nextSession);
+    setWorkspaceRole(nextSession.role === 'ADMIN' ? null : nextSession.role);
     setScreen(nextSession.role === 'ADMIN' ? 'ADMIN' : 'USER');
   };
 
   const handleOpenWorkspace = (role: UserRole) => {
-    setSession({
-      role,
-      username: `admin-preview-${role.toLowerCase()}`,
-      enabled: true,
-    });
+    setWorkspaceRole(role);
     setScreen('USER');
   };
 
@@ -97,12 +101,14 @@ export function App() {
 
     if (session.role && (!currentAccount || !currentAccount.enabled)) {
       setSession(defaultSession);
+      setWorkspaceRole(null);
       setScreen('DASHBOARD');
     }
   };
 
   const handleLogout = () => {
     setSession(defaultSession);
+    setWorkspaceRole(null);
     setScreen('DASHBOARD');
     globalThis.localStorage?.removeItem(STORAGE_KEY);
   };
@@ -155,7 +161,14 @@ export function App() {
         ) : null}
 
         {screen === 'USER' ? (
-          <UserWorkspacePage session={session} onBackToDashboard={() => setScreen('DASHBOARD')} />
+          <UserWorkspacePage
+            session={session}
+            workspaceRole={workspaceRole}
+            onBackToDashboard={() => {
+              setWorkspaceRole(null);
+              setScreen('DASHBOARD');
+            }}
+          />
         ) : null}
       </main>
     </SharedOperationalProvider>

@@ -1,13 +1,17 @@
 import type { AuthSession } from '../auth/auth-types';
 import { WorkspaceShell } from '../layout/WorkspaceShell';
+import type { UserRole } from '../auth/auth-types';
 
 type UserWorkspacePageProps = {
   session: AuthSession;
+  workspaceRole: UserRole | null;
   onBackToDashboard: () => void;
 };
 
-export function UserWorkspacePage({ session, onBackToDashboard }: UserWorkspacePageProps) {
-  if (!session.role || session.role === 'ADMIN') {
+export function UserWorkspacePage({ session, workspaceRole, onBackToDashboard }: UserWorkspacePageProps) {
+  const activeRole = workspaceRole ?? session.role;
+
+  if (!activeRole) {
     return (
       <section className="route-card route-card--workspace" aria-label="user-workspace-page">
         <span className="route-kicker">User</span>
@@ -23,12 +27,12 @@ export function UserWorkspacePage({ session, onBackToDashboard }: UserWorkspaceP
   return (
     <section className="route-card route-card--workspace" aria-label="user-workspace-page">
       <span className="route-kicker">User</span>
-      <h2>Operational Workspace — {session.role}</h2>
+      <h2>Operational Workspace — {activeRole}</h2>
       <div className="workspace-readout-grid">
         <div className="status-tile">
           <span className="route-kicker">Active Role</span>
-          <strong>{session.role}</strong>
-          <p>Workspace นี้ถูกล็อกตาม role ที่ login เข้ามา</p>
+          <strong>{activeRole}</strong>
+          <p>{session.role === 'ADMIN' ? 'Admin preview mode is active for this workspace' : 'Workspace นี้ถูกล็อกตาม role ที่ login เข้ามา'}</p>
         </div>
         <div className="status-tile">
           <span className="route-kicker">Visibility Boundary</span>
@@ -40,8 +44,8 @@ export function UserWorkspacePage({ session, onBackToDashboard }: UserWorkspaceP
           <strong>ON</strong>
           <p>Mission / target / event state ถูกดึงจากแกนกลางร่วม</p>
         </div>
-      </div>
-      <WorkspaceShell role={session.role} />
+        </div>
+      <WorkspaceShell role={activeRole} />
     </section>
   );
 }
