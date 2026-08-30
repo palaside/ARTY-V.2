@@ -177,6 +177,64 @@ const modeConfigs = {
   },
 };
 
+const capabilityCatalog = {
+  fo: {
+    title: "ความสามารถของผู้ตรวจการณ์หน้า",
+    lead: "การได้มาซึ่งเป้าหมาย การบันทึกการสังเกต และการส่งต่อข้อมูลเข้าสู่ชั้นร่วมภายใต้ OPSEC",
+    state: ["4 โมดูล", "state-live"],
+    items: [
+      ["กำหนดที่ตั้งเป้าหมาย 3 วิธี", "กริด / โพลาร์ / ย้ายจากจุดอ้างอิง เพื่อจัดข้อมูลเป้าหมายเป็นรูปแบบเดียวก่อนส่งต่อ", "พร้อมแสดงผล"],
+      ["เครื่องมือสังเกตการณ์", "พื้นที่สำหรับ Flash-to-Bang และตัวช่วยอ่านค่ามิล ใช้ในโหมดฝึกจนกว่าจะเชื่อมข้อมูลอ้างอิงที่ตรวจสอบแล้ว", "โหมดฝึก"],
+      ["การปรับแก้และ Bracketing", "บันทึกการสังเกตจุดตกกระทบและคำขอแก้ทางข้าง ระยะ และความสูง โดยไม่สร้างคำสั่งยิงจริง", "พร้อมแสดงผล"],
+      ["โหมดฉุกเฉิน FO", "รวบรวมข้อมูลที่ FO มีสิทธิ์เห็นและบันทึกหลักฐานเพื่อทบทวนในโหมดฝึก", "โหมดฝึก"],
+    ],
+  },
+  fdc: {
+    title: "ความสามารถของศูนย์อำนวยการยิง",
+    lead: "แกนทบทวนภารกิจ เป้าหมาย สถานะความปลอดภัย และคิวเอกสารจากข้อมูลร่วมที่บทบาทนี้ได้รับอนุญาต",
+    state: ["4 โมดูล", "state-live"],
+    items: [
+      ["แกนทบทวนวิถีกระสุน", "พื้นที่แสดงผลระยะ เป้าหมาย มุมพื้นที่ และเวลาแล่นจากข้อมูลที่ผ่านการรับรอง โดยไม่คำนวณตารางยิงจริงใน UI", "โหมดฝึก"],
+      ["สภาพอากาศและลม", "รวบรวมข้อมูล MET และสถานะการทบทวนผลกระทบ เพื่อรองรับกฎอ้างอิงในอนาคต", "โหมดฝึก"],
+      ["สถานะปืนและความปลอดภัย", "รวมอินเตอร์ล็อก สถานะ QE ขั้นต่ำ และความพร้อมของภารกิจไว้ในแกนตัดสินใจเดียว", "พร้อมแสดงผล"],
+      ["คลังกระสุนและคิวรายงาน", "แสดงสถานะคิวเอกสารและจุดเชื่อมข้อมูลกระสุนจากหมวดต้นทาง โดยไม่ตัดยอดคลังจริง", "พร้อมแสดงผล"],
+    ],
+  },
+  spatial: {
+    title: "ความสามารถของแผนที่และสำรวจ",
+    lead: "จัดการบริบทกริด พิกัด มุมทิศ ระยะ และการตรวจทานความเชื่อมั่นของข้อมูลเชิงพื้นที่",
+    state: ["4 โมดูล", "state-warning"],
+    items: [
+      ["ทบ.344-201 / ทบ.344-202", "จุดเริ่มต้นเอกสารสำรวจสำหรับข้อมูลพิกัด มุมทิศ ระยะ และความสูง", "พร้อมแสดงผล"],
+      ["ตรวจสอบวงรอบสำรวจ", "พื้นที่แสดง closure error และสถานะตรวจทานก่อนส่งข้อมูล โดยเกณฑ์จริงต้องยืนยันจากเอกสารอ้างอิง", "โหมดฝึก"],
+      ["จุดตัดและเล็งกลับ", "workflow การเทียบแนวเล็งและพิกัดอ้างอิงในโหมดฝึก", "โหมดฝึก"],
+      ["เขตความปลอดภัยบนแผนที่", "แสดงชั้นข้อมูลความปลอดภัยตามบทบาท โดยไม่เปิดเผยชั้นปฏิบัติการที่ FO ไม่มีสิทธิ์เห็น", "พร้อมแสดงผล"],
+    ],
+  },
+  readiness: {
+    title: "ความสามารถของส่วนยิง",
+    lead: "ลำดับงานตั้งปืน การทบทวน M.17 และการบันทึกข้อมูลวิเคราะห์หลุมระเบิดในกรอบการฝึก",
+    state: ["4 โมดูล", "state-warning"],
+    items: [
+      ["การตั้งปืนตรงทิศ", "จัดลำดับ workflow การตั้งปืนและการตรวจทานทิศทางสำหรับการฝึก", "พร้อมแสดงผล"],
+      ["ตารางคำสั่งแยกปืน", "พื้นที่แสดงสถานะปืนประจำหมู่และมุมมองรายกระบอกหรือภาพรวม โดยไม่สั่งงานอุปกรณ์จริง", "โหมดฝึก"],
+      ["M.17 และการตรวจมุม", "แสดงตำแหน่งปืน ความสัมพันธ์กับ ศก.ร้อย และการตรวจทานค่าในโหมดฝึก", "พร้อมแสดงผล"],
+      ["วิเคราะห์หลุมระเบิด / บขตป.", "รวบรวมข้อมูลวิเคราะห์สนามและเชื่อมไปยังรายงานเบื้องต้น", "พร้อมแสดงผล"],
+    ],
+  },
+  ammo: {
+    title: "ความสามารถของกระสุนและอาวุธ",
+    lead: "ข้อมูลต้นทางของกระสุน ชนวน ความเข้ากันได้ และสถานะความปลอดภัยที่ส่งผลต่อชั้นตัดสินใจ",
+    state: ["4 โมดูล", "state-critical"],
+    items: [
+      ["แคตาล็อกกระสุนและชนวน", "แสดงรายการชนิดกระสุน ชนวน และข้อมูลอ้างอิงที่หมวดกระสุนเป็นเจ้าของ", "พร้อมแสดงผล"],
+      ["ตรรกะความเข้ากันได้", "แสดงสถานะตรวจสอบชนิดกระสุน ชนวน และข้อจำกัดด้านความปลอดภัย โดยไม่ตั้งค่าหรือควบคุมอาวุธจริง", "โหมดฝึก"],
+      ["อินเตอร์ล็อกฝ่ายมิตร", "แสดงสถานะ safety gate จากชั้นข้อมูลร่วมเพื่อใช้ทบทวนในโหมดฝึก", "พร้อมแสดงผล"],
+      ["ค้างยิงและลำกล้องร้อน", "หน้าจอ SOP และสถานะเวลาความปลอดภัยสำหรับการฝึก รอการยืนยันจากเอกสารอ้างอิงก่อนใช้งานจริง", "โหมดฝึก"],
+    ],
+  },
+};
+
 const situationalMapState = {
   zoom: 1,
   minZoom: 0.8,
@@ -194,6 +252,7 @@ const situationalMapState = {
 };
 
 let situationalMapNodes = null;
+let activeModeKey = "fo";
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -501,9 +560,90 @@ function rectCenterY(node) {
   return node.getBoundingClientRect().top + node.getBoundingClientRect().height / 2;
 }
 
+function renderCapabilityCatalog(modeKey) {
+  const catalog = capabilityCatalog[modeKey];
+  const list = document.getElementById("capability-list");
+  if (!catalog || !list) return;
+
+  setText("capability-deck-title", catalog.title);
+  setText("capability-deck-lead", catalog.lead);
+  setChip(document.getElementById("capability-deck-state"), catalog.state[0], catalog.state[1]);
+
+  list.replaceChildren();
+  catalog.items.forEach(([title, description, state]) => {
+    const card = document.createElement("details");
+    card.className = "capability-card";
+
+    const summary = document.createElement("summary");
+    const titleBlock = document.createElement("span");
+    const titleNode = document.createElement("strong");
+    const stateNode = document.createElement("small");
+    titleNode.textContent = title;
+    stateNode.textContent = state;
+    titleBlock.append(titleNode, stateNode);
+    summary.append(titleBlock);
+
+    const copy = document.createElement("p");
+    copy.textContent = description;
+    card.append(summary, copy);
+    list.append(card);
+  });
+}
+
+function createCapabilityCard([title, description, state]) {
+  const card = document.createElement("details");
+  card.className = "capability-card";
+
+  const summary = document.createElement("summary");
+  const titleBlock = document.createElement("span");
+  const titleNode = document.createElement("strong");
+  const stateNode = document.createElement("small");
+  titleNode.textContent = title;
+  stateNode.textContent = state;
+  titleBlock.append(titleNode, stateNode);
+  summary.append(titleBlock);
+
+  const copy = document.createElement("p");
+  copy.textContent = description;
+  card.append(summary, copy);
+  return card;
+}
+
+function openWorkspaceView(modeKey) {
+  const catalog = capabilityCatalog[modeKey];
+  const view = document.getElementById("workspace-view");
+  const features = document.getElementById("workspace-view-features");
+  if (!catalog || !view || !features) return;
+
+  setMode(modeKey);
+  setText("workspace-view-title", catalog.title);
+  setText("workspace-view-lead", catalog.lead);
+  setText("workspace-view-mode", modeConfigs[modeKey].modeReadout);
+  setChip(document.getElementById("workspace-view-state"), catalog.state[0], catalog.state[1]);
+  features.replaceChildren(...catalog.items.map(createCapabilityCard));
+  view.hidden = false;
+  document.body.classList.add("workspace-view-open");
+  window.history.replaceState(null, "", `#workspace=${modeKey}`);
+  document.getElementById("close-workspace-button")?.focus();
+  appendLog(`เปิดพื้นที่ทำงาน ${modeConfigs[modeKey].modeReadout}`);
+}
+
+function closeWorkspaceView() {
+  const view = document.getElementById("workspace-view");
+  if (!view) return;
+
+  view.hidden = true;
+  document.body.classList.remove("workspace-view-open");
+  window.history.replaceState(null, "", window.location.pathname);
+  document.querySelector(`.mode-button[data-mode="${activeModeKey}"]`)?.focus();
+  appendLog("กลับสู่แดชบอร์ดรวม");
+}
+
 function setMode(modeKey) {
   const config = modeConfigs[modeKey];
   if (!config) return;
+
+  activeModeKey = modeKey;
 
   document.querySelectorAll(".mode-button").forEach((button) => {
     button.classList.toggle("is-selected", button.dataset.mode === modeKey);
@@ -561,6 +701,7 @@ function setMode(modeKey) {
 
   setText("event-header-left", config.eventHeaders[0]);
   setText("event-header-right", config.eventHeaders[1]);
+  renderCapabilityCatalog(modeKey);
 
   const slotACard = document.getElementById("slot-a-card");
   const slotBCard = document.getElementById("slot-b-card");
@@ -616,7 +757,24 @@ function wireStateActions() {
     button.addEventListener("click", () => {
       const mode = button.getAttribute("data-mode");
       if (!mode) return;
-      setMode(mode);
+      openWorkspaceView(mode);
+    });
+  });
+
+  document.getElementById("open-workspace-button")?.addEventListener("click", () => {
+    openWorkspaceView(activeModeKey);
+  });
+
+  document.getElementById("close-workspace-button")?.addEventListener("click", closeWorkspaceView);
+
+  document.querySelectorAll(".mode-tile").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".mode-tile").forEach((tile) => tile.classList.toggle("is-active", tile === button));
+      if (button.getAttribute("data-shell-view") === "workspace") {
+        openWorkspaceView(activeModeKey);
+        return;
+      }
+      closeWorkspaceView();
     });
   });
 }

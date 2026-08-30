@@ -90,7 +90,7 @@
             </div>
             <div class="module-footer">
               <span id="slot-a-reason">คู่เริ่มต้นที่ผู้ใช้เลือก</span>
-              <button type="button" class="inline-action">ตรวจดู</button>
+              <button type="button" class="inline-action" id="open-workspace-button">เปิดพื้นที่ทำงาน</button>
             </div>
           </article>
 
@@ -112,6 +112,17 @@
             <p id="stage-copy">รายละเอียดของแผนที่ / สำรวจ ส่วนยิง และกระสุนยังถูกปกปิดจากพื้นที่ FO</p>
           </article>
         </div>
+        <section class="capability-deck" aria-labelledby="capability-deck-title">
+          <div class="capability-deck-header">
+            <div>
+              <p class="micro-label">คลังความสามารถ / หมวดที่เลือก</p>
+              <h3 id="capability-deck-title">ความสามารถของผู้ตรวจการณ์หน้า</h3>
+            </div>
+            <span class="state-chip state-live" id="capability-deck-state">พร้อมแสดงผล</span>
+          </div>
+          <p class="capability-deck-lead" id="capability-deck-lead">เลือกการ์ดเพื่ออ่านขอบเขตการทำงานของหมวดนี้</p>
+          <div class="capability-list" id="capability-list" aria-live="polite"></div>
+        </section>
       </section>
 
       <section class="identity-cluster zone" aria-labelledby="identity-cluster-title">
@@ -131,9 +142,9 @@
           </div>
         </div>
         <div class="mode-rack">
-          <button type="button" class="mode-tile is-active">ผู้ดูแลระบบ / เจ้าของระบบ</button>
-          <button type="button" class="mode-tile">แดชบอร์ด</button>
-          <button type="button" class="mode-tile">พื้นที่ผู้ใช้</button>
+          <button type="button" class="mode-tile is-active" data-shell-view="owner">ผู้ดูแลระบบ / เจ้าของระบบ</button>
+          <button type="button" class="mode-tile" data-shell-view="dashboard">แดชบอร์ด</button>
+          <button type="button" class="mode-tile" data-shell-view="workspace">พื้นที่ผู้ใช้</button>
         </div>
         <div class="identity-footer-note">ชั้นบทบาทยังคงใช้ร่วมกัน / ตำแหน่งโดเมนถูกล็อก</div>
         <div class="identity-footer-note">ทำงานหลัก / จัดเตรียม / รอเรียกใช้งาน = สถานะมุมมองเท่านั้น</div>
@@ -259,6 +270,22 @@
           <div class="event-row"><span>00:00:00</span><p>เจ้าของระบบสามารถสลับสถานะพื้นผิวจากแถบคำสั่งได้</p><em>ควบคุม</em></div>
         </div>
       </aside>
+
+      <section class="workspace-view" id="workspace-view" aria-labelledby="workspace-view-title" hidden>
+        <header class="workspace-view__header">
+          <div>
+            <p class="zone-kicker">พื้นที่ทำงาน / รายละเอียดหมวด</p>
+            <h2 id="workspace-view-title">พื้นที่ทำงาน</h2>
+            <p id="workspace-view-lead">รายละเอียดความสามารถของหมวดที่เลือก</p>
+          </div>
+          <button type="button" class="command-button" id="close-workspace-button">กลับแดชบอร์ด</button>
+        </header>
+        <div class="workspace-view__readout">
+          <span class="state-chip state-live" id="workspace-view-state">พร้อมแสดงผล</span>
+          <span class="micro-label" id="workspace-view-mode">พื้นที่ทำงาน</span>
+        </div>
+        <div class="workspace-view__features" id="workspace-view-features"></div>
+      </section>
     </main>
 
     <script src="./dashboard-shell.js"></script>

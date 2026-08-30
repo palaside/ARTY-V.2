@@ -8,10 +8,34 @@ import {
   formatRoleLabel,
   formatSeverityLabel,
 } from '@/shared/labels';
+import { CapabilityCatalog, type CapabilityItem } from '@/shared/components/CapabilityCatalog';
 
 type FdcWorkspaceProps = {
   mode?: 'full' | 'preview';
 };
+
+const fdcCapabilities: CapabilityItem[] = [
+  {
+    title: 'แกนทบทวนวิถีกระสุน',
+    description: 'พื้นที่แสดงผลระยะ เป้าหมาย มุมพื้นที่ และเวลาแล่นจากข้อมูลที่ผ่านการรับรอง โดยไม่คำนวณตารางยิงจริงในชั้น UI.',
+    state: 'โหมดฝึก / รอข้อมูลอ้างอิง',
+  },
+  {
+    title: 'สภาพอากาศและลม',
+    description: 'หน้าจอรวบรวมข้อมูล MET และสถานะการตรวจทานผลกระทบ เพื่อรองรับการเชื่อมกฎอ้างอิงในอนาคต.',
+    state: 'โหมดฝึก / รอข้อมูลอ้างอิง',
+  },
+  {
+    title: 'สถานะปืนและความปลอดภัย',
+    description: 'รวมการตรวจอินเตอร์ล็อก, สถานะ QE ขั้นต่ำ และความพร้อมของภารกิจไว้ในแกนตัดสินใจเดียว.',
+    state: 'พร้อมแสดงผล',
+  },
+  {
+    title: 'คลังกระสุนและคิวรายงาน',
+    description: 'แสดงสถานะคิวเอกสารและจุดเชื่อมข้อมูลกระสุนจากหมวดต้นทาง โดยยังไม่ตัดยอดคลังจริง.',
+    state: 'พร้อมแสดงผล',
+  },
+];
 
 export function FdcWorkspace({ mode = 'full' }: FdcWorkspaceProps) {
   const {
@@ -45,6 +69,7 @@ export function FdcWorkspace({ mode = 'full' }: FdcWorkspaceProps) {
         <li>แผงประตูความปลอดภัย / สถานะล็อก</li>
         <li>มุมมองแผนที่ร่วมแบบเปิดกว้างกว่า</li>
       </ul>
+      <CapabilityCatalog title="แกนตัดสินใจและทบทวนภารกิจ" items={fdcCapabilities} />
 
       <div className="shared-status-grid">
         <div className="status-tile">

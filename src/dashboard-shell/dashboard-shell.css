@@ -138,6 +138,71 @@ textarea {
   pointer-events: none;
 }
 
+.workspace-view[hidden] {
+  display: none;
+}
+
+.workspace-view {
+  position: fixed;
+  z-index: 20;
+  inset: 12px;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid var(--border-strong);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(0, 255, 102, 0.11), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 18%),
+    #07100b;
+  box-shadow: 0 0 0 1px rgba(124, 255, 178, 0.1), 0 32px 100px rgba(0, 0, 0, 0.72);
+}
+
+.workspace-view__header,
+.workspace-view__readout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.workspace-view__header h2 {
+  margin: 4px 0 8px;
+  font-size: clamp(1.45rem, 2.7vw, 2.5rem);
+}
+
+.workspace-view__header p {
+  max-width: 68ch;
+}
+
+.workspace-view__readout {
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.workspace-view__features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 12px;
+}
+
+.workspace-view__features .capability-card {
+  min-height: 118px;
+}
+
+.workspace-view__features .capability-card summary {
+  font-size: 1rem;
+}
+
+.workspace-view__features .capability-card p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
 .top-rail {
   grid-area: top;
   display: grid;
@@ -510,6 +575,89 @@ p {
 
 .ops-grid .ops-module:last-child {
   grid-area: short;
+}
+
+.capability-deck {
+  display: grid;
+  gap: 10px;
+  margin: 0 12px;
+  padding: 12px;
+  border: 1px solid rgba(124, 255, 178, 0.18);
+  background:
+    linear-gradient(135deg, rgba(0, 255, 102, 0.06), transparent 42%),
+    rgba(0, 0, 0, 0.2);
+}
+
+.capability-deck-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.capability-deck-header h3 {
+  margin-top: 4px;
+}
+
+.capability-deck-lead {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+}
+
+.capability-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.capability-card {
+  border: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.capability-card summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  padding: 10px;
+  cursor: pointer;
+  color: var(--text-primary);
+  list-style: none;
+}
+
+.capability-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.capability-card summary::before {
+  content: '+';
+  color: var(--accent-signal);
+  font-family: var(--font-mono);
+}
+
+.capability-card[open] summary::before {
+  content: '−';
+}
+
+.capability-card summary strong,
+.capability-card summary small {
+  display: block;
+}
+
+.capability-card summary small {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.capability-card p {
+  margin: 0;
+  padding: 0 10px 10px 28px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
 }
 
 .ops-module.is-promoted,
@@ -923,6 +1071,10 @@ p {
       "tall"
       "short";
   }
+
+  .capability-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 760px) {
@@ -979,6 +1131,21 @@ p {
   .workflow-list li,
   .event-row,
   .status-item {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-view {
+    inset: 8px;
+    padding: 12px;
+  }
+
+  .workspace-view__header,
+  .workspace-view__readout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .workspace-view__features {
     grid-template-columns: 1fr;
   }
 }

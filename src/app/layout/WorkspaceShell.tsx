@@ -16,9 +16,24 @@ import {
   formatQueueStatus,
   formatSeverityLabel,
 } from '@/shared/labels';
+import { CapabilityCatalog, type CapabilityItem } from '@/shared/components/CapabilityCatalog';
 import sharedMapGridReference from '../../../references/shared-map-grid.png';
 
 const workspaceStorageKey = (role: UserRole) => `arty-v2-workspace-${role}`;
+
+const mapCapabilities: CapabilityItem[] = [
+  { title: 'งานสำรวจ ทบ.344-201 / 202', description: 'ทางเข้าเอกสารและหน้าจอจัดข้อมูลพิกัด มุมทิศ ระยะ และความสูงจากแหล่งสำรวจ.', state: 'พร้อมแสดงผล' },
+  { title: 'ตรวจสอบวงรอบสำรวจ', description: 'พื้นที่แสดง closure error และการตรวจทานก่อนส่งข้อมูล โดยเกณฑ์จริงต้องยืนยันจากเอกสารอ้างอิง.', state: 'โหมดฝึก / รอข้อมูลอ้างอิง' },
+  { title: 'จุดตัดและเล็งกลับ', description: 'จัดเตรียม workflow สำหรับการเทียบแนวเล็งและพิกัดอ้างอิงในโหมดฝึก.', state: 'โหมดฝึก / รอข้อมูลอ้างอิง' },
+  { title: 'เขตความปลอดภัยบนแผนที่', description: 'แสดงชั้นข้อมูลความปลอดภัยตามบทบาทบนแผนที่ร่วม โดยไม่เปิดเผยข้อมูลที่ FO ไม่มีสิทธิ์เห็น.', state: 'พร้อมแสดงผล' },
+];
+
+const weaponsCapabilities: CapabilityItem[] = [
+  { title: 'แคตาล็อกกระสุนและชนวน', description: 'แสดงรายการชนิดกระสุน ชนวน และข้อมูลอ้างอิงที่หมวดกระสุนเป็นเจ้าของ.', state: 'พร้อมแสดงผล' },
+  { title: 'ตรรกะความเข้ากันได้', description: 'แสดงสถานะตรวจสอบชนิดกระสุน ชนวน และข้อจำกัดด้านความปลอดภัย โดยไม่ตั้งค่าหรือควบคุมอาวุธจริง.', state: 'โหมดฝึก / รอข้อมูลอ้างอิง' },
+  { title: 'อินเตอร์ล็อกฝ่ายมิตร', description: 'แสดง safety gate จากชั้นข้อมูลร่วมเพื่อใช้ทบทวนในโหมดฝึก.', state: 'พร้อมแสดงผล' },
+  { title: 'ขั้นตอนค้างยิงและลำกล้องร้อน', description: 'หน้าจอ SOP และการนับเวลาความปลอดภัยสำหรับการฝึก พร้อมรอการยืนยันข้อความอ้างอิงก่อนใช้งานจริง.', state: 'โหมดฝึก / รอข้อมูลอ้างอิง' },
+];
 
 const panelContent: Record<PanelKey, { title: string; detail?: string }> = {
   FO: { title: 'พื้นที่ทำงาน FO' },
@@ -269,6 +284,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
             <li>ระยะ / ความสูง</li>
             <li>ทบ.344 / จุดตัด / ตรวจสอบความถูกต้อง</li>
           </ul>
+          <CapabilityCatalog title="งานแผนที่และสำรวจ" items={mapCapabilities} />
           <div className="control-row">
             <button type="button" className="ghost-button" onClick={() => selectDocument('FORM_344_201')}>
               เปิด ทบ.344-201
@@ -292,6 +308,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
             <li>การตรวจสอบความเข้ากันได้ / ความปลอดภัย</li>
             <li>สถานะแหล่งต้นทางของค้างยิง / อินเตอร์ล็อก</li>
           </ul>
+          <CapabilityCatalog title="กระสุน ชนวน และความปลอดภัย" items={weaponsCapabilities} />
         </div>
       );
     }

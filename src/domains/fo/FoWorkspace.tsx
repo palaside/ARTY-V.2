@@ -2,10 +2,34 @@ import { useMemo, useState } from 'react';
 import { filterVisibleEvents } from '@/app/auth/role-visibility';
 import { useSharedOperationalState } from '@/shared/state/shared-operational-context';
 import { formatMissionStatus, formatRoleLabel } from '@/shared/labels';
+import { CapabilityCatalog, type CapabilityItem } from '@/shared/components/CapabilityCatalog';
 
 type FoWorkspaceProps = {
   mode?: 'full' | 'preview';
 };
+
+const foCapabilities: CapabilityItem[] = [
+  {
+    title: 'กำหนดที่ตั้งเป้าหมาย 3 วิธี',
+    description: 'พื้นที่รับข้อมูลพิกัดกริด, โพลาร์ และการย้ายจากจุดอ้างอิง เพื่อจัดรูปแบบข้อมูลเป้าหมายก่อนส่งเข้าสู่ชั้นร่วม.',
+    state: 'พร้อมแสดงผล',
+  },
+  {
+    title: 'เครื่องมือสังเกตการณ์เฉพาะกิจ',
+    description: 'พื้นที่สำหรับนาฬิกา Flash-to-Bang และตัวช่วยอ่านค่ามิล ใช้เป็นโหมดฝึกจนกว่าจะเชื่อมแหล่งข้อมูลอ้างอิงที่ตรวจสอบแล้ว.',
+    state: 'โหมดฝึก / รอข้อมูลอ้างอิง',
+  },
+  {
+    title: 'การปรับแก้และ Bracketing',
+    description: 'บันทึกการสังเกตจุดตกกระทบและคำขอแก้ทางข้าง ระยะ และความสูง โดยยังไม่สร้างหรือส่งคำสั่งยิงจริง.',
+    state: 'พร้อมแสดงผล',
+  },
+  {
+    title: 'โหมดฉุกเฉิน FO',
+    description: 'หน้าจอรวบรวมข้อมูลภารกิจที่ FO เห็นได้ตามสิทธิ์ พร้อมบันทึกหลักฐานสำหรับการทบทวนในโหมดฝึก.',
+    state: 'โหมดฝึก / รอข้อมูลอ้างอิง',
+  },
+];
 
 export function FoWorkspace({ mode = 'full' }: FoWorkspaceProps) {
   const { activateMission, clearTarget, eventLog, missionId, missionStatus, roleView, setActiveTarget, setOpenDocument } =
@@ -45,6 +69,7 @@ export function FoWorkspace({ mode = 'full' }: FoWorkspaceProps) {
         <li>กระบวนการปรับแก้เป้าหมาย</li>
         <li>การมองเห็นแผนที่แบบจำกัดตามกฎ OPSEC</li>
       </ul>
+      <CapabilityCatalog title="แกนการได้มาซึ่งเป้าหมาย" items={foCapabilities} />
 
       {isFullAccess ? (
         <div className="control-row">
