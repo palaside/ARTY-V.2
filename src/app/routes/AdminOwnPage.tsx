@@ -1,5 +1,6 @@
 import type { MockUserAccount } from '@/app/auth/auth-state';
 import type { AuthSession, UserRole } from '@/app/auth/auth-types';
+import { formatRoleLabel } from '@/shared/labels';
 
 type AdminOwnPageProps = {
   accounts: MockUserAccount[];
@@ -12,8 +13,8 @@ export function AdminOwnPage({ accounts, session, onAccountsChanged, onOpenWorks
   if (session.role !== 'ADMIN') {
     return (
       <section className="route-card admin-layout" aria-label="admin-own-page">
-        <span className="route-kicker">Admin / OWN</span>
-        <h2>Access Restricted</h2>
+        <span className="route-kicker">ผู้ดูแลระบบ / เจ้าของระบบ</span>
+        <h2>การเข้าถึงถูกจำกัด</h2>
         <p>หน้านี้อนุญาตเฉพาะเจ้าของระบบเท่านั้น</p>
       </section>
     );
@@ -41,23 +42,23 @@ export function AdminOwnPage({ accounts, session, onAccountsChanged, onOpenWorks
 
   return (
     <section className="route-card admin-layout" aria-label="admin-own-page">
-      <span className="route-kicker">Admin / OWN</span>
-      <h2>Access Control Surface</h2>
-      <p>เจ้าของระบบจัดการบัญชีผู้ใช้รายหมวด ตัดสัญญาณการเข้าใช้งาน และเปิด workspace เพื่อตรวจสอบสิทธิ์ได้จากจุดเดียว</p>
+      <span className="route-kicker">ผู้ดูแลระบบ / เจ้าของระบบ</span>
+      <h2>พื้นที่ควบคุมสิทธิ์การเข้าถึง</h2>
+      <p>เจ้าของระบบจัดการบัญชีผู้ใช้รายหมวด ตัดสัญญาณการเข้าใช้งาน และเปิดพื้นที่ทำงานเพื่อตรวจสอบสิทธิ์ได้จากจุดเดียว</p>
 
       <div className="workspace-readout-grid">
         <div className="status-tile">
-          <span className="route-kicker">Managed Accounts</span>
+          <span className="route-kicker">บัญชีที่ดูแล</span>
           <strong>{managedAccounts.length}</strong>
-          <p>บัญชีที่อยู่ใต้การควบคุมของ owner</p>
+          <p>บัญชีที่อยู่ใต้การควบคุมของเจ้าของระบบ</p>
         </div>
         <div className="status-tile">
-          <span className="route-kicker">Enabled</span>
+          <span className="route-kicker">เปิดใช้งาน</span>
           <strong>{enabledAccounts.length}</strong>
           <p>บัญชีที่ยังเข้าสู่ระบบได้</p>
         </div>
         <div className="status-tile">
-          <span className="route-kicker">Disabled</span>
+          <span className="route-kicker">ปิดใช้งาน</span>
           <strong>{disabledAccounts.length}</strong>
           <p>บัญชีที่ถูกตัดสัญญาณชั่วคราว</p>
         </div>
@@ -69,25 +70,25 @@ export function AdminOwnPage({ accounts, session, onAccountsChanged, onOpenWorks
             <div>
               <strong>{account.label}</strong>
               <p>
-                {account.username} — {account.role}
+                {account.username} — {formatRoleLabel(account.role)}
               </p>
             </div>
 
             <div className="account-actions">
               <span className={`pill ${account.enabled ? 'pill--success' : 'pill--danger'}`}>
-                {account.enabled ? 'Enabled' : 'Disabled'}
+                {account.enabled ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}
               </span>
 
               {account.role !== 'ADMIN' ? (
                 <>
                   <button type="button" className="ghost-button" onClick={() => toggleAccount(account.id)}>
-                    {account.enabled ? 'Cut Login' : 'Restore Login'}
+                    {account.enabled ? 'ตัดสิทธิ์เข้าใช้งาน' : 'คืนสิทธิ์เข้าใช้งาน'}
                   </button>
                   <button type="button" className="ghost-button" onClick={() => resetPassword(account.id)}>
-                    Reset Pass
+                    รีเซ็ตรหัสผ่าน
                   </button>
                   <button type="button" className="ghost-button" onClick={() => onOpenWorkspace(account.role)}>
-                    Open Workspace
+                    เปิดพื้นที่ทำงาน
                   </button>
                 </>
               ) : null}

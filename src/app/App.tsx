@@ -17,6 +17,19 @@ type PersistedAppState = {
 
 const STORAGE_KEY = 'arty-v2-app-state';
 
+const roleDisplayNames: Partial<Record<UserRole, string>> = {
+  ADMIN: 'ผู้ดูแลระบบ / เจ้าของระบบ',
+  FO: 'ผู้ตรวจการณ์หน้า (FO)',
+  FDC: 'ศูนย์ตัดสินใจ (FDC)',
+  SURVEILLANCE: 'แผนที่ / สำรวจ',
+  HOWITZER: 'ส่วนยิง',
+  WEAPONS: 'กระสุน',
+};
+
+function getRoleDisplayName(role: UserRole | null | undefined) {
+  return role ? roleDisplayNames[role] ?? role : 'พื้นที่ทำงาน';
+}
+
 function readPersistedState(): PersistedAppState | null {
   const raw = globalThis.localStorage?.getItem(STORAGE_KEY);
 
@@ -69,18 +82,18 @@ export function App() {
 
   const title = useMemo(() => {
     if (screen === 'ADMIN') {
-      return 'ARTY V.2 — Admin / OWN';
+      return 'ARTY V.2 — ผู้ดูแลระบบ / เจ้าของระบบ';
     }
 
     if (screen === 'USER') {
       if (session.role === 'ADMIN' && workspaceRole) {
-        return `ARTY V.2 — ${workspaceRole} Preview`;
+        return `ARTY V.2 — ตัวอย่าง ${getRoleDisplayName(workspaceRole)}`;
       }
 
-      return `ARTY V.2 — ${workspaceRole ?? session.role ?? 'Workspace'}`;
+      return `ARTY V.2 — ${getRoleDisplayName(workspaceRole ?? session.role)}`;
     }
 
-    return 'ARTY V.2 — Dashboard';
+    return 'ARTY V.2 — แดชบอร์ด';
   }, [screen, session.role, workspaceRole]);
 
   const handleAuthenticated = (nextSession: AuthSession) => {
@@ -124,24 +137,24 @@ export function App() {
 
           <div className="topbar__actions">
             <button type="button" className="ghost-button" onClick={() => setScreen('DASHBOARD')}>
-              Dashboard
+              แดชบอร์ด
             </button>
 
             {session.role === 'ADMIN' ? (
               <button type="button" className="ghost-button" onClick={() => setScreen('ADMIN')}>
-                Admin / OWN
+                ผู้ดูแลระบบ / เจ้าของระบบ
               </button>
             ) : null}
 
             {session.role && session.role !== 'ADMIN' ? (
               <button type="button" className="ghost-button" onClick={() => setScreen('USER')}>
-                Workspace
+                พื้นที่ทำงาน
               </button>
             ) : null}
 
             {session.role ? (
               <button type="button" className="primary-button" onClick={handleLogout}>
-                Logout
+                ออกจากระบบ
               </button>
             ) : null}
           </div>

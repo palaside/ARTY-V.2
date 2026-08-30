@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="th">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ARTY V.2 · SilentArc Dashboard Shell</title>
+    <title>ARTY V.2 · แดชบอร์ด SilentArc</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -11,32 +11,32 @@
   </head>
   <body>
     <main class="shell" data-shell="silentarc">
-      <header class="top-rail zone" aria-label="Top Command Rail">
+      <header class="top-rail zone" aria-label="แถบคำสั่งหลัก">
         <div class="rail-block identity-block">
           <div class="eyeline">ARTY V.2 / SILENTARC</div>
-          <div class="title-row workspace-pair" aria-label="Workspace boundary">
+          <div class="title-row workspace-pair" aria-label="ขอบเขตพื้นที่ทำงาน">
             <div class="workspace-claim workspace-claim-fo">
-              <span class="micro-label">FO WORKSPACE</span>
-              <strong>Primary observer surface</strong>
+              <span class="micro-label">พื้นที่ทำงาน FO</span>
+              <strong>พื้นที่ผู้ตรวจการณ์หลัก</strong>
             </div>
             <div class="workspace-divider" aria-hidden="true"></div>
             <div class="workspace-claim workspace-claim-fdc">
-              <span class="micro-label">FDC WORKSPACE</span>
-              <strong>Decision core surface</strong>
+              <span class="micro-label">พื้นที่ทำงาน FDC</span>
+              <strong>แกนตัดสินใจ</strong>
             </div>
           </div>
           <div class="identity-subline">
-            <span>ADMIN / OWN REVIEW</span>
-            <span>ROLE BOUNDARIES LOCKED / SHARED MAP REMAINS CENTRAL</span>
+            <span>ตรวจสอบผู้ดูแลระบบ / เจ้าของระบบ</span>
+            <span>ล็อกขอบเขตบทบาท / แผนที่ร่วมยังเป็นศูนย์กลาง</span>
           </div>
         </div>
 
         <div class="rail-block session-block">
-          <div class="micro-label">SESSION / ENVIRONMENT</div>
+          <div class="micro-label">เซสชัน / สภาพแวดล้อม</div>
           <div class="micro-grid">
-            <span>OWNER MODE</span>
-            <span>CONTROLLED BUILD</span>
-            <span id="mode-readout">FO WORKSPACE</span>
+            <span>โหมดเจ้าของระบบ</span>
+            <span>บิลด์ที่ควบคุม</span>
+            <span id="mode-readout">พื้นที่ทำงาน FO</span>
             <span>UTC+07</span>
             <span id="clock-readout">--:--:--</span>
           </div>
@@ -44,209 +44,219 @@
         </div>
 
         <div class="rail-block command-block">
-          <div class="micro-label">WORKSPACE VIEW</div>
+          <div class="micro-label">มุมมองพื้นที่ทำงาน</div>
           <div class="action-row">
-            <button type="button" class="command-button mode-button is-selected" data-mode="fo">FO Workspace</button>
-            <button type="button" class="command-button mode-button" data-mode="fdc">FDC Workspace</button>
-            <button type="button" class="command-button mode-button" data-mode="spatial">Surveillance</button>
-            <button type="button" class="command-button mode-button" data-mode="readiness">Howitzer</button>
+            <button type="button" class="command-button mode-button is-selected" data-mode="fo">พื้นที่ทำงาน FO</button>
+            <button type="button" class="command-button mode-button" data-mode="fdc">พื้นที่ทำงาน FDC</button>
+            <button type="button" class="command-button mode-button" data-mode="spatial">แผนที่ / สำรวจ</button>
+            <button type="button" class="command-button mode-button" data-mode="readiness">ส่วนยิง</button>
             <button type="button" class="command-button mode-button" data-mode="ammo">กระสุน</button>
           </div>
-          <div class="command-footnote">WORKSPACES ARE SEPARATE / SHARED SUPPORT PERSISTS</div>
+          <div class="command-footnote">พื้นที่ทำงานแยกกัน / การสนับสนุนร่วมยังคงอยู่</div>
         </div>
       </header>
 
       <section class="operations-stack zone" aria-labelledby="operations-stack-title">
         <div class="zone-header">
-          <p class="zone-kicker">Z3 / Primary Operations</p>
-          <h2 id="operations-stack-title">FO Workspace</h2>
+          <p class="zone-kicker">Z3 / การปฏิบัติหลัก</p>
+          <h2 id="operations-stack-title">พื้นที่ทำงาน FO</h2>
         </div>
         <div class="ops-overview-strip">
           <div class="overview-cell">
-            <span class="micro-label">ACTIVE DOMAIN SLOT A</span>
-            <strong id="slot-a-name">FO / PRIMARY ACTIVE</strong>
+            <span class="micro-label">ช่องโดเมนที่ใช้งาน / A</span>
+            <strong id="slot-a-name">FO / ทำงานหลัก</strong>
           </div>
           <div class="overview-cell">
-            <span class="micro-label">ACTIVE DOMAIN SLOT B</span>
-            <strong id="slot-b-name">FDC / RESTRICTED</strong>
+            <span class="micro-label">ช่องโดเมนที่ใช้งาน / B</span>
+            <strong id="slot-b-name">FDC / จำกัดการเข้าถึง</strong>
           </div>
           <div class="overview-cell">
-            <span class="micro-label">SHARED LAYER LOAD</span>
-            <strong id="shared-load">STABLE</strong>
+            <span class="micro-label">ภาระชั้นร่วม</span>
+            <strong id="shared-load">เสถียร</strong>
           </div>
         </div>
         <div class="ops-grid">
           <article class="ops-module ops-module-large ops-module-anchor" id="slot-a-card">
             <div class="module-topline">
-              <span class="state-chip state-live" id="slot-a-state">PRIMARY ACTIVE</span>
-              <span class="micro-label" id="slot-a-role">DOMAIN SLOT / A</span>
+              <span class="state-chip state-live" id="slot-a-state">ทำงานหลัก</span>
+              <span class="micro-label" id="slot-a-role">ช่องโดเมน / A</span>
             </div>
-            <h3 id="slot-a-title">Forward Observer workspace</h3>
-            <p id="slot-a-copy">Observation, target acquisition, correction flow, and target confirmation remain primary in the default overview.</p>
+            <h3 id="slot-a-title">พื้นที่ทำงานผู้ตรวจการณ์หน้า</h3>
+            <p id="slot-a-copy">การสังเกต การเข้าถึงเป้าหมาย การปรับแก้ และการยืนยันเป้าหมายยังเป็นแกนหลักในมุมมองเริ่มต้น</p>
             <div class="module-ruler" aria-hidden="true">
-              <span id="slot-a-ruler-1">ENTRY</span>
-              <span id="slot-a-ruler-2">WORKSPACE</span>
-              <span id="slot-a-ruler-3">HANDOFF</span>
+              <span id="slot-a-ruler-1">เข้า</span>
+              <span id="slot-a-ruler-2">พื้นที่ทำงาน</span>
+              <span id="slot-a-ruler-3">ส่งต่อ</span>
             </div>
             <div class="module-footer">
-              <span id="slot-a-reason">USER SELECTED DEFAULT PAIR</span>
-              <button type="button" class="inline-action">Inspect</button>
+              <span id="slot-a-reason">คู่เริ่มต้นที่ผู้ใช้เลือก</span>
+              <button type="button" class="inline-action">ตรวจดู</button>
             </div>
           </article>
 
           <article class="ops-module ops-module-tall" id="slot-b-card">
             <div class="module-topline">
-              <span class="state-chip state-locked" id="slot-b-state">LOCKED</span>
-              <span class="micro-label" id="slot-b-role">OPSEC / REDACTED</span>
+              <span class="state-chip state-locked" id="slot-b-state">ล็อก</span>
+              <span class="micro-label" id="slot-b-role">OPSEC / ปกปิด</span>
             </div>
-            <h3 id="slot-b-title">Restricted workspace</h3>
-            <p id="slot-b-copy">FDC internals are hidden in FO perspective. Shared map remains the only shared surface in this view.</p>
+            <h3 id="slot-b-title">พื้นที่ทำงานแบบจำกัด</h3>
+            <p id="slot-b-copy">รายละเอียดภายใน FDC ถูกซ่อนจากมุมมอง FO แผนที่ร่วมยังเป็นพื้นผิวร่วมเดียวในมุมมองนี้</p>
           </article>
 
           <article class="ops-module" id="slot-stage-card">
             <div class="module-topline">
-              <span class="state-chip state-locked" id="stage-state">LOCKED</span>
-              <span class="micro-label">DOMAIN SLOT / CANDIDATE</span>
+              <span class="state-chip state-locked" id="stage-state">ล็อก</span>
+              <span class="micro-label">ช่องโดเมน / ผู้มีสิทธิ์ถัดไป</span>
             </div>
-            <h3 id="stage-title">Other domains locked</h3>
-            <p id="stage-copy">Surveillance, Howitzer, and Weapons details stay redacted from the FO surface.</p>
+            <h3 id="stage-title">โดเมนอื่นถูกล็อก</h3>
+            <p id="stage-copy">รายละเอียดของแผนที่ / สำรวจ ส่วนยิง และกระสุนยังถูกปกปิดจากพื้นที่ FO</p>
           </article>
         </div>
       </section>
 
       <section class="identity-cluster zone" aria-labelledby="identity-cluster-title">
         <div class="zone-header">
-          <p class="zone-kicker">Z2 / Identity + Mode</p>
-          <h2 id="identity-cluster-title">Role and workspace legend</h2>
+          <p class="zone-kicker">Z2 / ตัวตนและโหมด</p>
+          <h2 id="identity-cluster-title">ตำนานบทบาทและพื้นที่ทำงาน</h2>
         </div>
         <div class="identity-core">
           <div class="identity-callout">
-            <span class="micro-label">ACTIVE ROLE</span>
-            <strong>ADMIN / OWN</strong>
+            <span class="micro-label">บทบาทปัจจุบัน</span>
+            <strong>ผู้ดูแลระบบ / เจ้าของระบบ</strong>
           </div>
           <div class="identity-divider" aria-hidden="true"></div>
           <div class="identity-callout">
-            <span class="micro-label">AUTH MODEL</span>
-            <strong>STANDALONE PLACEHOLDER</strong>
+            <span class="micro-label">รูปแบบยืนยันตัวตน</span>
+            <strong>ตัวแทนแบบเดี่ยว</strong>
           </div>
         </div>
         <div class="mode-rack">
-          <button type="button" class="mode-tile is-active">ADMIN / OWN</button>
-          <button type="button" class="mode-tile">DASHBOARD</button>
-          <button type="button" class="mode-tile">USER SPACE</button>
+          <button type="button" class="mode-tile is-active">ผู้ดูแลระบบ / เจ้าของระบบ</button>
+          <button type="button" class="mode-tile">แดชบอร์ด</button>
+          <button type="button" class="mode-tile">พื้นที่ผู้ใช้</button>
         </div>
-        <div class="identity-footer-note">ROLE LAYER STAYS SHARED / DOMAIN PLACEMENT IS LOCKED</div>
-        <div class="identity-footer-note">ACTIVE / STAGED / ON CALL = VIEW STATE ONLY</div>
+        <div class="identity-footer-note">ชั้นบทบาทยังคงใช้ร่วมกัน / ตำแหน่งโดเมนถูกล็อก</div>
+        <div class="identity-footer-note">ทำงานหลัก / จัดเตรียม / รอเรียกใช้งาน = สถานะมุมมองเท่านั้น</div>
         <div class="placement-list">
-          <div class="placement-row"><span>FO</span><strong id="placement-fo">PRIMARY ACTIVE</strong></div>
-          <div class="placement-row"><span>FDC</span><strong id="placement-fdc">LOCKED</strong></div>
-          <div class="placement-row"><span>SURVEILLANCE</span><strong id="placement-surv">LOCKED</strong></div>
-          <div class="placement-row"><span>HOWITZER</span><strong id="placement-how">LOCKED</strong></div>
-          <div class="placement-row"><span>กระสุน</span><strong id="placement-ammo">LOCKED</strong></div>
-          <div class="placement-row"><span>SHARED SUPPORT RAILS</span><strong>Z1 + Z5 + Z7 + Z8</strong></div>
-          <div class="placement-row"><span>SHARED TACTICAL MAP</span><strong>Z4 ONLY</strong></div>
+          <div class="placement-row"><span>FO</span><strong id="placement-fo">ทำงานหลัก</strong></div>
+          <div class="placement-row"><span>FDC</span><strong id="placement-fdc">ล็อก</strong></div>
+          <div class="placement-row"><span>แผนที่ / สำรวจ</span><strong id="placement-surv">ล็อก</strong></div>
+          <div class="placement-row"><span>ส่วนยิง</span><strong id="placement-how">ล็อก</strong></div>
+          <div class="placement-row"><span>กระสุน</span><strong id="placement-ammo">ล็อก</strong></div>
+          <div class="placement-row"><span>รางสนับสนุนร่วม</span><strong>Z1 + Z5 + Z7 + Z8</strong></div>
+          <div class="placement-row"><span>แผนที่ยุทธวิธีร่วม</span><strong>Z4 เท่านั้น</strong></div>
         </div>
       </section>
 
       <section class="situational-panel zone" aria-labelledby="situational-title" data-motion-zone="shared-surface">
         <div class="zone-header">
-          <p class="zone-kicker">Z4 / Shared Situational Panel</p>
-          <h2 id="situational-title">Shared Tactical Map</h2>
+          <p class="zone-kicker">Z4 / แผงสถานการณ์ร่วม</p>
+          <h2 id="situational-title">แผนที่ Tactical</h2>
         </div>
         <div class="panel-status-row">
-          <span id="situational-state" class="state-chip state-live">LIVE</span>
-          <span class="micro-label" id="situational-emphasis">OBSERVER / TARGET / IMPACT CONTEXT</span>
+          <span id="situational-state" class="state-chip state-live">แสดงผลจริง</span>
+          <span class="micro-label" id="situational-emphasis">บริบทผู้ตรวจการณ์ / เป้าหมาย / จุดตกกระทบ</span>
         </div>
         <div class="placeholder-grid">
-          <div class="coordinate-overlay" aria-hidden="true"></div>
-          <div class="situational-rulers" aria-hidden="true">
-            <span>NORTH / 000</span>
-            <span>SECTOR / SHARED-01</span>
-            <span>FRAME / GRID-LOCK</span>
-          </div>
-          <div class="situational-corners" aria-hidden="true">
-            <span>TL</span><span>TR</span><span>BL</span><span>BR</span>
-          </div>
-          <div class="placeholder-content">
-            <span class="placeholder-tag">SHARED TACTICAL MAP</span>
-            <strong>Common tactical view for cross-domain reference</strong>
-            <p>This surface is the shared tactical and spatial view. It is not the entirety of the shared layer, but one shared operational surface inside it.</p>
+          <div
+            class="situational-map-canvas"
+            id="situational-map-canvas"
+            role="application"
+            aria-label="พื้นที่แผนที่ Tactical แบบโต้ตอบ"
+            tabindex="0"
+          >
+            <img
+              class="situational-terrain"
+              src="../../references/Tactical%20Map.png"
+              alt=""
+              aria-hidden="true"
+            />
+            <div class="situational-vignette" aria-hidden="true"></div>
+            <div class="situational-marker-layer" id="situational-marker-layer" aria-hidden="true"></div>
           </div>
           <div class="placeholder-footer">
-            <span>X: 17.440 / Y: 09.220</span>
-            <span>VIEW: TACTICAL MAP</span>
-            <span>FEED: NONE</span>
+            <span class="situational-footer-legend">ทิศเหนือ / 000</span>
+            <span class="situational-footer-legend">เซกเตอร์ / ร่วม-01</span>
+            <span class="situational-footer-legend">เฟรม / ล็อกกริด</span>
+            <span id="situational-coordinate" class="sr-only">X: -- / Y: --</span>
+            <span id="situational-map-mode" class="sr-only">มุมมอง: แผนที่ Tactical / โต้ตอบ</span>
+            <span id="situational-zoom" class="sr-only">ซูม: 100%</span>
+          </div>
+          <div class="placeholder-content">
+            <span class="placeholder-tag">แผนที่ Tactical</span>
+            <strong>มุมมองยุทธวิธีร่วมสำหรับใช้อ้างอิงข้ามโดเมน</strong>
+            <p>คลิกเพื่อปักหมุด ลากเพื่อเลื่อน และหมุนล้อเมาส์เพื่อซูมภาพแผนที่นี้ได้จริงโดยยังอยู่ใน shell เดิม</p>
           </div>
         </div>
       </section>
 
       <aside class="status-stack zone" aria-labelledby="status-stack-title">
         <div class="zone-header">
-          <p class="zone-kicker">Z5 / Live Status</p>
-          <h2 id="status-stack-title">Shared safety and status</h2>
+          <p class="zone-kicker">Z5 / สถานะสด</p>
+          <h2 id="status-stack-title">ความปลอดภัยและสถานะร่วม</h2>
         </div>
         <div class="status-summary-band">
           <div>
-            <span class="micro-label" id="status-band-label-1">GLOBAL STATUS</span>
+            <span class="micro-label" id="status-band-label-1">สถานะรวม</span>
             <strong id="status-band-value-1">03</strong>
           </div>
           <div>
-            <span class="micro-label" id="status-band-label-2">SAFETY</span>
+            <span class="micro-label" id="status-band-label-2">ความปลอดภัย</span>
             <strong id="status-band-value-2">01</strong>
           </div>
         </div>
         <ul class="status-list">
-          <li class="status-item is-live"><span>Core channel</span><strong>ONLINE</strong><em>SEV-01</em></li>
-          <li class="status-item is-warning"><span>Queue pressure</span><strong>MODERATE</strong><em>SEV-02</em></li>
-          <li class="status-item is-critical"><span>Override path</span><strong>LOCK REVIEW</strong><em>SEV-03</em></li>
-          <li class="status-item is-stale"><span>Remote feed</span><strong>NO INPUT</strong><em>SEV-00</em></li>
+          <li class="status-item is-live"><span>ช่องทางหลัก</span><strong>ออนไลน์</strong><em>SEV-01</em></li>
+          <li class="status-item is-warning"><span>แรงกดคิว</span><strong>ปานกลาง</strong><em>SEV-02</em></li>
+          <li class="status-item is-critical"><span>เส้นทางทับสิทธิ์</span><strong>ตรวจทานการล็อก</strong><em>SEV-03</em></li>
+          <li class="status-item is-stale"><span>ฟีดระยะไกล</span><strong>ไม่มีอินพุต</strong><em>SEV-00</em></li>
         </ul>
       </aside>
 
       <section class="workflow-panel zone" aria-labelledby="workflow-panel-title">
         <div class="zone-header">
-          <p class="zone-kicker">Z6 / Workflow Snapshot</p>
-          <h2 id="workflow-panel-title">FDC Workspace</h2>
+          <p class="zone-kicker">Z6 / ภาพรวมกระบวนงาน</p>
+          <h2 id="workflow-panel-title">พื้นที่ทำงาน FDC</h2>
         </div>
         <ol class="workflow-list">
-          <li><span>01</span><div><strong id="wf-title-1">FDC intake ready</strong><p id="wf-copy-1">Decision core receives confirmed target context without leaving the shared overview.</p></div></li>
-          <li><span>02</span><div><strong id="wf-title-2">Shared workflow continuity</strong><p id="wf-copy-2">Target and fire workflow remain visible in the same shell without page break.</p></div></li>
-          <li><span>03</span><div><strong id="wf-title-3">Staged domain waiting</strong><p id="wf-copy-3">Surveillance remains next in line if spatial validation becomes the bottleneck.</p></div></li>
+          <li><span>01</span><div><strong id="wf-title-1">พร้อมรับอินพุต FDC</strong><p id="wf-copy-1">แกนตัดสินใจรับบริบทเป้าหมายที่ยืนยันแล้วโดยไม่ออกจากภาพรวมร่วม</p></div></li>
+          <li><span>02</span><div><strong id="wf-title-2">ความต่อเนื่องของกระบวนงานร่วม</strong><p id="wf-copy-2">กระบวนงานเป้าหมายและการยิงยังมองเห็นในเชลล์เดียวกันโดยไม่ตัดหน้า</p></div></li>
+          <li><span>03</span><div><strong id="wf-title-3">โดเมนที่จัดเตรียมรอ</strong><p id="wf-copy-3">แผนที่ / สำรวจยังอยู่ลำดับถัดไปหากการตรวจสอบเชิงพื้นที่กลายเป็นคอขวด</p></div></li>
         </ol>
       </section>
 
       <section class="telemetry-panel zone" aria-labelledby="telemetry-panel-title">
         <div class="zone-header">
-          <p class="zone-kicker">Z7 / Telemetry Placeholder</p>
-          <h2 id="telemetry-panel-title">Shared Technical Readouts</h2>
+          <p class="zone-kicker">Z7 / ตัวแทนเทเลเมทรี</p>
+          <h2 id="telemetry-panel-title">ค่าร่วมเชิงเทคนิค</h2>
         </div>
         <div class="telemetry-frame">
           <div class="telemetry-axis" aria-hidden="true"></div>
           <div class="telemetry-copy">
-            <span class="state-chip state-stale" id="telemetry-state">SUPPORT</span>
-            <p id="telemetry-copy">Shared readouts reprioritize by workspace mode.</p>
+            <span class="state-chip state-stale" id="telemetry-state">สนับสนุน</span>
+            <p id="telemetry-copy">ค่าร่วมจะถูกจัดลำดับใหม่ตามโหมดพื้นที่ทำงาน</p>
           </div>
           <div class="metric-row">
-            <div><span class="micro-label" id="metric-label-1">RANGE</span><strong id="metric-value-1">-- m</strong></div>
-            <div><span class="micro-label" id="metric-label-2">DIR</span><strong id="metric-value-2">-- mil</strong></div>
-            <div><span class="micro-label" id="metric-label-3">TOF</span><strong id="metric-value-3">-- s</strong></div>
+            <div><span class="micro-label" id="metric-label-1">ระยะ</span><strong id="metric-value-1">-- m</strong></div>
+            <div><span class="micro-label" id="metric-label-2">ทิศทาง</span><strong id="metric-value-2">-- mil</strong></div>
+            <div><span class="micro-label" id="metric-label-3">เวลาเดินทาง</span><strong id="metric-value-3">-- s</strong></div>
           </div>
         </div>
       </section>
 
       <aside class="event-rail zone" aria-labelledby="event-rail-title">
         <div class="zone-header">
-          <p class="zone-kicker">Z8 / Event Rail</p>
-          <h2 id="event-rail-title">Shared Event / Alert / Output Rail</h2>
+          <p class="zone-kicker">Z8 / รางเหตุการณ์</p>
+          <h2 id="event-rail-title">รางเหตุการณ์ / แจ้งเตือน / ผลลัพธ์ร่วม</h2>
         </div>
         <div class="event-rail-header-band">
-          <span class="micro-label" id="event-header-left">EVENT / ALERT / OUTPUT</span>
-          <span class="micro-label" id="event-header-right">SHARED SUPPORT RAIL</span>
+          <span class="micro-label" id="event-header-left">เหตุการณ์ / แจ้งเตือน / ผลลัพธ์</span>
+          <span class="micro-label" id="event-header-right">รางสนับสนุนร่วม</span>
         </div>
         <div class="event-log" id="event-log">
-          <div class="event-row"><span>00:00:00</span><p>Shell initialized in presentation-only mode.</p><em>BOOT</em></div>
-          <div class="event-row"><span>00:00:00</span><p>No live engines attached. Placeholder integrity preserved.</p><em>SAFE</em></div>
-          <div class="event-row"><span>00:00:00</span><p>Owner can cycle surface state from the command rail.</p><em>CONTROL</em></div>
+          <div class="event-row"><span>00:00:00</span><p>เชลล์เริ่มต้นในโหมดแสดงผลเท่านั้น</p><em>เริ่ม</em></div>
+          <div class="event-row"><span>00:00:00</span><p>ไม่มีเอนจินจริงเชื่อมต่ออยู่ / รักษาความสมบูรณ์ของตัวแทนไว้</p><em>ปลอดภัย</em></div>
+          <div class="event-row"><span>00:00:00</span><p>เจ้าของระบบสามารถสลับสถานะพื้นผิวจากแถบคำสั่งได้</p><em>ควบคุม</em></div>
         </div>
       </aside>
     </main>

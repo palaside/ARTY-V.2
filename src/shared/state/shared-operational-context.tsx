@@ -6,6 +6,7 @@ import { createMissionStore } from './mission-store';
 import { createSafetyStore } from './safety-store';
 import { createTargetStore } from './target-store';
 import type { UserRole } from '@/app/auth/auth-types';
+import { formatDocumentLabel } from '@/shared/labels';
 
 export type DocumentKey = 'FORM_344_201' | 'FORM_344_202' | 'DEPUTY_REPORT' | 'COUNTER_BATTERY';
 
@@ -94,7 +95,7 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
           {
             id: `EVT-${Date.now()}-${entries.length + 1}`,
             source,
-            message: `Mission ${nextMissionId} activated`,
+            message: `ภารกิจ ${nextMissionId} เปิดใช้งานแล้ว`,
             severity: 'INFO',
             createdAt: new Date().toLocaleTimeString('th-TH'),
           },
@@ -108,7 +109,7 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
           {
             id: `EVT-${Date.now()}-${entries.length + 1}`,
             source,
-            message: 'Fire mission marked complete',
+            message: 'ภารกิจยิงเสร็จสิ้นแล้ว',
             severity: 'INFO',
             createdAt: new Date().toLocaleTimeString('th-TH'),
           },
@@ -122,7 +123,7 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
           {
             id: `EVT-${Date.now()}-${entries.length + 1}`,
             source,
-            message: `Target ${target.id} confirmed into shared target data`,
+            message: `ยืนยันเป้าหมาย ${target.id} เข้าสู่ข้อมูลเป้าหมายร่วม`,
             severity: 'INFO',
             createdAt: new Date().toLocaleTimeString('th-TH'),
           },
@@ -136,7 +137,7 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
           {
             id: `EVT-${Date.now()}-${entries.length + 1}`,
             source,
-            message: 'Shared target cleared',
+            message: 'ล้างเป้าหมายร่วมแล้ว',
             severity: 'WARNING',
             createdAt: new Date().toLocaleTimeString('th-TH'),
           },
@@ -150,7 +151,7 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
           {
             id: `EVT-${Date.now()}-${entries.length + 1}`,
             source: 'FDC',
-            message: locked ? 'FIRE LOCKED by safety gate' : 'FIRE lock released for review',
+            message: locked ? 'ล็อกการยิงโดยประตูความปลอดภัย' : 'ปลดล็อกการยิงเพื่อทบทวน',
             severity: locked ? 'CRITICAL' : 'INFO',
             createdAt: new Date().toLocaleTimeString('th-TH'),
           },
@@ -163,7 +164,7 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
           {
             id: `EVT-${Date.now()}-${entries.length + 1}`,
             source: 'FDC',
-            message: locked ? 'Minimum QE interlock active' : 'Minimum QE interlock clear',
+            message: locked ? 'อินเตอร์ล็อก Min QE ทำงานอยู่' : 'อินเตอร์ล็อก Min QE ปลดแล้ว',
             severity: locked ? 'WARNING' : 'INFO',
             createdAt: new Date().toLocaleTimeString('th-TH'),
           },
@@ -188,7 +189,7 @@ export function SharedOperationalProvider({ children }: { children: ReactNode })
           {
             id: `EVT-${Date.now()}-${entries.length + 1}`,
             source,
-            message: `${document} queued for preview/export`,
+            message: `เอกสาร ${formatDocumentLabel(document)} เข้าคิวสำหรับพรีวิว/ส่งออก`,
             severity: 'INFO',
             createdAt: new Date().toLocaleTimeString('th-TH'),
           },

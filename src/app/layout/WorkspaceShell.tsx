@@ -9,19 +9,32 @@ import { HowitzerWorkspace } from '@/domains/howitzer/HowitzerWorkspace';
 import { Form344201Document } from '@/domains/surveillance/documents/Form344201Document';
 import { Form344202Document } from '@/domains/surveillance/documents/Form344202Document';
 import { useSharedOperationalState, type DocumentKey } from '@/shared/state/shared-operational-context';
+import {
+  formatDocumentLabel,
+  formatFireMissionStatus,
+  formatRoleLabel,
+  formatQueueStatus,
+  formatSeverityLabel,
+} from '@/shared/labels';
 import sharedMapGridReference from '../../../references/shared-map-grid.png';
 
 const workspaceStorageKey = (role: UserRole) => `arty-v2-workspace-${role}`;
 
 const panelContent: Record<PanelKey, { title: string; detail?: string }> = {
-  FO: { title: 'FO Workspace' },
-  FDC: { title: 'FDC Workspace' },
-  SURVEILLANCE: { title: 'Surveillance Workspace', detail: 'Survey / Map / ทบ.344 document workflow' },
-  HOWITZER: { title: 'Howitzer Workspace' },
-  WEAPONS: { title: 'Weapons Workspace', detail: 'Ammo / Fuze / Safety workflow' },
-  MAP: { title: 'Shared Map View', detail: 'Shared engine with role-segmented visibility' },
-  DOCUMENT: { title: 'Document Mode', detail: 'Preview / print artifacts for real forms' },
+  FO: { title: 'พื้นที่ทำงาน FO' },
+  FDC: { title: 'พื้นที่ทำงาน FDC' },
+  SURVEILLANCE: { title: 'พื้นที่ทำงานแผนที่ / สำรวจ', detail: 'งานสำรวจ แผนที่ และเอกสาร ทบ.344' },
+  HOWITZER: { title: 'พื้นที่ทำงานส่วนยิง' },
+  WEAPONS: { title: 'พื้นที่ทำงานกระสุน', detail: 'กระสุน ชนวน และความปลอดภัย' },
+  MAP: { title: 'มุมมองแผนที่ร่วม', detail: 'แกนร่วมเดียวแต่แสดงผลตามบทบาท' },
+  DOCUMENT: { title: 'โหมดเอกสาร', detail: 'พรีวิวและพิมพ์เอกสารจริง' },
 };
+
+type EventSource = UserRole | 'SYSTEM';
+
+function formatEventSource(source: EventSource) {
+  return source === 'SYSTEM' ? 'ระบบ' : formatRoleLabel(source);
+}
 
 type WorkspaceShellProps = {
   role: UserRole;
@@ -79,96 +92,96 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
 
   const mapScopeLabel =
     role === 'FO'
-      ? 'FO / RESTRICTED'
+      ? 'ผู้ตรวจการณ์หน้า / จำกัดการมองเห็น'
       : role === 'FDC'
-        ? 'FDC / DECISION CORE'
+        ? 'ศูนย์ตัดสินใจ / มุมมองร่วม'
         : role === 'ADMIN'
-          ? 'ADMIN / FULL VIEW'
-          : 'ROLE / SEGMENTED VIEW';
+          ? 'ผู้ดูแลระบบ / มุมมองเต็ม'
+          : 'มุมมองตามบทบาท';
 
   const visibleLayers =
     role === 'FO'
-      ? ['Observer Point', 'Active Target']
+      ? ['จุดสังเกตการณ์', 'เป้าหมายที่ใช้งาน']
       : visibleMapLayers();
 
   const renderSharedMapPanel = () => (
     <div className="workspace-intro workspace-intro--map">
-      <header>Shared Tactical Map</header>
+      <header>แผนที่ยุทธวิธีร่วม</header>
       {role === 'FO' ? (
-        <p>FO เห็นเฉพาะข้อมูลที่จำเป็นต่อการสังเกตการณ์และ target acquisition ไม่เห็นตำแหน่งหมวดอื่นตามกฎ OPSEC</p>
+        <p>ผู้ตรวจการณ์หน้าเห็นเฉพาะข้อมูลที่จำเป็นต่อการสังเกตการณ์และการระบุเป้าหมาย ไม่เห็นตำแหน่งหมวดอื่นตามกฎ OPSEC</p>
       ) : (
-        <p>Shared map engine เดียวกัน แต่เปิดเผยข้อมูลตามสิทธิ์ role และ cross-domain workflow</p>
+        <p>แกนแผนที่ร่วมตัวเดียว แต่เปิดเผยข้อมูลตามสิทธิ์บทบาทและการทำงานข้ามหมวด</p>
       )}
       <figure className="shared-map-frame" aria-label="shared-tactical-map-reference">
         <div className="shared-map-rail shared-map-rail--top" aria-hidden="true">
-          <span>NORTH / 000</span>
-          <span>SECTOR / SHARED-01</span>
-          <span>FRAME / GRID-LOCK</span>
+          <span>ทิศเหนือ / 000</span>
+          <span>เซกเตอร์ / ร่วม-01</span>
+          <span>เฟรม / ล็อกกริด</span>
         </div>
-        <img src={sharedMapGridReference} alt="Shared tactical map reference image" className="shared-map-image" />
+        <img src={sharedMapGridReference} alt="ภาพอ้างอิงแผนที่ยุทธวิธีร่วม" className="shared-map-image" />
         <div className="shared-map-overlay" aria-hidden="true">
           <span className="shared-map-crosshair shared-map-crosshair--vertical" />
           <span className="shared-map-crosshair shared-map-crosshair--horizontal" />
           <span className="shared-map-core" />
-          <span className="shared-map-label shared-map-label--left">SHARED TACTICAL MAP</span>
-          <span className="shared-map-label shared-map-label--bottom">Common tactical view for authorized roles only</span>
+          <span className="shared-map-label shared-map-label--left">แผนที่ยุทธวิธีร่วม</span>
+          <span className="shared-map-label shared-map-label--bottom">มุมมองยุทธวิธีร่วมสำหรับผู้มีสิทธิ์เท่านั้น</span>
         </div>
         <figcaption className="shared-map-caption">
-          <span className="route-kicker">Map Reference</span>
+          <span className="route-kicker">อ้างอิงแผนที่</span>
           <strong>{mapScopeLabel}</strong>
-          <span>{role === 'FO' ? 'Hidden operational detail / public-safe view only' : 'Shared tactical layer preview'}</span>
+          <span>{role === 'FO' ? 'ปกปิดรายละเอียดปฏิบัติการ / มุมมองปลอดภัยสำหรับสาธารณะ' : 'ตัวอย่างชั้นยุทธวิธีร่วม'}</span>
         </figcaption>
       </figure>
       <div className="workspace-readout-grid">
         <div className="status-tile">
-          <span className="route-kicker">Scope</span>
+          <span className="route-kicker">ขอบเขต</span>
           <strong>{mapScopeLabel}</strong>
-          <p>{role === 'FO' ? 'Restricted observer view' : 'Shared layer with segmented disclosure'}</p>
+          <p>{role === 'FO' ? 'มุมมองผู้สังเกตการณ์แบบจำกัด' : 'ชั้นร่วมที่เปิดเผยแบบแบ่งระดับ'}</p>
         </div>
         <div className="status-tile">
-          <span className="route-kicker">Latest Event</span>
-          <strong>{latestVisibleEvent?.severity ?? 'NONE'}</strong>
-          <p>{latestVisibleEvent?.message ?? 'No visible shared event yet'}</p>
+          <span className="route-kicker">เหตุการณ์ล่าสุด</span>
+          <strong>{latestVisibleEvent ? formatSeverityLabel(latestVisibleEvent.severity) : 'ไม่มี'}</strong>
+          <p>{latestVisibleEvent?.message ?? 'ยังไม่มีเหตุการณ์ร่วมที่มองเห็นได้'}</p>
         </div>
         <div className="status-tile">
-          <span className="route-kicker">Readout</span>
-          <strong>{role === 'FO' ? 'FO / MAP ONLY' : 'AUTHORIZED READOUT'}</strong>
-          <p>{role === 'FO' ? 'Observer + target context only' : 'Mission / target / safety context available'}</p>
+          <span className="route-kicker">สรุปสถานะ</span>
+          <strong>{role === 'FO' ? 'ผู้ตรวจการณ์หน้า / เฉพาะแผนที่' : 'สรุปสถานะที่อนุญาต'}</strong>
+          <p>{role === 'FO' ? 'เฉพาะบริบทผู้สังเกตการณ์และเป้าหมาย' : 'ดูบริบทภารกิจ เป้าหมาย และความปลอดภัยได้'}</p>
         </div>
       </div>
       <div className="shared-status-grid">
         <div className="status-tile">
-          <span className="route-kicker">Role View</span>
-          <strong>{roleView}</strong>
-          <p>{role === 'FO' ? 'Restricted observer view' : 'Shared engine / segmented visibility'}</p>
+          <span className="route-kicker">มุมมองตามบทบาท</span>
+          <strong>{formatRoleLabel(roleView)}</strong>
+          <p>{role === 'FO' ? 'มุมมองผู้สังเกตการณ์แบบจำกัด' : 'แกนร่วมเดียวแต่แสดงผลแบบแบ่งระดับ'}</p>
         </div>
         {role !== 'FO' ? (
           <>
             <div className="status-tile">
-              <span className="route-kicker">Mission</span>
-              <strong>{missionId ?? 'No Mission'}</strong>
-              <p>{fireMissionStatus}</p>
+              <span className="route-kicker">ภารกิจ</span>
+              <strong>{missionId ?? 'ไม่มีภารกิจ'}</strong>
+              <p>{formatFireMissionStatus(fireMissionStatus)}</p>
             </div>
             <div className="status-tile">
-              <span className="route-kicker">Target Layer</span>
-              <strong>{activeTarget?.id ?? 'No Target'}</strong>
-              <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'Waiting for shared target'}</p>
+              <span className="route-kicker">ชั้นเป้าหมาย</span>
+              <strong>{activeTarget?.id ?? 'ไม่มีเป้าหมาย'}</strong>
+              <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'รอเป้าหมายร่วม'}</p>
             </div>
             <div className="status-tile">
-              <span className="route-kicker">Safety Layer</span>
-              <strong>{fireLocked ? 'LOCKED' : 'READY'}</strong>
-              <p>Safety state visible to authorized roles</p>
+              <span className="route-kicker">ชั้นความปลอดภัย</span>
+              <strong>{fireLocked ? 'ล็อก' : 'พร้อม'}</strong>
+              <p>สถานะความปลอดภัยแสดงให้เฉพาะบทบาทที่อนุญาต</p>
             </div>
           </>
         ) : (
           <div className="status-tile">
-            <span className="route-kicker">Target Layer</span>
-            <strong>{activeTarget?.id ?? 'No Target'}</strong>
-            <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'Waiting for shared target'}</p>
+            <span className="route-kicker">ชั้นเป้าหมาย</span>
+            <strong>{activeTarget?.id ?? 'ไม่มีเป้าหมาย'}</strong>
+            <p>{activeTarget ? `${activeTarget.easting} / ${activeTarget.northing}` : 'รอเป้าหมายร่วม'}</p>
           </div>
         )}
         <div className="status-tile">
-          <span className="route-kicker">Zoom</span>
+          <span className="route-kicker">ซูม</span>
           <strong>{mapZoom.toFixed(1)}x</strong>
           <div className="control-row control-row--tight">
             <button type="button" className="ghost-button" onClick={() => setMapZoom(Math.max(0.5, mapZoom - 0.5))}>
@@ -197,9 +210,9 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     return (
       <div className="workspace-split" aria-label="fo-fdc-split-workspace">
         <div className="workspace-split__rail" aria-hidden="true">
-          <span>FO WORKSPACE / RESTRICTED</span>
-          <span>SHARED STATE / MAP</span>
-          <span>FDC WORKSPACE / DECISION CORE</span>
+          <span>พื้นที่ทำงานผู้ตรวจการณ์หน้า / จำกัด</span>
+          <span>สถานะร่วม / แผนที่</span>
+          <span>พื้นที่ทำงานศูนย์ตัดสินใจ / แกนตัดสินใจ</span>
         </div>
         <div className="workspace-split__panel workspace-split__panel--fo">
           <FoWorkspace mode={foMode} />
@@ -209,9 +222,9 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
           {fdcMode === 'restricted' ? (
             <div className="workspace-lock-card" aria-label="fdc-workspace-restricted">
               <span className="route-kicker">FDC</span>
-              <h3>Fire Direction Center Workspace</h3>
-              <p>FO perspective cannot inspect FDC operational details. Shared map stays visible, FDC internals stay hidden.</p>
-              <div className="workspace-lock-card__note">ROLE GATE / OPSEC PROTECTED</div>
+              <h3>พื้นที่ทำงานศูนย์อำนวยการยิง</h3>
+              <p>มุมมองของ FO ไม่สามารถตรวจรายละเอียดการทำงานภายใน FDC ได้ แผนที่ร่วมยังมองเห็นได้ แต่รายละเอียดภายใน FDC ถูกปกปิด</p>
+              <div className="workspace-lock-card__note">ประตูบทบาท / ป้องกันตาม OPSEC</div>
             </div>
           ) : (
             <FdcWorkspace mode="full" />
@@ -226,7 +239,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     if (openDocument === 'FORM_344_202') return <Form344202Document />;
     if (openDocument === 'COUNTER_BATTERY') return <CounterBatteryDocument />;
     if (openDocument === 'DEPUTY_REPORT') return <DeputyCommanderReportDocument />;
-    return <p className="document-note">ยังไม่มีเอกสารที่เลือกใน role นี้</p>;
+    return <p className="document-note">ยังไม่มีเอกสารที่เลือกในบทบาทนี้</p>;
   };
 
   const selectDocument = (document: DocumentKey) => {
@@ -235,10 +248,10 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
   };
 
   function visibleMapLayers() {
-    if (role === 'FO') return ['Observer Point', 'Active Target', 'Impact Context'];
-    if (role === 'FDC') return ['FO Observation', 'Active Target', 'Mission State', 'Safety State'];
-    if (role === 'ADMIN') return ['All Operational Domains', 'All Shared Layers', 'All System States'];
-    return ['Own Domain Layer', 'Active Target Context', 'Mission Context'];
+    if (role === 'FO') return ['จุดสังเกตการณ์', 'เป้าหมายที่ใช้งาน', 'บริบทจุดตกกระทบ'];
+    if (role === 'FDC') return ['การสังเกตของ FO', 'เป้าหมายที่ใช้งาน', 'สถานะภารกิจ', 'สถานะความปลอดภัย'];
+    if (role === 'ADMIN') return ['ทุกโดเมนปฏิบัติการ', 'ทุกชั้นร่วม', 'ทุกสถานะระบบ'];
+    return ['ชั้นโดเมนของตนเอง', 'บริบทเป้าหมายที่ใช้งาน', 'บริบทภารกิจ'];
   }
 
   const renderPanelBody = () => {
@@ -248,20 +261,20 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     if (activePanel === 'SURVEILLANCE') {
       return (
         <div className="workspace-intro">
-          <header>Surveillance</header>
-          <p>โดเมนนี้เป็นงานแผนที่/สำรวจ/ระบุพิกัด ไม่ใช่ surveillance-monitoring แบบเฝ้าระวัง</p>
+          <header>แผนที่ / สำรวจ</header>
+          <p>โดเมนนี้เป็นงานแผนที่/สำรวจ/ระบุพิกัด ไม่ใช่งานเฝ้าระวังหรือสอดส่อง</p>
           <ul className="domain-list">
-            <li>Grid / Coordinate</li>
-            <li>Azimuth / Direction</li>
-            <li>Distance / Elevation</li>
-            <li>Traverse / Intersection / Validation</li>
+            <li>กริด / พิกัด</li>
+            <li>มุมทิศ / ทิศทาง</li>
+            <li>ระยะ / ความสูง</li>
+            <li>ทบ.344 / จุดตัด / ตรวจสอบความถูกต้อง</li>
           </ul>
           <div className="control-row">
             <button type="button" className="ghost-button" onClick={() => selectDocument('FORM_344_201')}>
-              Open ทบ.344-201
+              เปิด ทบ.344-201
             </button>
             <button type="button" className="ghost-button" onClick={() => selectDocument('FORM_344_202')}>
-              Open ทบ.344-202
+              เปิด ทบ.344-202
             </button>
           </div>
         </div>
@@ -272,12 +285,12 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
       return (
         <div className="workspace-intro">
           <header>กระสุน</header>
-          <p>หมวดนี้เป็นเจ้าของข้อมูลชนิดกระสุน ชนวน compatibility และ safety state ต้นทาง</p>
+          <p>หมวดนี้เป็นเจ้าของข้อมูลชนิดกระสุน ชนวน ความเข้ากันได้ และสถานะความปลอดภัยต้นทาง</p>
           <ul className="domain-list">
-            <li>Ammunition selection</li>
-            <li>Fuze selection / time setting</li>
-            <li>Compatibility / safety checks</li>
-            <li>Misfire / interlock source state</li>
+            <li>การเลือกกระสุน</li>
+            <li>การเลือกชนวน / การตั้งเวลา</li>
+            <li>การตรวจสอบความเข้ากันได้ / ความปลอดภัย</li>
+            <li>สถานะแหล่งต้นทางของค้างยิง / อินเตอร์ล็อก</li>
           </ul>
         </div>
       );
@@ -290,24 +303,24 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     if (activePanel === 'DOCUMENT') {
       return (
         <div className="document-preview">
-          <div className="workspace-readout-grid workspace-readout-grid--document">
-            <div className="status-tile">
-              <span className="route-kicker">Mode</span>
-              <strong>Document View</strong>
-              <p>{role === 'FO' ? 'FO document access is limited in this shell' : 'Role-bound preview / print surface'}</p>
-            </div>
-            <div className="status-tile">
-              <span className="route-kicker">Queue</span>
-              <strong>{reportQueue.length}</strong>
-              <p>Queued outputs ready for document workflow</p>
-            </div>
-            <div className="status-tile">
-              <span className="route-kicker">Role</span>
-              <strong>{role}</strong>
-              <p>{role === 'FDC' ? 'Decision core' : role === 'HOWITZER' ? 'Section workflow' : 'Scoped workspace'}</p>
-            </div>
+        <div className="workspace-readout-grid workspace-readout-grid--document">
+          <div className="status-tile">
+              <span className="route-kicker">โหมด</span>
+              <strong>มุมมองเอกสาร</strong>
+              <p>{role === 'FO' ? 'การเข้าถึงเอกสารของ FO ถูกจำกัดในเชลล์นี้' : 'พื้นที่พรีวิว / พิมพ์ที่ผูกกับบทบาท'}</p>
           </div>
-          <div className="document-switcher">
+          <div className="status-tile">
+              <span className="route-kicker">คิว</span>
+              <strong>{reportQueue.length}</strong>
+              <p>ผลลัพธ์ที่เข้าคิวพร้อมสำหรับกระบวนการเอกสาร</p>
+          </div>
+          <div className="status-tile">
+              <span className="route-kicker">บทบาท</span>
+              <strong>{role}</strong>
+              <p>{role === 'FDC' ? 'ศูนย์ตัดสินใจ' : role === 'HOWITZER' ? 'ขั้นตอนส่วนยิง' : 'พื้นที่ทำงานตามขอบเขต'}</p>
+          </div>
+        </div>
+        <div className="document-switcher">
             {role === 'SURVEILLANCE' ? (
               <>
                 <button type="button" className="ghost-button" onClick={() => selectDocument('FORM_344_201')}>
@@ -321,7 +334,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
             {role === 'HOWITZER' ? (
               <>
                 <button type="button" className="ghost-button" onClick={() => selectDocument('DEPUTY_REPORT')}>
-                  Report รอง ผบ.ร้อย
+                  รายงานรอง ผบ.ร้อย
                 </button>
                 <button type="button" className="ghost-button" onClick={() => selectDocument('COUNTER_BATTERY')}>
                   บขตป.
@@ -330,21 +343,21 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
             ) : null}
             {role === 'FDC' ? (
               <button type="button" className="ghost-button" onClick={() => selectDocument('DEPUTY_REPORT')}>
-                Linked Report Preview
+                พรีวิวรายงานที่เชื่อมโยง
               </button>
             ) : null}
           </div>
-          {role === 'FO' ? <p className="document-note">FO ไม่มีสิทธิ์ preview เอกสารข้ามหมวดใน shell นี้</p> : renderDocument()}
+          {role === 'FO' ? <p className="document-note">ผู้ตรวจการณ์หน้าไม่มีสิทธิ์พรีวิวเอกสารข้ามหมวดใน shell นี้</p> : renderDocument()}
           <div className="event-log-panel">
-            <span className="route-kicker">Report Queue</span>
+            <span className="route-kicker">คิวรายงาน</span>
             {reportQueue.length ? (
               reportQueue.slice(0, 3).map((item) => (
                 <p key={item.id}>
-                  {item.document} — {item.source} — {item.status}
+                  {formatDocumentLabel(item.document)} — {formatRoleLabel(item.source)} — {formatQueueStatus(item.status)}
                 </p>
               ))
             ) : (
-              <p>ยังไม่มีรายการ report queue</p>
+              <p>ยังไม่มีรายการในคิวรายงาน</p>
             )}
           </div>
         </div>
@@ -354,11 +367,11 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     return null;
   };
 
-  return (
-    <div className="workspace-layout" aria-label="workspace-shell">
+    return (
+      <div className="workspace-layout" aria-label="workspace-shell">
       <aside className="workspace-sidebar">
-        <p className="route-kicker">Role</p>
-        <h3>{role}</h3>
+        <p className="route-kicker">บทบาท</p>
+        <h3>{formatRoleLabel(role)}</h3>
         <nav className="workspace-nav" aria-label="workspace-navigation">
           {visiblePanels.map((panel) => (
             <button
@@ -376,17 +389,17 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
       <article className="workspace-stage">
         <div className="workspace-panel-surface">
           {renderPanelBody()}
-          <p className="workspace-panel__meta">Visible for role: {role}</p>
+          <p className="workspace-panel__meta">มองเห็นได้สำหรับบทบาท: {formatRoleLabel(role)}</p>
           <div className="event-log-panel event-log-panel--compact">
-            <span className="route-kicker">Shared Event Log</span>
+            <span className="route-kicker">บันทึกเหตุการณ์ร่วม</span>
             {visibleEvents.length ? (
               visibleEvents.slice(0, 3).map((entry) => (
                 <p key={entry.id}>
-                  {entry.createdAt} [{entry.severity}] {entry.source}: {entry.message}
+                  {entry.createdAt} [{formatSeverityLabel(entry.severity)}] {formatEventSource(entry.source)}: {entry.message}
                 </p>
               ))
             ) : (
-              <p>ยังไม่มี event ใน shared layer</p>
+              <p>ยังไม่มีเหตุการณ์ในชั้นร่วม</p>
             )}
           </div>
         </div>

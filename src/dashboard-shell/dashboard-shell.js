@@ -7,175 +7,197 @@ const stateClassMap = {
 };
 
 const stateLogCopy = {
-  live: "Shared situational panel set to LIVE.",
-  warning: "Shared situational panel moved to WARNING review state.",
-  critical: "Shared situational panel marked CRITICAL.",
-  stale: "Shared situational panel marked STANDBY / STALE.",
-  locked: "Shared situational panel locked for override review.",
+  live: "แผงสถานการณ์ร่วมอยู่ในสถานะแสดงผลจริง",
+  warning: "แผงสถานการณ์ร่วมเข้าสู่สถานะเตือน",
+  critical: "แผงสถานการณ์ร่วมอยู่ในสถานะวิกฤต",
+  stale: "แผงสถานการณ์ร่วมอยู่ในสถานะรอข้อมูล",
+  locked: "แผงสถานการณ์ร่วมถูกล็อกสำหรับการทบทวน",
 };
 
 const modeConfigs = {
   fo: {
-    modeReadout: "FO WORKSPACE",
-    slotAName: "FO / PRIMARY ACTIVE",
-    slotBName: "FDC / RESTRICTED",
-    sharedLoad: "TARGET FOCUS",
-    slotAState: ["PRIMARY ACTIVE", "state-live"],
-    slotARole: "FO / PRIMARY",
-    slotATitle: "Forward Observer workspace",
-    slotACopy: "Observation, target acquisition, correction flow, and target confirmation stay primary in the FO workspace.",
-    slotAReason: "FO WORKSPACE / PRIMARY",
-    slotARulers: ["OBSERVE", "TARGET", "HANDOFF"],
-    slotBState: ["LOCKED", "state-locked"],
-    slotBRole: "OPSEC / REDACTED",
-    slotBTitle: "Restricted workspace",
-    slotBCopy: "FDC internals are hidden in FO perspective. Shared map remains the only shared surface in this view.",
-    stageState: ["LOCKED", "state-locked"],
-    stageTitle: "Other domains locked",
-    stageCopy: "Surveillance, Howitzer, and Weapons details stay redacted from the FO surface.",
-    placements: { fo: "PRIMARY ACTIVE", fdc: "LOCKED", surv: "LOCKED", how: "LOCKED", ammo: "LOCKED" },
-    situational: "OBSERVER / TARGET / IMPACT CONTEXT",
-    status: ["FO FOCUS", "03", "SHARED", "01"],
+    modeReadout: "พื้นที่ทำงาน FO",
+    slotAName: "FO / ทำงานหลัก",
+    slotBName: "FDC / จำกัดการเข้าถึง",
+    sharedLoad: "เน้นเป้าหมาย",
+    slotAState: ["ทำงานหลัก", "state-live"],
+    slotARole: "FO / หลัก",
+    slotATitle: "พื้นที่ทำงานผู้ตรวจการณ์หน้า",
+    slotACopy: "การสังเกต การเข้าถึงเป้าหมาย การปรับแก้ และการยืนยันเป้าหมายยังเป็นแกนหลักในพื้นที่ทำงาน FO",
+    slotAReason: "FO / พื้นที่หลัก",
+    slotARulers: ["สังเกต", "เป้าหมาย", "ส่งต่อ"],
+    slotBState: ["ล็อก", "state-locked"],
+    slotBRole: "OPSEC / ปกปิด",
+    slotBTitle: "พื้นที่ทำงานแบบจำกัด",
+    slotBCopy: "รายละเอียดภายใน FDC ถูกซ่อนจากมุมมอง FO แผนที่ร่วมยังเป็นพื้นที่ร่วมเดียวในมุมมองนี้",
+    stageState: ["ล็อก", "state-locked"],
+    stageTitle: "โดเมนอื่นถูกล็อก",
+    stageCopy: "รายละเอียดของแผนที่ / สำรวจ ส่วนยิง และกระสุนยังถูกปกปิดจากพื้นที่ FO",
+    placements: { fo: "ทำงานหลัก", fdc: "ล็อก", surv: "ล็อก", how: "ล็อก", ammo: "ล็อก" },
+    situational: "บริบทผู้ตรวจการณ์ / เป้าหมาย / จุดตกกระทบ",
+    status: ["FO โฟกัส", "03", "ร่วม", "01"],
     workflow: [
-      ["FO workspace active", "Observation and target acquisition remain the primary surface in this mode."],
-      ["FDC is locked", "Decision core details stay hidden from FO perspective while the shared map remains visible."],
-      ["Other domains locked", "Surveillance, Howitzer, and Weapons remain redacted from the FO surface."],
+      ["พื้นที่ทำงาน FO ทำงานอยู่", "การสังเกตและการเข้าถึงเป้าหมายยังเป็นพื้นผิวหลักในโหมดนี้"],
+      ["FDC ถูกล็อก", "รายละเอียดแกนตัดสินใจถูกซ่อนจากมุมมอง FO แต่แผนที่ร่วมยังมองเห็นได้"],
+      ["โดเมนอื่นถูกล็อก", "รายละเอียดของแผนที่ / สำรวจ ส่วนยิง และกระสุนยังถูกปกปิดจากพื้นที่ FO"],
     ],
-    telemetryState: ["SUPPORT", "state-stale"],
-    telemetryCopy: "Readouts stay shared, but non-authorized domain detail remains redacted in FO mode.",
-    metrics: [["RANGE", "-- m"], ["DIR", "-- mil"], ["TOF", "-- s"]],
-    eventHeaders: ["FO WORKFLOW / DESC", "SHARED ROUTE / REDACTED"],
+    telemetryState: ["สนับสนุน", "state-stale"],
+    telemetryCopy: "ค่าร่วมยังคงใช้ร่วมกัน แต่รายละเอียดโดเมนที่ไม่ได้รับอนุญาตยังถูกปกปิดในโหมด FO",
+    metrics: [["ระยะ", "-- m"], ["ทิศทาง", "-- mil"], ["เวลาเดินทาง", "-- s"]],
+    eventHeaders: ["กระบวนงาน FO / รายละเอียด", "เส้นทางร่วม / ปกปิด"],
     classes: { a: "is-promoted", b: "is-blocking", status: "is-blocking", workflow: "is-blocking" },
   },
   fdc: {
-    modeReadout: "FDC WORKSPACE",
-    slotAName: "FDC / PRIMARY ACTIVE",
-    slotBName: "FO / SECONDARY ACTIVE",
-    sharedLoad: "DECISION CORE",
-    slotAState: ["PRIMARY ACTIVE", "state-live"],
-    slotARole: "FDC / PRIMARY",
-    slotATitle: "FDC workspace",
-    slotACopy: "Decision core receives confirmed target context and keeps fire workflow centered on the FDC workspace.",
-    slotAReason: "FDC WORKSPACE / PRIMARY",
-    slotARulers: ["DECIDE", "CHECK", "EXECUTE"],
-    slotBState: ["SECONDARY ACTIVE", "state-stale"],
-    slotBRole: "FO / SHARED READOUT",
-    slotBTitle: "Forward Observer workspace",
-    slotBCopy: "Observation and target acquisition stay visible beside the decision core so the handoff stays explicit.",
-    stageState: ["STAGED", "state-warning"],
-    stageTitle: "Surveillance staged",
-    stageCopy: "Spatial validation workspace remains ready to promote when target truth or coordinates become the bottleneck.",
-    placements: { fo: "SECONDARY ACTIVE", fdc: "PRIMARY ACTIVE", surv: "STAGED", how: "ON CALL", ammo: "ON CALL" },
-    situational: "MISSION / TARGET / SAFETY CONTEXT",
-    status: ["FDC FOCUS", "03", "SHARED", "02"],
+    modeReadout: "พื้นที่ทำงาน FDC",
+    slotAName: "FDC / ทำงานหลัก",
+    slotBName: "FO / รอง",
+    sharedLoad: "แกนตัดสินใจ",
+    slotAState: ["ทำงานหลัก", "state-live"],
+    slotARole: "FDC / หลัก",
+    slotATitle: "พื้นที่ทำงานศูนย์ตัดสินใจ",
+    slotACopy: "แกนตัดสินใจรับบริบทเป้าหมายที่ยืนยันแล้ว และคงกระบวนงานการยิงให้อยู่ศูนย์กลางในพื้นที่ทำงาน FDC",
+    slotAReason: "FDC / พื้นที่หลัก",
+    slotARulers: ["ตัดสินใจ", "ตรวจสอบ", "ลงมือ"],
+    slotBState: ["รอง", "state-stale"],
+    slotBRole: "FO / แสดงผลร่วม",
+    slotBTitle: "พื้นที่ทำงานผู้ตรวจการณ์หน้า",
+    slotBCopy: "การสังเกตและการเข้าถึงเป้าหมายยังมองเห็นได้ข้างแกนตัดสินใจ เพื่อให้การส่งต่อชัดเจน",
+    stageState: ["จัดเตรียม", "state-warning"],
+    stageTitle: "แผนที่ / สำรวจ พร้อม",
+    stageCopy: "พื้นที่ทำงานตรวจสอบเชิงพื้นที่พร้อมจะถูกยกระดับเมื่อความถูกต้องของเป้าหมายหรือพิกัดกลายเป็นคอขวด",
+    placements: { fo: "รอง", fdc: "ทำงานหลัก", surv: "จัดเตรียม", how: "รอเรียกใช้งาน", ammo: "รอเรียกใช้งาน" },
+    situational: "ภารกิจ / เป้าหมาย / ความปลอดภัย",
+    status: ["FDC โฟกัส", "03", "ร่วม", "02"],
     workflow: [
-      ["FDC workspace active", "Decision core stays centered while target intake and fire workflow remain visible."],
-      ["FO remains visible", "Observation context stays nearby so the handoff stays explicit."],
-      ["Validation still staged", "Surveillance remains next in line if coordinate truth becomes the bottleneck."],
+      ["พื้นที่ทำงาน FDC ทำงานอยู่", "แกนตัดสินใจยังอยู่กึ่งกลาง ในขณะที่อินพุตเป้าหมายและกระบวนงานการยิงยังมองเห็นได้"],
+      ["FO ยังคงมองเห็นได้", "บริบทการสังเกตยังอยู่ใกล้ ๆ เพื่อให้การส่งต่อชัดเจน"],
+      ["การตรวจสอบยังอยู่ในขั้นเตรียม", "แผนที่ / สำรวจยังอยู่ลำดับถัดไปหากความถูกต้องของพิกัดกลายเป็นคอขวด"],
     ],
-    telemetryState: ["SUPPORT", "state-stale"],
-    telemetryCopy: "Readouts shift toward mission state, target intake, and safety gating in FDC mode.",
-    metrics: [["MISSION", "READY"], ["TARGET", "--"], ["SAFETY", "LOCK"]],
-    eventHeaders: ["FDC WORKFLOW / DESC", "OVERRIDE GATE / PASSIVE"],
+    telemetryState: ["สนับสนุน", "state-stale"],
+    telemetryCopy: "ค่าร่วมจะขยับไปเน้นสถานะภารกิจ อินพุตเป้าหมาย และประตูความปลอดภัยในโหมด FDC",
+    metrics: [["ภารกิจ", "พร้อม"], ["เป้าหมาย", "--"], ["ความปลอดภัย", "ล็อก"]],
+    eventHeaders: ["กระบวนงาน FDC / รายละเอียด", "ประตูทับสิทธิ์ / เฉยไว้"],
     classes: { a: "is-promoted", b: "", status: "", workflow: "" },
   },
   spatial: {
-    modeReadout: "SPATIAL VALIDATION",
-    slotAName: "SURVEILLANCE / PRIMARY ACTIVE",
-    slotBName: "FO / SECONDARY ACTIVE",
-    sharedLoad: "VALIDATION HEAVY",
-    slotAState: ["PROMOTED", "state-warning"],
-    slotARole: "PROMOTED BY VALIDATION",
-    slotATitle: "Surveillance workspace",
-    slotACopy: "Spatial truth, traverse, intersection, calibration, and closure checks become primary until coordinate confidence is restored.",
-    slotAReason: "PROMOTED BY SPATIAL VALIDATION",
-    slotARulers: ["GRID", "GEOMETRY", "VALIDATE"],
-    slotBState: ["SECONDARY ACTIVE", "state-stale"],
-    slotBRole: "FO / TARGET CONTEXT",
-    slotBTitle: "Forward Observer workspace",
-    slotBCopy: "FO remains visible while spatial validation resolves target truth and coordinate integrity.",
-    stageState: ["STAGED", "state-stale"],
-    stageTitle: "FDC staged",
-    stageCopy: "Decision core waits behind validation until spatial confidence is high enough to continue.",
-    placements: { fo: "SECONDARY ACTIVE", fdc: "STAGED", surv: "PRIMARY ACTIVE", how: "ON CALL", ammo: "ON CALL" },
-    situational: "GRID / INTERSECTION / CLOSURE CONTEXT",
-    status: ["VALIDATION WARN", "02", "CLOSURE", "REVIEW"],
+    modeReadout: "การตรวจสอบเชิงพื้นที่",
+    slotAName: "แผนที่ / สำรวจ / ทำงานหลัก",
+    slotBName: "FO / รอง",
+    sharedLoad: "เน้นการตรวจสอบ",
+    slotAState: ["ยกระดับ", "state-warning"],
+    slotARole: "ยกระดับเพราะการตรวจสอบ",
+    slotATitle: "พื้นที่ทำงานแผนที่ / สำรวจ",
+    slotACopy: "ความถูกต้องเชิงพื้นที่ การเดินเส้น การตัดกัน การปรับเทียบ และการตรวจสอบจบวงรอบจะเป็นแกนหลักจนกว่าความมั่นใจของพิกัดจะกลับมา",
+    slotAReason: "ยกระดับเพราะการตรวจสอบเชิงพื้นที่",
+    slotARulers: ["กริด", "เรขาคณิต", "ตรวจสอบ"],
+    slotBState: ["รอง", "state-stale"],
+    slotBRole: "FO / บริบทเป้าหมาย",
+    slotBTitle: "พื้นที่ทำงานผู้ตรวจการณ์หน้า",
+    slotBCopy: "FO ยังมองเห็นได้ ในขณะที่การตรวจสอบเชิงพื้นที่กำลังคลี่คลายความถูกต้องของเป้าหมายและพิกัด",
+    stageState: ["จัดเตรียม", "state-stale"],
+    stageTitle: "FDC รอจัดเตรียม",
+    stageCopy: "แกนตัดสินใจรออยู่หลังการตรวจสอบจนกว่าความเชิงพื้นที่จะมั่นใจพอที่จะดำเนินต่อ",
+    placements: { fo: "รอง", fdc: "จัดเตรียม", surv: "ทำงานหลัก", how: "รอเรียกใช้งาน", ammo: "รอเรียกใช้งาน" },
+    situational: "กริด / จุดตัด / จบวงรอบ",
+    status: ["เตือนการตรวจสอบ", "02", "จบวงรอบ", "ทบทวน"],
     workflow: [
-      ["Spatial truth first", "Survey and positioning workspace owns the bottleneck until target coordinates are trustworthy."],
-      ["FO remains paired", "Observation context stays visible while grid and geometry are corrected."],
-      ["FDC waits on validation", "Decision core stays staged until spatial confidence is restored."],
+      ["ความถูกต้องเชิงพื้นที่มาก่อน", "พื้นที่ทำงานสำรวจและระบุตำแหน่งเป็นเจ้าของคอขวดจนกว่าพิกัดเป้าหมายจะเชื่อถือได้"],
+      ["FO ยังจับคู่ไว้", "บริบทการสังเกตยังมองเห็นได้ในขณะที่กริดและเรขาคณิตถูกแก้ไข"],
+      ["FDC รอการตรวจสอบ", "แกนตัดสินใจยังอยู่ในขั้นเตรียมจนกว่าความเชิงพื้นที่จะกลับมา"],
     ],
-    telemetryState: ["EMPHASIZED", "state-warning"],
-    telemetryCopy: "Shared readouts now prioritize azimuth, distance, elevation, and intersection-related values.",
-    metrics: [["AZ", "-- mil"], ["DIST", "-- m"], ["ELEV", "-- m"]],
-    eventHeaders: ["SPATIAL VALIDATION / DESC", "RECOMMENDED / REVIEW"],
+    telemetryState: ["เน้นย้ำ", "state-warning"],
+    telemetryCopy: "ค่าร่วมตอนนี้จะเน้นมุมทิศ ระยะ ระดับสูง และค่าที่เกี่ยวข้องกับจุดตัด",
+    metrics: [["มุมทิศ", "-- mil"], ["ระยะ", "-- m"], ["ระดับสูง", "-- m"]],
+    eventHeaders: ["การตรวจสอบเชิงพื้นที่ / รายละเอียด", "แนะนำ / ทบทวน"],
     classes: { a: "is-advisory", b: "", status: "", workflow: "is-advisory" },
   },
   readiness: {
-    modeReadout: "GUN READINESS",
-    slotAName: "FDC / PRIMARY ACTIVE",
-    slotBName: "HOWITZER / SECONDARY ACTIVE",
-    sharedLoad: "SECTION READY CHECK",
-    slotAState: ["PRIMARY ACTIVE", "state-live"],
-    slotARole: "DECISION CORE / PRIMARY",
-    slotATitle: "FDC workspace",
-    slotACopy: "Fire solution stays primary while section readiness and per-gun geometry become the blocking concern.",
-    slotAReason: "PRIMARY ACTIVE / FIRE SOLUTION",
-    slotARulers: ["DECIDE", "CHECK", "EXECUTE"],
-    slotBState: ["PROMOTED", "state-warning"],
-    slotBRole: "PROMOTED BY READINESS",
-    slotBTitle: "Howitzer workspace",
-    slotBCopy: "Gun layout, M.17, offsets, and section readiness are elevated because execution readiness is now the bottleneck.",
-    stageState: ["STAGED", "state-stale"],
-    stageTitle: "FO staged",
-    stageCopy: "Target acquisition stays available but no longer owns the active bottleneck in this mode.",
-    placements: { fo: "STAGED", fdc: "PRIMARY ACTIVE", surv: "ON CALL", how: "SECONDARY ACTIVE", ammo: "ON CALL" },
-    situational: "GUN POSITIONS / REFERENCE GUN / TARGET RELATION",
-    status: ["SECTION FLAGS", "04", "READINESS", "CHECK"],
+    modeReadout: "ความพร้อมของหมวด",
+    slotAName: "FDC / ทำงานหลัก",
+    slotBName: "ส่วนยิง / รอง",
+    sharedLoad: "ตรวจความพร้อมของหมวด",
+    slotAState: ["ทำงานหลัก", "state-live"],
+    slotARole: "FDC / หลัก",
+    slotATitle: "พื้นที่ทำงานศูนย์ตัดสินใจ",
+    slotACopy: "ผลการยิงยังเป็นแกนหลัก ในขณะที่ความพร้อมของหมวดและเรขาคณิตรายกระบอกกลายเป็นข้อจำกัดหลัก",
+    slotAReason: "ทำงานหลัก / ผลการยิง",
+    slotARulers: ["ตัดสินใจ", "ตรวจสอบ", "ลงมือ"],
+    slotBState: ["ยกระดับ", "state-warning"],
+    slotBRole: "ยกระดับเพราะความพร้อม",
+    slotBTitle: "พื้นที่ทำงานส่วนยิง",
+    slotBCopy: "การจัดวางปืน M.17 ออฟเซ็ต และความพร้อมของหมวดถูกยกระดับ เพราะความพร้อมต่อการปฏิบัติคือคอขวดตอนนี้",
+    stageState: ["จัดเตรียม", "state-stale"],
+    stageTitle: "FO รอเตรียม",
+    stageCopy: "การเข้าถึงเป้าหมายยังใช้งานได้ แต่ไม่ใช่คอขวดหลักของโหมดนี้อีกต่อไป",
+    placements: { fo: "จัดเตรียม", fdc: "ทำงานหลัก", surv: "รอเรียกใช้งาน", how: "รอง", ammo: "รอเรียกใช้งาน" },
+    situational: "ตำแหน่งปืน / ปืนอ้างอิง / ความสัมพันธ์เป้าหมาย",
+    status: ["ธงหน่วย", "04", "ความพร้อม", "ตรวจ"],
     workflow: [
-      ["Decision remains central", "FDC stays visible while execution readiness is resolved inside the section domain."],
-      ["Howitzer elevated", "Per-gun geometry and readiness are now the secondary active workspace."],
-      ["FO staged", "Observation context remains available without taking full workspace priority."],
+      ["การตัดสินใจยังเป็นศูนย์กลาง", "FDC ยังมองเห็นได้ในขณะที่ความพร้อมต่อการปฏิบัติถูกจัดการภายในโดเมนหมวด"],
+      ["ส่วนยิงถูกยกระดับ", "เรขาคณิตและความพร้อมรายกระบอกกลายเป็นพื้นที่ทำงานรองที่ใช้งานอยู่"],
+      ["FO จัดเตรียมไว้", "บริบทการสังเกตยังพร้อมใช้งานโดยไม่แย่งความสำคัญของพื้นที่ทำงานทั้งหมด"],
     ],
-    telemetryState: ["EMPHASIZED", "state-warning"],
-    telemetryCopy: "Shared readouts shift toward per-gun offsets, reference geometry, and readiness values.",
-    metrics: [["GUN REF", "G1"], ["OFFSET", "-- m"], ["READY", "CHECK"]],
-    eventHeaders: ["GUN READINESS / DESC", "SECTION GATE / REVIEW"],
+    telemetryState: ["เน้นย้ำ", "state-warning"],
+    telemetryCopy: "ค่าร่วมจะขยับไปเน้นออฟเซ็ตของแต่ละปืน เรขาคณิตอ้างอิง และค่าความพร้อม",
+    metrics: [["ปืนอ้างอิง", "G1"], ["ออฟเซ็ต", "-- m"], ["พร้อม", "ตรวจ"]],
+    eventHeaders: ["ความพร้อมส่วนยิง / รายละเอียด", "ประตูหมวด / ทบทวน"],
     classes: { a: "", b: "is-advisory", status: "", workflow: "is-advisory" },
   },
   ammo: {
-    modeReadout: "AMMO SAFETY",
-    slotAName: "FDC / PRIMARY ACTIVE",
-    slotBName: "กระสุน / SECONDARY ACTIVE",
-    sharedLoad: "SAFETY LOCK",
-    slotAState: ["BLOCKED", "state-critical"],
-    slotARole: "DECISION CORE / BLOCKED",
-    slotATitle: "FDC workspace",
-    slotACopy: "Decision core remains visible, but fire workflow is blocked until ammo and fuze safety conditions are cleared.",
-    slotAReason: "AUTO-ELEVATED BY SAFETY LOCK",
-    slotARulers: ["LOCK", "CHECK", "RELEASE"],
-    slotBState: ["PROMOTED", "state-critical"],
-    slotBRole: "PROMOTED BY AMMO SAFETY",
-    slotBTitle: "กระสุน workspace",
-    slotBCopy: "Ammo, fuze, compatibility, and misfire status are elevated because fire enablement is blocked at the safety layer.",
-    stageState: ["ON CALL", "state-stale"],
-    stageTitle: "Howitzer on call",
-    stageCopy: "Section readiness remains visible through shared status, but ammo safety owns the current bottleneck.",
-    placements: { fo: "ON CALL", fdc: "PRIMARY BLOCKED", surv: "ON CALL", how: "ON CALL", ammo: "SECONDARY ACTIVE" },
-    situational: "TARGET / MISSION CONTEXT FOR AMMO DECISION",
-    status: ["FIRE LOCKED", "01", "SAFETY", "CRITICAL"],
+    modeReadout: "ความปลอดภัยกระสุน",
+    slotAName: "FDC / ทำงานหลัก",
+    slotBName: "กระสุน / รอง",
+    sharedLoad: "ล็อกความปลอดภัย",
+    slotAState: ["ถูกบล็อก", "state-critical"],
+    slotARole: "FDC / ถูกบล็อก",
+    slotATitle: "พื้นที่ทำงานศูนย์ตัดสินใจ",
+    slotACopy: "แกนตัดสินใจยังมองเห็นได้ แต่กระบวนงานการยิงถูกบล็อกจนกว่าสถานะความปลอดภัยของกระสุนและชนวนจะถูกเคลียร์",
+    slotAReason: "ยกระดับอัตโนมัติโดยล็อกความปลอดภัย",
+    slotARulers: ["ล็อก", "ตรวจสอบ", "ปลด"],
+    slotBState: ["ยกระดับ", "state-critical"],
+    slotBRole: "ยกระดับเพราะความปลอดภัยกระสุน",
+    slotBTitle: "พื้นที่ทำงานกระสุน",
+    slotBCopy: "กระสุน ชนวน ความเข้ากันได้ และสถานะค้างยิงถูกยกระดับ เพราะการเปิดใช้งานการยิงถูกบล็อกที่ชั้นความปลอดภัย",
+    stageState: ["รอเรียกใช้งาน", "state-stale"],
+    stageTitle: "ส่วนยิงรอเรียกใช้งาน",
+    stageCopy: "ความพร้อมของหมวดยังคงมองเห็นได้ผ่านสถานะร่วม แต่ความปลอดภัยของกระสุนเป็นเจ้าของคอขวดในตอนนี้",
+    placements: { fo: "รอเรียกใช้งาน", fdc: "ถูกบล็อก", surv: "รอเรียกใช้งาน", how: "รอเรียกใช้งาน", ammo: "รอง" },
+    situational: "บริบทเป้าหมาย / ภารกิจสำหรับการตัดสินใจกระสุน",
+    status: ["ล็อกการยิง", "01", "ความปลอดภัย", "วิกฤต"],
     workflow: [
-      ["Safety lock active", "Fire workflow cannot continue until ammo and fuze conditions are made valid."],
-      ["กระสุน elevated", "Compatibility, fuze time, and safety state are now the secondary active workspace."],
-      ["FDC remains visible", "Decision core stays present so the user sees why fire execution is blocked."],
+      ["ล็อกความปลอดภัยทำงานอยู่", "กระบวนงานการยิงไม่สามารถดำเนินต่อได้จนกว่าสถานะกระสุนและชนวนจะถูกทำให้ถูกต้อง"],
+      ["กระสุนถูกยกระดับ", "ความเข้ากันได้ เวลาเซ็ตชนวน และสถานะความปลอดภัยกลายเป็นพื้นที่ทำงานรองที่ใช้งานอยู่"],
+      ["FDC ยังมองเห็นได้", "แกนตัดสินใจยังคงอยู่เพื่อให้ผู้ใช้เห็นว่าทำไมการยิงจึงถูกบล็อก"],
     ],
-    telemetryState: ["BLOCKING", "state-critical"],
-    telemetryCopy: "Shared readouts now prioritize fuze, safety, compatibility, and lock-related technical values.",
-    metrics: [["FUZE", "--"], ["SAFE", "LOCK"], ["MISFIRE", "CHECK"]],
-    eventHeaders: ["AMMO SAFETY / DESC", "AUTO-ELEVATED / BLOCKING"],
+    telemetryState: ["บล็อกอยู่", "state-critical"],
+    telemetryCopy: "ค่าร่วมตอนนี้จะเน้นชนวน ความปลอดภัย ความเข้ากันได้ และค่าทางเทคนิคที่เกี่ยวข้องกับการล็อก",
+    metrics: [["ชนวน", "--"], ["ปลอดภัย", "ล็อก"], ["ค้างยิง", "ตรวจ"]],
+    eventHeaders: ["ความปลอดภัยกระสุน / รายละเอียด", "ยกระดับอัตโนมัติ / บล็อกอยู่"],
     classes: { a: "is-blocking", b: "is-blocking", status: "is-blocking", workflow: "is-blocking" },
   },
 };
+
+const situationalMapState = {
+  zoom: 1,
+  minZoom: 0.8,
+  maxZoom: 2.4,
+  panX: 0,
+  panY: 0,
+  selectedX: null,
+  selectedY: null,
+  dragging: false,
+  pointerId: null,
+  startX: 0,
+  startY: 0,
+  startPanX: 0,
+  startPanY: 0,
+};
+
+let situationalMapNodes = null;
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
 
 function updateClock() {
   const node = document.getElementById("clock-readout");
@@ -199,7 +221,7 @@ function appendLog(message) {
   copy.textContent = message;
 
   const tag = document.createElement("em");
-  tag.textContent = "MODE";
+  tag.textContent = "โหมด";
 
   row.append(stamp, copy, tag);
   eventLog.prepend(row);
@@ -215,6 +237,268 @@ function setChip(node, text, stateClass) {
 function setText(id, text) {
   const node = document.getElementById(id);
   if (node) node.textContent = text;
+}
+
+function getSituationalMapNodes() {
+  if (situationalMapNodes) return situationalMapNodes;
+
+  situationalMapNodes = {
+    canvas: document.getElementById("situational-map-canvas"),
+    terrain: document.querySelector(".situational-terrain"),
+    markerLayer: document.getElementById("situational-marker-layer"),
+    coordinate: document.getElementById("situational-coordinate"),
+    mapMode: document.getElementById("situational-map-mode"),
+    zoom: document.getElementById("situational-zoom"),
+  };
+
+  return situationalMapNodes;
+}
+
+function renderSituationalPin() {
+  const { markerLayer } = getSituationalMapNodes();
+  if (!markerLayer) return;
+
+  markerLayer.replaceChildren();
+  if (situationalMapState.selectedX === null || situationalMapState.selectedY === null) return;
+
+  const pin = document.createElement("div");
+  pin.className = "situational-pin";
+  pin.style.left = `${situationalMapState.selectedX.toFixed(3)}%`;
+  pin.style.top = `${situationalMapState.selectedY.toFixed(3)}%`;
+
+  const label = document.createElement("span");
+  label.className = "situational-pin-label";
+  label.textContent = "จุดที่เลือก";
+
+  const dot = document.createElement("span");
+  dot.className = "situational-pin-dot";
+
+  pin.append(dot, label);
+  markerLayer.append(pin);
+}
+
+function syncSituationalReadouts() {
+  const { coordinate, mapMode, zoom } = getSituationalMapNodes();
+
+  if (coordinate) {
+    coordinate.textContent =
+      situationalMapState.selectedX === null || situationalMapState.selectedY === null
+        ? "X: -- / Y: --"
+        : `X: ${situationalMapState.selectedX.toFixed(3)} / Y: ${situationalMapState.selectedY.toFixed(3)}`;
+  }
+
+  if (mapMode) {
+    mapMode.textContent = situationalMapState.dragging
+      ? "มุมมอง: กำลังเลื่อนแผนที่"
+      : "มุมมอง: แผนที่ Tactical / โต้ตอบ";
+  }
+
+  if (zoom) {
+    zoom.textContent = `ซูม: ${Math.round(situationalMapState.zoom * 100)}%`;
+  }
+}
+
+function updateSituationalMapTransform() {
+  const { canvas, terrain, markerLayer } = getSituationalMapNodes();
+  if (!canvas || !terrain || !markerLayer) return;
+
+  const transform = `translate(${situationalMapState.panX}px, ${situationalMapState.panY}px) scale(${situationalMapState.zoom})`;
+  terrain.style.transform = transform;
+  markerLayer.style.transform = transform;
+  canvas.classList.toggle("is-dragging", situationalMapState.dragging);
+  syncSituationalReadouts();
+}
+
+function resetSituationalMap() {
+  situationalMapState.zoom = 1;
+  situationalMapState.panX = 0;
+  situationalMapState.panY = 0;
+  situationalMapState.selectedX = null;
+  situationalMapState.selectedY = null;
+  situationalMapState.dragging = false;
+  renderSituationalPin();
+  updateSituationalMapTransform();
+}
+
+function setSituationalPointFromClient(clientX, clientY, shouldLog = true) {
+  const { canvas } = getSituationalMapNodes();
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+
+  const localX = clientX - rect.left;
+  const localY = clientY - rect.top;
+  const mapX = (localX - situationalMapState.panX) / situationalMapState.zoom;
+  const mapY = (localY - situationalMapState.panY) / situationalMapState.zoom;
+
+  situationalMapState.selectedX = clamp((mapX / rect.width) * 100, 0, 100);
+  situationalMapState.selectedY = clamp((mapY / rect.height) * 100, 0, 100);
+
+  renderSituationalPin();
+  updateSituationalMapTransform();
+
+  if (shouldLog) {
+    appendLog(
+      `ปักหมุด Tactical Map ที่ X ${situationalMapState.selectedX.toFixed(3)} / Y ${situationalMapState.selectedY.toFixed(3)}`,
+    );
+  }
+}
+
+function zoomSituationalMap(factor, clientX, clientY) {
+  const { canvas } = getSituationalMapNodes();
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+
+  const nextZoom = clamp(situationalMapState.zoom * factor, situationalMapState.minZoom, situationalMapState.maxZoom);
+  if (nextZoom === situationalMapState.zoom) return;
+
+  const localX = clientX - rect.left;
+  const localY = clientY - rect.top;
+  const nextPanX = localX - ((localX - situationalMapState.panX) / situationalMapState.zoom) * nextZoom;
+  const nextPanY = localY - ((localY - situationalMapState.panY) / situationalMapState.zoom) * nextZoom;
+  const clampX = rect.width * 2;
+  const clampY = rect.height * 2;
+
+  situationalMapState.zoom = nextZoom;
+  situationalMapState.panX = clamp(nextPanX, -clampX, clampX);
+  situationalMapState.panY = clamp(nextPanY, -clampY, clampY);
+
+  updateSituationalMapTransform();
+}
+
+function nudgeSituationalMap(deltaX, deltaY) {
+  const { canvas } = getSituationalMapNodes();
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const clampX = rect.width * 2;
+  const clampY = rect.height * 2;
+
+  situationalMapState.panX = clamp(situationalMapState.panX + deltaX, -clampX, clampX);
+  situationalMapState.panY = clamp(situationalMapState.panY + deltaY, -clampY, clampY);
+  updateSituationalMapTransform();
+}
+
+function initSituationalMap() {
+  const { canvas } = getSituationalMapNodes();
+  if (!canvas) return;
+
+  renderSituationalPin();
+  updateSituationalMapTransform();
+
+  canvas.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+
+    canvas.setPointerCapture(event.pointerId);
+    situationalMapState.pointerId = event.pointerId;
+    situationalMapState.dragging = false;
+    situationalMapState.startX = event.clientX;
+    situationalMapState.startY = event.clientY;
+    situationalMapState.startPanX = situationalMapState.panX;
+    situationalMapState.startPanY = situationalMapState.panY;
+  });
+
+  canvas.addEventListener("pointermove", (event) => {
+    if (situationalMapState.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - situationalMapState.startX;
+    const deltaY = event.clientY - situationalMapState.startY;
+    if (!situationalMapState.dragging && Math.hypot(deltaX, deltaY) > 4) {
+      situationalMapState.dragging = true;
+    }
+
+    if (!situationalMapState.dragging) return;
+
+    const { canvas: canvasNode } = getSituationalMapNodes();
+    if (!canvasNode) return;
+
+    const rect = canvasNode.getBoundingClientRect();
+    const clampX = rect.width * 2;
+    const clampY = rect.height * 2;
+    situationalMapState.panX = clamp(situationalMapState.startPanX + deltaX, -clampX, clampX);
+    situationalMapState.panY = clamp(situationalMapState.startPanY + deltaY, -clampY, clampY);
+    updateSituationalMapTransform();
+  });
+
+  const finishPointer = (event) => {
+    if (situationalMapState.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - situationalMapState.startX;
+    const deltaY = event.clientY - situationalMapState.startY;
+
+    if (!situationalMapState.dragging && Math.hypot(deltaX, deltaY) < 6) {
+      setSituationalPointFromClient(event.clientX, event.clientY);
+    }
+
+    situationalMapState.pointerId = null;
+    situationalMapState.dragging = false;
+    updateSituationalMapTransform();
+  };
+
+  canvas.addEventListener("pointerup", finishPointer);
+  canvas.addEventListener("pointercancel", finishPointer);
+  canvas.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    const factor = event.deltaY < 0 ? 1.08 : 0.92;
+    zoomSituationalMap(factor, event.clientX, event.clientY);
+  }, { passive: false });
+
+  canvas.addEventListener("dblclick", (event) => {
+    event.preventDefault();
+    setSituationalPointFromClient(event.clientX, event.clientY);
+  });
+
+  canvas.addEventListener("keydown", (event) => {
+    const step = event.shiftKey ? 48 : 24;
+
+    switch (event.key) {
+      case "ArrowUp":
+        event.preventDefault();
+        nudgeSituationalMap(0, step);
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        nudgeSituationalMap(0, -step);
+        break;
+      case "ArrowLeft":
+        event.preventDefault();
+        nudgeSituationalMap(step, 0);
+        break;
+      case "ArrowRight":
+        event.preventDefault();
+        nudgeSituationalMap(-step, 0);
+        break;
+      case "+":
+      case "=":
+        event.preventDefault();
+        zoomSituationalMap(1.08, rectCenterX(canvas), rectCenterY(canvas));
+        break;
+      case "-":
+      case "_":
+        event.preventDefault();
+        zoomSituationalMap(0.92, rectCenterX(canvas), rectCenterY(canvas));
+        break;
+      case "0":
+        event.preventDefault();
+        resetSituationalMap();
+        break;
+      default:
+        break;
+    }
+  });
+
+  window.addEventListener("resize", updateSituationalMapTransform);
+}
+
+function rectCenterX(node) {
+  return node.getBoundingClientRect().left + node.getBoundingClientRect().width / 2;
+}
+
+function rectCenterY(node) {
+  return node.getBoundingClientRect().top + node.getBoundingClientRect().height / 2;
 }
 
 function setMode(modeKey) {
@@ -293,7 +577,7 @@ function setMode(modeKey) {
   if (config.classes.workflow && workflowPanel) workflowPanel.classList.add(config.classes.workflow);
   if (config.classes.status && statusPanel) statusPanel.classList.add(config.classes.status);
 
-  appendLog(`Mode changed to ${config.modeReadout}.`);
+  appendLog(`สลับไปยัง ${config.modeReadout}`);
 }
 
 function setState(node, nextState) {
@@ -301,10 +585,17 @@ function setState(node, nextState) {
 
   Object.values(stateClassMap).forEach((className) => node.classList.remove(className));
   node.classList.add(stateClassMap[nextState]);
-  node.textContent = nextState.toUpperCase();
+  const stateLabelMap = {
+    live: "แสดงผลจริง",
+    warning: "สถานะเตือน",
+    critical: "วิกฤต",
+    stale: "รอข้อมูล",
+    locked: "ล็อก",
+  };
+  node.textContent = stateLabelMap[nextState] || nextState.toUpperCase();
   node.dataset.state = nextState;
 
-  appendLog(stateLogCopy[nextState] || `State changed to ${nextState}.`);
+  appendLog(stateLogCopy[nextState] || `เปลี่ยนสถานะเป็น ${nextState}`);
 }
 
 function wireStateActions() {
@@ -333,6 +624,7 @@ function wireStateActions() {
 function boot() {
   updateClock();
   wireStateActions();
+  initSituationalMap();
   setMode("fo");
   window.setInterval(updateClock, 1000);
 }

@@ -10,10 +10,10 @@ export type MockUserAccount = {
 };
 
 export const defaultAccounts: MockUserAccount[] = [
-  { id: 'acct-admin-owner', username: 'owner', password: 'owner', role: 'ADMIN', enabled: true, label: 'Admin / OWN' },
+  { id: 'acct-admin-owner', username: 'owner', password: 'owner', role: 'ADMIN', enabled: true, label: 'ผู้ดูแลระบบ / เจ้าของระบบ' },
   { id: 'acct-fo', username: 'fo', password: 'fo', role: 'FO', enabled: true, label: 'ผู้ตรวจการณ์หน้า' },
-  { id: 'acct-fdc', username: 'fdc', password: 'fdc', role: 'FDC', enabled: true, label: 'FDC / Decision Core' },
-  { id: 'acct-surveillance', username: 'survey', password: 'survey', role: 'SURVEILLANCE', enabled: true, label: 'Surveillance' },
+  { id: 'acct-fdc', username: 'fdc', password: 'fdc', role: 'FDC', enabled: true, label: 'ศูนย์ตัดสินใจ (FDC)' },
+  { id: 'acct-surveillance', username: 'survey', password: 'survey', role: 'SURVEILLANCE', enabled: true, label: 'แผนที่ / สำรวจ' },
   { id: 'acct-howitzer', username: 'howitzer', password: 'howitzer', role: 'HOWITZER', enabled: true, label: 'ส่วนยิง' },
   { id: 'acct-weapons', username: 'weapons', password: 'weapons', role: 'WEAPONS', enabled: true, label: 'กระสุน' },
 ];
