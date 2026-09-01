@@ -34,8 +34,8 @@
   --space-5: 20px;
   --space-6: 24px;
 
-  --font-ui: "Mona Sans", "Helvetica Neue", sans-serif;
-  --font-mono: "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", monospace;
+  --font-ui: "Noto Sans Thai", sans-serif;
+  --font-mono: "Noto Sans Thai", sans-serif;
 
   --panel-noise:
     linear-gradient(120deg, rgba(255, 255, 255, 0.02), transparent 25%),
@@ -201,6 +201,80 @@ textarea {
 .workspace-view__features .capability-card p {
   font-size: 0.9rem;
   line-height: 1.55;
+}
+
+.shell-fo-form {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(0, 209, 116, 0.45);
+  background: rgba(0, 18, 12, 0.78);
+}
+
+.shell-fo-form__heading,
+.shell-fo-form__fields {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.shell-fo-form__heading h3 {
+  margin: 4px 0 0;
+}
+
+.shell-fo-form__fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.shell-fo-form__fields label {
+  display: grid;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shell-fo-form__fields input {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  color: var(--text-bright);
+  background: rgba(0, 0, 0, 0.42);
+  font: inherit;
+}
+
+.shell-fo-form__fields input:focus {
+  border-color: var(--accent-green);
+  outline: 2px solid rgba(0, 209, 116, 0.22);
+  outline-offset: 2px;
+}
+
+.shell-fo-form__result {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border-left: 3px solid var(--accent-orange);
+  background: rgba(255, 145, 0, 0.08);
+}
+
+.shell-fo-form__result span,
+.shell-fo-form__note {
+  color: var(--text-muted);
+}
+
+.shell-fo-form__result strong {
+  color: var(--text-bright);
+  font-size: 1.15rem;
+}
+
+.shell-fo-form__note {
+  margin: 0;
+  font-size: 0.78rem;
 }
 
 .top-rail {
@@ -763,7 +837,8 @@ p {
 }
 
 .situational-terrain,
-.situational-marker-layer {
+.situational-marker-layer,
+.google-map-layer {
   position: absolute;
   inset: 0;
   transform-origin: 0 0;
@@ -778,6 +853,24 @@ p {
   opacity: 0.98;
   filter: saturate(0.96) contrast(1.05) brightness(0.92);
   pointer-events: none;
+}
+
+.google-map-layer {
+  z-index: 1;
+  background: #08100d;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.situational-map-canvas.is-google-map .google-map-layer {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.situational-map-canvas.is-google-map .situational-terrain,
+.situational-map-canvas.is-google-map .situational-vignette {
+  opacity: 0;
 }
 
 .situational-marker-layer {
@@ -826,6 +919,50 @@ p {
     radial-gradient(circle at center, transparent 34%, rgba(0, 0, 0, 0.08) 72%, rgba(0, 0, 0, 0.22) 100%),
     linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.18));
   pointer-events: none;
+}
+
+.dashboard-view {
+  position: fixed;
+  inset: 8vh 8vw;
+  z-index: 20;
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid var(--border-signal);
+  border-radius: var(--radius-md);
+  background: rgba(8, 15, 13, 0.98);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+}
+
+.shell-login-form {
+  display: grid;
+  gap: 16px;
+  max-width: 520px;
+  margin-top: 24px;
+}
+
+.shell-login-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--accent-signal);
+}
+
+.shell-login-form input {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xs);
+  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.shell-login-form input:focus-visible {
+  outline: 2px solid var(--accent-signal);
+  outline-offset: 2px;
+}
+
+.shell-login-status {
+  min-height: 24px;
+  color: var(--text-muted);
 }
 
 .placeholder-content,
@@ -1148,6 +1285,10 @@ p {
   .workspace-view__features {
     grid-template-columns: 1fr;
   }
+
+  .shell-fo-form__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1159,3 +1300,10 @@ p {
     scroll-behavior: auto !important;
   }
 }
+/* ส่วนยิงใน static shell */
+.shell-howitzer-panel { display: grid; gap: 14px; margin: 18px 0; padding: 16px; border: 1px solid rgba(255, 157, 46, .28); background: rgba(13, 10, 7, .5); }
+.shell-howitzer-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.shell-howitzer-nav .command-button.is-active { border-color: #3be099; color: #07100d; background: #3be099; }
+.shell-howitzer-readout { padding: 14px; border-left: 3px solid #ffbf5a; background: rgba(255, 191, 90, .07); }
+.shell-howitzer-readout strong { color: #ffbf5a; }
+.shell-howitzer-readout p { margin: 6px 0 0; color: #a9b8b0; line-height: 1.5; }

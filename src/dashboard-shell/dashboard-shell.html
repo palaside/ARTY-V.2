@@ -6,7 +6,7 @@
     <title>ARTY V.2 · แดชบอร์ด SilentArc</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./dashboard-shell.css" />
   </head>
   <body>
@@ -176,6 +176,7 @@
             aria-label="พื้นที่แผนที่ Tactical แบบโต้ตอบ"
             tabindex="0"
           >
+            <div class="google-map-layer" id="google-map-layer" aria-hidden="true"></div>
             <img
               class="situational-terrain"
               src="../../references/Tactical%20Map.png"
@@ -189,6 +190,7 @@
             <span class="situational-footer-legend">ทิศเหนือ / 000</span>
             <span class="situational-footer-legend">เซกเตอร์ / ร่วม-01</span>
             <span class="situational-footer-legend">เฟรม / ล็อกกริด</span>
+            <span id="situational-map-provider" class="situational-footer-legend">แหล่งแผนที่ / สำรองในเครื่อง</span>
             <span id="situational-coordinate" class="sr-only">X: -- / Y: --</span>
             <span id="situational-map-mode" class="sr-only">มุมมอง: แผนที่ Tactical / โต้ตอบ</span>
             <span id="situational-zoom" class="sr-only">ซูม: 100%</span>
@@ -284,10 +286,74 @@
           <span class="state-chip state-live" id="workspace-view-state">พร้อมแสดงผล</span>
           <span class="micro-label" id="workspace-view-mode">พื้นที่ทำงาน</span>
         </div>
+        <section class="shell-fo-form" id="shell-fo-form" aria-labelledby="shell-fo-form-title" hidden>
+          <div class="shell-fo-form__heading">
+            <div>
+              <p class="zone-kicker">แบบฟอร์ม FO / โหมดฝึก</p>
+              <h3 id="shell-fo-form-title">ระบุเป้าหมาย</h3>
+            </div>
+            <span class="state-chip state-warning">ข้อมูลสมมติเท่านั้น</span>
+          </div>
+          <div class="shell-fo-form__fields">
+            <label>หมายเลขเป้าหมาย<input id="shell-fo-target-id" value="TGT-001" /></label>
+            <label>ลักษณะเป้าหมาย<input id="shell-fo-target-description" value="เป้าหมายฝึก" /></label>
+            <label>พิกัดตะวันออก<input id="shell-fo-easting" inputmode="numeric" value="482110" /></label>
+            <label>พิกัดเหนือ<input id="shell-fo-northing" inputmode="numeric" value="1562210" /></label>
+          </div>
+          <div class="shell-fo-form__result" aria-live="polite">
+            <span>พิกัดที่บันทึกในบัญชีฝึก</span>
+            <strong id="shell-fo-coordinate-readout">482110 / 1562210</strong>
+            <span id="shell-fo-elevation-readout">ความแตกต่างสูง (อัตโนมัติ): +25 ม.</span>
+          </div>
+          <p class="shell-fo-form__note">เมื่อกรอกพิกัดครบ ระบบจะแสดงค่าความแตกต่างสูงจากข้อมูลระดับอ้างอิงของชุดฝึกทันที ไม่มี GPS และไม่ใช่คำสั่งยิงจริง</p>
+        </section>
+        <section class="shell-howitzer-panel" id="shell-howitzer-panel" aria-labelledby="shell-howitzer-title" hidden>
+          <div class="shell-fo-form__heading">
+            <div>
+              <p class="zone-kicker">ส่วนยิง / โหมดฝึก</p>
+              <h3 id="shell-howitzer-title">พื้นที่ทำงานส่วนยิง</h3>
+            </div>
+            <span class="state-chip state-warning">ไม่เชื่อมอุปกรณ์จริง</span>
+          </div>
+          <nav class="shell-howitzer-nav" aria-label="โมดูลส่วนยิง">
+            <button type="button" class="command-button is-active" data-howitzer-module="overview">ภาพรวมส่วนยิง</button>
+            <button type="button" class="command-button" data-howitzer-module="m17">M.17 / วางแผนตำแหน่ง</button>
+            <button type="button" class="command-button" data-howitzer-module="guns">ตารางสถานะปืน</button>
+            <button type="button" class="command-button" data-howitzer-module="crater">วิเคราะห์หลุมระเบิด</button>
+            <button type="button" class="command-button" data-howitzer-module="report">บขตป. ตอนที่ ๑</button>
+          </nav>
+          <div class="shell-howitzer-readout" id="shell-howitzer-readout" aria-live="polite">
+            <strong>คลังความสามารถส่วนยิง</strong>
+            <p>เลือกโมดูลเพื่อดูขอบเขตงานฝึก M.17 สถานะปืน การตรวจมุม วิเคราะห์หลุมระเบิด และพรีวิว บขตป.</p>
+          </div>
+        </section>
         <div class="workspace-view__features" id="workspace-view-features"></div>
+      </section>
+
+      <section class="dashboard-view" id="dashboard-view" aria-labelledby="dashboard-view-title" hidden>
+        <header class="workspace-view__header">
+          <div>
+            <p class="zone-kicker">แดชบอร์ด / ยืนยันตัวตน</p>
+            <h2 id="dashboard-view-title">เข้าสู่ระบบตามหมวดงาน</h2>
+            <p>กรอกข้อมูลเพื่อส่งต่อให้ระบบยืนยันตัวตนของแอปหลัก ข้อมูลรหัสผ่านจะไม่ถูกบันทึกใน shell นี้</p>
+          </div>
+          <button type="button" class="command-button" id="close-dashboard-button">กลับแดชบอร์ดรวม</button>
+        </header>
+        <form class="shell-login-form" id="shell-login-form">
+          <label>
+            ชื่อผู้ใช้
+            <input id="shell-username" name="username" autocomplete="username" required placeholder="ชื่อผู้ใช้" />
+          </label>
+          <label>
+            รหัสผ่าน
+            <input id="shell-password" name="password" type="password" autocomplete="current-password" required placeholder="รหัสผ่าน" />
+          </label>
+          <button type="submit" class="command-button command-button--primary">เข้าสู่ระบบ</button>
+          <p class="shell-login-status" id="shell-login-status" role="status" aria-live="polite"></p>
+        </form>
       </section>
     </main>
 
-    <script src="./dashboard-shell.js"></script>
+    <script type="module" src="./dashboard-shell.js"></script>
   </body>
 </html>

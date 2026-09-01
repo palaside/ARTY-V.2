@@ -8,6 +8,7 @@ import { DeputyCommanderReportDocument } from '@/domains/howitzer/documents/Depu
 import { HowitzerWorkspace } from '@/domains/howitzer/HowitzerWorkspace';
 import { Form344201Document } from '@/domains/surveillance/documents/Form344201Document';
 import { Form344202Document } from '@/domains/surveillance/documents/Form344202Document';
+import { SurveyTools } from '@/domains/surveillance/SurveyTools';
 import { useSharedOperationalState, type DocumentKey } from '@/shared/state/shared-operational-context';
 import {
   formatDocumentLabel,
@@ -17,14 +18,23 @@ import {
   formatSeverityLabel,
 } from '@/shared/labels';
 import { CapabilityCatalog, type CapabilityItem } from '@/shared/components/CapabilityCatalog';
+import { WeaponsWorkspace } from '@/domains/weapons/WeaponsWorkspace';
 import sharedMapGridReference from '../../../references/shared-map-grid.png';
+import m2Dial from '../../assets/m2/m2-dial.png';
+import m2Needle from '../../assets/m2/m2-needle.png';
 
 const workspaceStorageKey = (role: UserRole) => `arty-v2-workspace-${role}`;
 
 const mapCapabilities: CapabilityItem[] = [
-  { title: 'งานสำรวจ ทบ.344-201 / 202', description: 'ทางเข้าเอกสารและหน้าจอจัดข้อมูลพิกัด มุมทิศ ระยะ และความสูงจากแหล่งสำรวจ.', state: 'พร้อมแสดงผล' },
-  { title: 'ตรวจสอบวงรอบสำรวจ', description: 'พื้นที่แสดง closure error และการตรวจทานก่อนส่งข้อมูล โดยเกณฑ์จริงต้องยืนยันจากเอกสารอ้างอิง.', state: 'โหมดฝึก / รอข้อมูลอ้างอิง' },
-  { title: 'จุดตัดและเล็งกลับ', description: 'จัดเตรียม workflow สำหรับการเทียบแนวเล็งและพิกัดอ้างอิงในโหมดฝึก.', state: 'โหมดฝึก / รอข้อมูลอ้างอิง' },
+  { title: '๑. ระยะลาด → ระยะราบ', description: 'แปลงระยะลาดและมุมดิ่งเป็นระยะราบสำหรับการวางจุดบนแผนที่ฝึก.', state: 'พร้อมแสดงผล' },
+  { title: '๒. พิกัดตาราง / พิกัดฉาก UTM', description: 'คำนวณพิกัดตะวันออกและพิกัดเหนือจากสถานีตั้งต้น ระยะราบ และมุมภาคตาราง.', state: 'พร้อมแสดงผล' },
+  { title: '๓. ผลต่างทางสูง / ความต่างระดับ', description: 'คำนวณผลต่างระดับจากระยะลาด มุมดิ่ง และความสูงเครื่องมือ/เป้าในชุดข้อมูลฝึก.', state: 'พร้อมแสดงผล' },
+  { title: '๔. มุมภาคทิศทาง / มุมภาคตาราง', description: 'แสดงมุมภาคตารางและการตรวจมุมกลับทิศในหน่วยมิลเลียม.', state: 'พร้อมแสดงผล' },
+  { title: '๕. การสกัดตรง / การสกัดกลับ', description: 'เลือก workflow จุดตัดจากสถานีทราบที่ตั้ง หรือหาสถานีจากหมุดอ้างอิงในโหมดฝึก.', state: 'โหมดฝึก / รอข้อมูลอ้างอิง' },
+  { title: '๖. ค่าแก้บรรยากาศ ATM. PPM', description: 'บันทึกอุณหภูมิ ความกดอากาศ และค่า PPM เพื่อคำนวณระยะที่แก้แล้ว.', state: 'พร้อมแสดงผล' },
+  { title: '๗. ชั้นความถูกต้องของงานแผนที่', description: 'ตรวจอัตราส่วน closure error ตามชั้นงาน และล็อกชุดข้อมูลเมื่อไม่ผ่านเกณฑ์.', state: 'พร้อมแสดงผล' },
+  { title: '๘. การเลื่อนตาราง / การหมุนตาราง', description: 'แสดงผลการเลื่อนแกนและการหมุนตารางจากค่าที่ป้อนในชุดข้อมูลฝึก.', state: 'พร้อมแสดงผล' },
+  { title: 'ทบ.344', description: 'ชุดงานคำนวณวงรอบและแบบฟอร์มพิกัดทางทหาร พร้อมพรีวิวเอกสาร ทบ.344-201 และ ทบ.344-202.', state: 'พร้อมแสดงผล' },
   { title: 'เขตความปลอดภัยบนแผนที่', description: 'แสดงชั้นข้อมูลความปลอดภัยตามบทบาทบนแผนที่ร่วม โดยไม่เปิดเผยข้อมูลที่ FO ไม่มีสิทธิ์เห็น.', state: 'พร้อมแสดงผล' },
 ];
 
@@ -82,8 +92,44 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     setRoleView,
   } = useSharedOperationalState();
   const [activePanel, setActivePanel] = useState<PanelKey>(() => readInitialPanel(role, visiblePanels));
+  const [compassOpen, setCompassOpen] = useState(false);
+  const [magneticHeading, setMagneticHeading] = useState<number | null>(null);
+  const [magneticPitch, setMagneticPitch] = useState<number | null>(null);
+  const [friendlyRadius, setFriendlyRadius] = useState(18);
+  const [fragmentRadius, setFragmentRadius] = useState(9);
   const visibleEvents = filterVisibleEvents(role, eventLog);
   const latestVisibleEvent = visibleEvents[0];
+
+  useEffect(() => {
+    const handleOrientation = (event: DeviceOrientationEvent & { webkitCompassHeading?: number }) => {
+      const heading = typeof event.webkitCompassHeading === 'number'
+        ? event.webkitCompassHeading
+        : typeof event.alpha === 'number'
+          ? (360 - event.alpha) % 360
+          : null;
+      if (heading !== null && Number.isFinite(heading)) setMagneticHeading(heading);
+      if (typeof event.beta === 'number' && Number.isFinite(event.beta)) setMagneticPitch(event.beta);
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation as EventListener);
+    return () => window.removeEventListener('deviceorientation', handleOrientation as EventListener);
+  }, []);
+
+  const openCompass = async () => {
+    const orientationApi = DeviceOrientationEvent as typeof DeviceOrientationEvent & {
+      requestPermission?: () => Promise<'granted' | 'denied'>;
+    };
+
+    if (typeof orientationApi.requestPermission === 'function') {
+      try {
+        await orientationApi.requestPermission();
+      } catch {
+        setMagneticHeading(null);
+      }
+    }
+
+    setCompassOpen(true);
+  };
 
   useEffect(() => {
     if (!visiblePanels.includes(activePanel)) {
@@ -140,6 +186,8 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
           <span className="shared-map-core" />
           <span className="shared-map-label shared-map-label--left">แผนที่ยุทธวิธีร่วม</span>
           <span className="shared-map-label shared-map-label--bottom">มุมมองยุทธวิธีร่วมสำหรับผู้มีสิทธิ์เท่านั้น</span>
+          <span className="shared-map-safety-zone shared-map-safety-zone--friendly" style={{ width: `${friendlyRadius * 4}px`, height: `${friendlyRadius * 4}px` }} />
+          <span className="shared-map-safety-zone shared-map-safety-zone--fragment" style={{ width: `${fragmentRadius * 4}px`, height: `${fragmentRadius * 4}px` }} />
         </div>
         <figcaption className="shared-map-caption">
           <span className="route-kicker">อ้างอิงแผนที่</span>
@@ -147,6 +195,10 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
           <span>{role === 'FO' ? 'ปกปิดรายละเอียดปฏิบัติการ / มุมมองปลอดภัยสำหรับสาธารณะ' : 'ตัวอย่างชั้นยุทธวิธีร่วม'}</span>
         </figcaption>
       </figure>
+      <div className="shared-map-zone-controls" aria-label="วงกลมเขตความปลอดภัยแบบฝึก">
+        <label>เขตปลอดภัยฝ่ายเรา ({friendlyRadius} ม.)<input type="range" min="6" max="30" value={friendlyRadius} onChange={(event) => setFriendlyRadius(Number(event.target.value))} /></label>
+        <label>รัศมีสะเก็ดแบบฝึก ({fragmentRadius} ม.)<input type="range" min="3" max="20" value={fragmentRadius} onChange={(event) => setFragmentRadius(Number(event.target.value))} /></label>
+      </div>
       <div className="workspace-readout-grid">
         <div className="status-tile">
           <span className="route-kicker">ขอบเขต</span>
@@ -278,12 +330,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
         <div className="workspace-intro">
           <header>แผนที่ / สำรวจ</header>
           <p>โดเมนนี้เป็นงานแผนที่/สำรวจ/ระบุพิกัด ไม่ใช่งานเฝ้าระวังหรือสอดส่อง</p>
-          <ul className="domain-list">
-            <li>กริด / พิกัด</li>
-            <li>มุมทิศ / ทิศทาง</li>
-            <li>ระยะ / ความสูง</li>
-            <li>ทบ.344 / จุดตัด / ตรวจสอบความถูกต้อง</li>
-          </ul>
+          <SurveyTools />
           <CapabilityCatalog title="งานแผนที่และสำรวจ" items={mapCapabilities} />
           <div className="control-row">
             <button type="button" className="ghost-button" onClick={() => selectDocument('FORM_344_201')}>
@@ -298,19 +345,7 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
     }
 
     if (activePanel === 'WEAPONS') {
-      return (
-        <div className="workspace-intro">
-          <header>กระสุน</header>
-          <p>หมวดนี้เป็นเจ้าของข้อมูลชนิดกระสุน ชนวน ความเข้ากันได้ และสถานะความปลอดภัยต้นทาง</p>
-          <ul className="domain-list">
-            <li>การเลือกกระสุน</li>
-            <li>การเลือกชนวน / การตั้งเวลา</li>
-            <li>การตรวจสอบความเข้ากันได้ / ความปลอดภัย</li>
-            <li>สถานะแหล่งต้นทางของค้างยิง / อินเตอร์ล็อก</li>
-          </ul>
-          <CapabilityCatalog title="กระสุน ชนวน และความปลอดภัย" items={weaponsCapabilities} />
-        </div>
-      );
+      return <WeaponsWorkspace />;
     }
 
     if (activePanel === 'MAP') {
@@ -389,6 +424,10 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
       <aside className="workspace-sidebar">
         <p className="route-kicker">บทบาท</p>
         <h3>{formatRoleLabel(role)}</h3>
+        <button type="button" className="m2-launch-button" onClick={openCompass}>
+          M.2
+          <span>เข็มทิศเหนือแม่เหล็ก</span>
+        </button>
         <nav className="workspace-nav" aria-label="workspace-navigation">
           {visiblePanels.map((panel) => (
             <button
@@ -421,6 +460,39 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
           </div>
         </div>
       </article>
+      {compassOpen ? (
+        <section className="m2-compass-overlay" aria-label="เข็มทิศ M.2" role="dialog" aria-modal="false">
+          <div className="m2-compass-card">
+            <header className="m2-compass-card__header">
+              <div>
+                <span className="route-kicker">M.2 / เครื่องมือเบื้องหลัง</span>
+                <h2>เข็มทิศเหนือแม่เหล็ก</h2>
+              </div>
+              <button type="button" className="ghost-button" onClick={() => setCompassOpen(false)}>ปิด</button>
+            </header>
+              <div
+                className="m2-compass-dial"
+                aria-label="หน้าปัดเข็มทิศ M.2 แบบสามมิติ"
+                style={{ transform: `perspective(700px) rotateX(${Math.max(-28, Math.min(28, (magneticPitch ?? 0) - 90))}deg)` }}
+              >
+              <img src={m2Dial} alt="หน้าปัดเข็มทิศ M.2" className="m2-compass-dial__face" />
+              <img
+                src={m2Needle}
+                alt="เข็มทิศสองด้าน สีขาวและสีดำ"
+                className="m2-compass-dial__needle"
+                style={{ transform: `translate(-50%, -50%) rotate(${magneticHeading ?? 0}deg)` }}
+              />
+              <span className="m2-compass-dial__center" aria-hidden="true" />
+              </div>
+            <div className="m2-compass-readout" aria-live="polite">
+              <span>ทิศเหนือแม่เหล็ก</span>
+              <strong>{magneticHeading === null ? 'รอเซนเซอร์' : `${Math.round(magneticHeading)}°`}</strong>
+              <small>{magneticHeading === null ? 'อนุญาตการเข้าถึงเซนเซอร์ของอุปกรณ์เพื่อหมุนเข็มอัตโนมัติ' : 'เข็มสีขาวชี้ทิศเหนือแม่เหล็ก'}</small>
+              <small>มุมกลับทิศ: {magneticHeading === null ? '--' : `${Math.round((((magneticHeading / 360) * 6400) + 3200) % 6400)} มิล`} · เอียง {magneticPitch === null ? '--' : `${Math.round(magneticPitch)}°`}</small>
+            </div>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

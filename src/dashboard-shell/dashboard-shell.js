@@ -181,56 +181,83 @@ const capabilityCatalog = {
   fo: {
     title: "ความสามารถของผู้ตรวจการณ์หน้า",
     lead: "การได้มาซึ่งเป้าหมาย การบันทึกการสังเกต และการส่งต่อข้อมูลเข้าสู่ชั้นร่วมภายใต้ OPSEC",
-    state: ["4 โมดูล", "state-live"],
+    state: ["10 ฟีเจอร์", "state-live"],
     items: [
-      ["กำหนดที่ตั้งเป้าหมาย 3 วิธี", "กริด / โพลาร์ / ย้ายจากจุดอ้างอิง เพื่อจัดข้อมูลเป้าหมายเป็นรูปแบบเดียวก่อนส่งต่อ", "พร้อมแสดงผล"],
-      ["เครื่องมือสังเกตการณ์", "พื้นที่สำหรับ Flash-to-Bang และตัวช่วยอ่านค่ามิล ใช้ในโหมดฝึกจนกว่าจะเชื่อมข้อมูลอ้างอิงที่ตรวจสอบแล้ว", "โหมดฝึก"],
-      ["การปรับแก้และ Bracketing", "บันทึกการสังเกตจุดตกกระทบและคำขอแก้ทางข้าง ระยะ และความสูง โดยไม่สร้างคำสั่งยิงจริง", "พร้อมแสดงผล"],
-      ["โหมดฉุกเฉิน FO", "รวบรวมข้อมูลที่ FO มีสิทธิ์เห็นและบันทึกหลักฐานเพื่อทบทวนในโหมดฝึก", "โหมดฝึก"],
+      ["1.1 พิกัดกริด", "กำหนดที่ตั้งเป้าหมายด้วยพิกัดกริดและตรวจรูปแบบข้อมูลก่อนส่งต่อ", "พร้อมแสดงผล"],
+      ["1.2 โพลาร์", "กำหนดเป้าหมายด้วยมุมทิศ ระยะ และมุมดิ่งในแบบฟอร์มเดียว", "พร้อมแสดงผล"],
+      ["1.3 ย้ายจากจุดทราบที่ตั้ง", "กำหนดเป้าหมายจากจุดอ้างอิงด้วยค่าการย้ายที่ผู้ใช้ป้อน", "พร้อมแสดงผล"],
+      ["2.1 แสง-เสียง", "เครื่องมือบันทึกช่วงเวลาระหว่างแสงวาบกับเสียงสำหรับใช้ประกอบการประเมินระยะในโหมดฝึก", "โหมดฝึก"],
+      ["2.2 สูตรมิลเลียม", "ตัวช่วยจัดรูปข้อมูลความกว้าง ระยะ และมุมมิลสำหรับการทบทวนการสังเกต", "โหมดฝึก"],
+      ["2.3 กฎของไซน์", "พื้นที่เตรียมข้อมูลสามเหลี่ยมสำหรับการตรวจทานเรขาคณิตของการสังเกต", "โหมดฝึก / รอสูตรยืนยัน"],
+      ["3.1 แฟคเตอร์ ฟตม.", "บันทึกค่าแฟคเตอร์สำหรับการย้ายจุดตามแบบฟอร์มที่ได้รับอนุมัติ", "โหมดฝึก / รอสูตรยืนยัน"],
+      ["3.2 แก้ทางข้าง", "บันทึกการย้ายหรือแก้ทางข้างของจุดเป้าหมายก่อนส่งต่อ", "พร้อมแสดงผล"],
+      ["4.1 ปรับแก้ระยะ", "บันทึกคำขอปรับแก้ระยะจากการสังเกตจุดตกกระทบ", "พร้อมแสดงผล"],
+      ["4.2 ปรับแก้ทางสูง", "บันทึกคำขอปรับแก้ทางสูงหรือความสูงจุดระเบิดเพื่อทบทวนร่วม", "พร้อมแสดงผล"],
+      ["5.1 เป้าหมายเคลื่อนที่", "บันทึกทิศทางและความเร็วเป้าหมายเพื่อเตรียมข้อมูลการติดตาม โดยยังไม่คำนวณคำสั่งยิงจริง", "โหมดฝึก"],
+      ["5.2 ฉากควันกำบัง", "บันทึกบริบทฉากควันกำบังและสถานะการสังเกตเพื่อส่งต่อในกระบวนงาน", "โหมดฝึก"],
     ],
   },
   fdc: {
     title: "ความสามารถของศูนย์อำนวยการยิง",
     lead: "แกนทบทวนภารกิจ เป้าหมาย สถานะความปลอดภัย และคิวเอกสารจากข้อมูลร่วมที่บทบาทนี้ได้รับอนุญาต",
-    state: ["4 โมดูล", "state-live"],
+    state: ["5 โมดูล + สภาพอากาศและลม", "state-live"],
     items: [
-      ["แกนทบทวนวิถีกระสุน", "พื้นที่แสดงผลระยะ เป้าหมาย มุมพื้นที่ และเวลาแล่นจากข้อมูลที่ผ่านการรับรอง โดยไม่คำนวณตารางยิงจริงใน UI", "โหมดฝึก"],
-      ["สภาพอากาศและลม", "รวบรวมข้อมูล MET และสถานะการทบทวนผลกระทบ เพื่อรองรับกฎอ้างอิงในอนาคต", "โหมดฝึก"],
-      ["สถานะปืนและความปลอดภัย", "รวมอินเตอร์ล็อก สถานะ QE ขั้นต่ำ และความพร้อมของภารกิจไว้ในแกนตัดสินใจเดียว", "พร้อมแสดงผล"],
-      ["คลังกระสุนและคิวรายงาน", "แสดงสถานะคิวเอกสารและจุดเชื่อมข้อมูลกระสุนจากหมวดต้นทาง โดยไม่ตัดยอดคลังจริง", "พร้อมแสดงผล"],
+      ["โมดูล ๑ · ยิงหาหลักฐานและปรับการยิง", "รวมภารกิจตั้งต้นสำหรับยืนยันข้อมูลและทบทวนการปรับการยิงในชุดฝึก", "โหมดฝึก"],
+      ["โมดูล ๒ · กดดันและทำลายฉับพลัน", "รวมภารกิจตอบสนองเร่งด่วนตามสถานการณ์จำลอง โดยไม่สร้างคำสั่งจริง", "โหมดฝึก"],
+      ["โมดูล ๓ · ยิงตามแผนและยิงรวม", "รวมภารกิจที่จัดลำดับงานและเตรียมข้อมูลไว้ล่วงหน้าในชุดฝึก", "โหมดฝึก"],
+      ["โมดูล ๔ · กระสุนพิเศษและการสนับสนุน", "รวมภารกิจสนับสนุนและผลลัพธ์ปลายทางที่ใช้ทบทวนเท่านั้น", "โหมดฝึก"],
+      ["โมดูล ๕ · ป้องกันขั้นสุดท้ายและฉากกั้น", "รวมภารกิจป้องกันพื้นที่สำคัญในสถานการณ์ฝึกแบบจำกัดข้อมูล", "โหมดฝึก"],
+      ["สภาพอากาศและลม", "รวบรวมบริบท MET และลมเพื่อทบทวนเท่านั้น ไม่เชื่อมเซนเซอร์จริงและไม่แปลงเป็นคำสั่งยิง", "โหมดฝึก"],
     ],
   },
   spatial: {
     title: "ความสามารถของแผนที่และสำรวจ",
     lead: "จัดการบริบทกริด พิกัด มุมทิศ ระยะ และการตรวจทานความเชื่อมั่นของข้อมูลเชิงพื้นที่",
-    state: ["4 โมดูล", "state-warning"],
+    state: ["10 โมดูล", "state-warning"],
     items: [
-      ["ทบ.344-201 / ทบ.344-202", "จุดเริ่มต้นเอกสารสำรวจสำหรับข้อมูลพิกัด มุมทิศ ระยะ และความสูง", "พร้อมแสดงผล"],
-      ["ตรวจสอบวงรอบสำรวจ", "พื้นที่แสดง closure error และสถานะตรวจทานก่อนส่งข้อมูล โดยเกณฑ์จริงต้องยืนยันจากเอกสารอ้างอิง", "โหมดฝึก"],
-      ["จุดตัดและเล็งกลับ", "workflow การเทียบแนวเล็งและพิกัดอ้างอิงในโหมดฝึก", "โหมดฝึก"],
+      ["ระยะลาด → ระยะราบ", "แปลงระยะลาดและมุมดิ่งเป็นระยะราบสำหรับการวางจุดในชุดข้อมูลฝึก", "พร้อมแสดงผล"],
+      ["พิกัดตาราง / พิกัดฉาก UTM", "คำนวณพิกัดตะวันออกและพิกัดเหนือจากสถานีตั้งต้น", "พร้อมแสดงผล"],
+      ["ผลต่างทางสูง / ความต่างระดับ", "คำนวณผลต่างระดับจากระยะลาด มุมดิ่ง และความสูงเครื่องมือ/เป้า", "พร้อมแสดงผล"],
+      ["มุมภาคทิศทาง / มุมภาคตาราง", "แสดงมุมภาคตารางและมุมกลับทิศในหน่วยมิลเลียม", "พร้อมแสดงผล"],
+      ["การสกัดตรง / การสกัดกลับ", "workflow จุดตัดจากสถานีทราบที่ตั้ง หรือหาสถานีจากหมุดอ้างอิง", "โหมดฝึก"],
+      ["ค่าแก้บรรยากาศ ATM. PPM", "บันทึกอุณหภูมิ ความกดอากาศ และค่า PPM เพื่อคำนวณระยะที่แก้แล้ว", "พร้อมแสดงผล"],
+      ["ชั้นความถูกต้องของงานแผนที่", "ตรวจอัตราส่วน closure error และสถานะผ่านเกณฑ์ฝึก", "พร้อมแสดงผล"],
+      ["การเลื่อนตาราง / การหมุนตาราง", "แสดงผลการเลื่อนแกนและการหมุนตารางจากค่าที่ป้อน", "พร้อมแสดงผล"],
+      ["ทบ.344", "ชุดงานคำนวณวงรอบและแบบฟอร์มพิกัดทางทหาร ทบ.344-201 และ ทบ.344-202", "พร้อมแสดงผล"],
       ["เขตความปลอดภัยบนแผนที่", "แสดงชั้นข้อมูลความปลอดภัยตามบทบาท โดยไม่เปิดเผยชั้นปฏิบัติการที่ FO ไม่มีสิทธิ์เห็น", "พร้อมแสดงผล"],
     ],
   },
   readiness: {
     title: "ความสามารถของส่วนยิง",
     lead: "ลำดับงานตั้งปืน การทบทวน M.17 และการบันทึกข้อมูลวิเคราะห์หลุมระเบิดในกรอบการฝึก",
-    state: ["4 โมดูล", "state-warning"],
+    state: ["14 โมดูล", "state-warning"],
     items: [
-      ["การตั้งปืนตรงทิศ", "จัดลำดับ workflow การตั้งปืนและการตรวจทานทิศทางสำหรับการฝึก", "พร้อมแสดงผล"],
-      ["ตารางคำสั่งแยกปืน", "พื้นที่แสดงสถานะปืนประจำหมู่และมุมมองรายกระบอกหรือภาพรวม โดยไม่สั่งงานอุปกรณ์จริง", "โหมดฝึก"],
-      ["M.17 และการตรวจมุม", "แสดงตำแหน่งปืน ความสัมพันธ์กับ ศก.ร้อย และการตรวจทานค่าในโหมดฝึก", "พร้อมแสดงผล"],
-      ["วิเคราะห์หลุมระเบิด / บขตป.", "รวบรวมข้อมูลวิเคราะห์สนามและเชื่อมไปยังรายงานเบื้องต้น", "พร้อมแสดงผล"],
+      ["๑. การตั้งกล้องกองร้อย ๕ วิธี", "แสดงขั้นตอนการตั้งทิศทางทั้ง ๕ วิธีในโหมดฝึก พร้อมจุดตรวจทาน", "พร้อมแสดงผล"],
+      ["๒. การยิงฉุกเฉิน", "แสดงลำดับสถานะฉุกเฉินสำหรับการฝึก โดยไม่ส่งคำสั่งไปยังอุปกรณ์จริง", "โหมดฝึก / รอข้อมูลอ้างอิง"],
+      ["๓. วิเคราะห์หลุมระเบิด ๗ ขั้นตอน", "บันทึกข้อมูลสนามตัวอย่างตั้งแต่รักษาพื้นที่จนถึงรายงานเบื้องต้น", "พร้อมแสดงผล"],
+      ["๔. การดักเป้าหมายเคลื่อนที่", "แสดงแบบจำลองข้อมูลเป้าหมายเคลื่อนที่ โดยไม่ให้คำแนะนำยิงจริง", "โหมดฝึก / รอข้อมูลอ้างอิง"],
+      ["๕. การหาระยะกำบัง", "แสดงข้อมูลสิ่งกีดขวางและสถานะตรวจทานในชุดข้อมูลฝึก", "โหมดฝึก / รอข้อมูลอ้างอิง"],
+      ["๖. ฐานสามเหลี่ยมคงที่", "แสดงโครงสร้างการสำรวจฐานและข้อมูลตัวอย่างสำหรับการฝึก", "โหมดฝึก / รอข้อมูลอ้างอิง"],
+      ["๗. เครื่องตั้งมุมยิงประณีต M1/M1A1", "แสดงช่องตรวจทานเครื่องมือและสถานะยืนยันแบบกดค้าง", "พร้อมแสดงผล"],
+      ["๘. การยิงกวาดและยิงเป็นเขต", "แสดงรูปแบบพื้นที่จำลอง โดยไม่มีคำสั่งยิงจริง", "โหมดฝึก / รอข้อมูลอ้างอิง"],
+      ["๙. แผ่นกรุย M.17", "แสดงจุดอ้างอิง ปืนตัวอย่าง ๖ กระบอก และมุมมองรายกระบอก/ภาพรวม", "พร้อมแสดงผล"],
+      ["๑๐. มุมยิงต่ำสุด", "แสดงประตูความปลอดภัยและสถานะตรวจทานข้อมูลฝึก โดยไม่คำนวณใช้งานจริง", "โหมดฝึก / รอข้อมูลอ้างอิง"],
+      ["๑๑. ตรรกะชนวน PD / VT", "แสดงสถานะชนวนและ safety gate ในโหมดฝึก โดยไม่ควบคุมชนวนจริง", "โหมดฝึก / รอข้อมูลอ้างอิง"],
+      ["๑๒. ความต่างทิศและต่างระยะของปืน", "แสดงค่าออฟเซ็ตตัวอย่างเทียบกับจุดอ้างอิงของชุดฝึก", "โหมดฝึก / รอข้อมูลอ้างอิง"],
+      ["๑๓. การวัดมุมดิ่งด้วย M.2", "แสดงการเชื่อมโยงเครื่องมือ M.2 และข้อมูลมุมในโหมดฝึก", "พร้อมแสดงผล"],
+      ["๑๔. รายงานรอง ผบ.ร้อย ป. ๕ ตอน", "จัดกลุ่มข้อมูลฝึกสำหรับพรีวิวรายงานและ Event Log โดยไม่ส่งคำสั่งภายนอก", "พร้อมแสดงผล"],
     ],
   },
   ammo: {
     title: "ความสามารถของกระสุนและอาวุธ",
     lead: "ข้อมูลต้นทางของกระสุน ชนวน ความเข้ากันได้ และสถานะความปลอดภัยที่ส่งผลต่อชั้นตัดสินใจ",
-    state: ["4 โมดูล", "state-critical"],
+    state: ["5 โมดูลฝึก", "state-critical"],
     items: [
-      ["แคตาล็อกกระสุนและชนวน", "แสดงรายการชนิดกระสุน ชนวน และข้อมูลอ้างอิงที่หมวดกระสุนเป็นเจ้าของ", "พร้อมแสดงผล"],
-      ["ตรรกะความเข้ากันได้", "แสดงสถานะตรวจสอบชนิดกระสุน ชนวน และข้อจำกัดด้านความปลอดภัย โดยไม่ตั้งค่าหรือควบคุมอาวุธจริง", "โหมดฝึก"],
-      ["อินเตอร์ล็อกฝ่ายมิตร", "แสดงสถานะ safety gate จากชั้นข้อมูลร่วมเพื่อใช้ทบทวนในโหมดฝึก", "พร้อมแสดงผล"],
-      ["ค้างยิงและลำกล้องร้อน", "หน้าจอ SOP และสถานะเวลาความปลอดภัยสำหรับการฝึก รอการยืนยันจากเอกสารอ้างอิงก่อนใช้งานจริง", "โหมดฝึก"],
+      ["โมดูล ๑ · แคตตาล็อกกระสุนและชนวน", "แสดงรายการตัวอย่างกระสุน ชนวน และดินขับสำหรับการเรียนรู้โครงสร้าง โดยไม่ใช่ยอดคลังจริง", "โหมดฝึก"],
+      ["โมดูล ๒ · ตรวจความเข้ากันได้", "ตรวจความครบของคู่ข้อมูลตัวอย่าง โดยไม่ตั้งชนวนหรือควบคุมอาวุธจริง", "โหมดฝึก"],
+      ["โมดูล ๓ · ประตูความปลอดภัย", "แสดงอินเตอร์ล็อกและแนวทางหยุดขั้นตอนในสถานการณ์จำลอง", "ล็อกการยิงจริง"],
+      ["โมดูล ๔ · คลังความรู้และเอกสารอ้างอิง", "อ่านโครงสร้างข้อมูลและสถานะเอกสารอ้างอิง โดยไม่แสดงค่าหรือขั้นตอนใช้งานจริง", "อ่านอย่างเดียว"],
+      ["โมดูล ๕ · บันทึกกิจกรรมฝึก", "บันทึกเฉพาะกิจกรรมจำลอง ไม่ตัดยอดคลังและไม่บันทึกคำสั่งยิง", "โหมดฝึก"],
     ],
   },
 };
@@ -253,6 +280,9 @@ const situationalMapState = {
 
 let situationalMapNodes = null;
 let activeModeKey = "fo";
+let googleSituationalMap = null;
+let googleSituationalMarker = null;
+const buildGoogleMapsApiKey = import.meta.env?.VITE_GOOGLE_MAPS_API_KEY || "";
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -305,9 +335,11 @@ function getSituationalMapNodes() {
     canvas: document.getElementById("situational-map-canvas"),
     terrain: document.querySelector(".situational-terrain"),
     markerLayer: document.getElementById("situational-marker-layer"),
+    googleLayer: document.getElementById("google-map-layer"),
     coordinate: document.getElementById("situational-coordinate"),
     mapMode: document.getElementById("situational-map-mode"),
     zoom: document.getElementById("situational-zoom"),
+    provider: document.getElementById("situational-map-provider"),
   };
 
   return situationalMapNodes;
@@ -375,8 +407,75 @@ function resetSituationalMap() {
   situationalMapState.selectedX = null;
   situationalMapState.selectedY = null;
   situationalMapState.dragging = false;
+  if (googleSituationalMarker) googleSituationalMarker.setMap(null);
+  googleSituationalMarker = null;
   renderSituationalPin();
   updateSituationalMapTransform();
+}
+
+function getGoogleMapsApiKey() {
+  if (buildGoogleMapsApiKey) return buildGoogleMapsApiKey.trim();
+  return typeof window.ARTY_RUNTIME_CONFIG?.googleMapsApiKey === "string"
+    ? window.ARTY_RUNTIME_CONFIG.googleMapsApiKey.trim()
+    : "";
+}
+
+function loadGoogleMapsScript(apiKey) {
+  if (window.google?.maps) return Promise.resolve(window.google.maps);
+
+  const existingScript = document.querySelector('script[data-google-maps="true"]');
+  if (existingScript) {
+    return new Promise((resolve, reject) => {
+      existingScript.addEventListener("load", () => resolve(window.google?.maps), { once: true });
+      existingScript.addEventListener("error", () => reject(new Error("โหลด Google Maps ไม่สำเร็จ")), { once: true });
+    });
+  }
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}`;
+    script.async = true;
+    script.defer = true;
+    script.dataset.googleMaps = "true";
+    script.onload = () => window.google?.maps ? resolve(window.google.maps) : reject(new Error("ไม่พบ Google Maps API"));
+    script.onerror = () => reject(new Error("โหลด Google Maps ไม่สำเร็จ"));
+    document.head.append(script);
+  });
+}
+
+async function initGoogleSituationalMap() {
+  const { canvas, googleLayer, provider } = getSituationalMapNodes();
+  const apiKey = getGoogleMapsApiKey();
+  if (!canvas || !googleLayer || !apiKey || window.location.protocol === "file:") {
+    if (provider) provider.textContent = "แหล่งแผนที่ / Tactical Map สำรองในเครื่อง";
+    return;
+  }
+
+  try {
+    const maps = await loadGoogleMapsScript(apiKey);
+    googleSituationalMap = new maps.Map(googleLayer, {
+      center: { lat: 15.87, lng: 100.99 },
+      zoom: 6,
+      mapTypeControl: true,
+      streetViewControl: false,
+      fullscreenControl: false,
+      clickableIcons: false,
+    });
+    googleSituationalMap.addListener("click", (event) => {
+      if (!event.latLng) return;
+      if (googleSituationalMarker) googleSituationalMarker.setMap(null);
+      googleSituationalMarker = new maps.Marker({ map: googleSituationalMap, position: event.latLng, title: "จุดที่เลือก" });
+      setText("situational-coordinate", `พิกัดตัวอย่าง: ${event.latLng.lat().toFixed(5)}, ${event.latLng.lng().toFixed(5)}`);
+      setText("situational-map-mode", "มุมมอง: Google Maps / จุดที่เลือก");
+      appendLog("ปักหมุดบน Google Maps สำเร็จ (ข้อมูลตัวอย่าง)");
+    });
+    canvas.classList.add("is-google-map");
+    if (provider) provider.textContent = "แหล่งแผนที่ / Google Maps";
+    setText("situational-state", "Google Maps พร้อมใช้");
+  } catch (error) {
+    if (provider) provider.textContent = "แหล่งแผนที่ / สำรองในเครื่อง (Google Maps โหลดไม่สำเร็จ)";
+    appendLog(error instanceof Error ? error.message : "Google Maps โหลดไม่สำเร็จ");
+  }
 }
 
 function setSituationalPointFromClient(clientX, clientY, shouldLog = true) {
@@ -449,6 +548,7 @@ function initSituationalMap() {
   updateSituationalMapTransform();
 
   canvas.addEventListener("pointerdown", (event) => {
+    if (canvas.classList.contains("is-google-map")) return;
     if (event.button !== 0) return;
 
     canvas.setPointerCapture(event.pointerId);
@@ -461,6 +561,7 @@ function initSituationalMap() {
   });
 
   canvas.addEventListener("pointermove", (event) => {
+    if (canvas.classList.contains("is-google-map")) return;
     if (situationalMapState.pointerId !== event.pointerId) return;
 
     const deltaX = event.clientX - situationalMapState.startX;
@@ -483,6 +584,7 @@ function initSituationalMap() {
   });
 
   const finishPointer = (event) => {
+    if (canvas.classList.contains("is-google-map")) return;
     if (situationalMapState.pointerId !== event.pointerId) return;
 
     const deltaX = event.clientX - situationalMapState.startX;
@@ -500,17 +602,20 @@ function initSituationalMap() {
   canvas.addEventListener("pointerup", finishPointer);
   canvas.addEventListener("pointercancel", finishPointer);
   canvas.addEventListener("wheel", (event) => {
+    if (canvas.classList.contains("is-google-map")) return;
     event.preventDefault();
     const factor = event.deltaY < 0 ? 1.08 : 0.92;
     zoomSituationalMap(factor, event.clientX, event.clientY);
   }, { passive: false });
 
   canvas.addEventListener("dblclick", (event) => {
+    if (canvas.classList.contains("is-google-map")) return;
     event.preventDefault();
     setSituationalPointFromClient(event.clientX, event.clientY);
   });
 
   canvas.addEventListener("keydown", (event) => {
+    if (canvas.classList.contains("is-google-map")) return;
     const step = event.shiftKey ? 48 : 24;
 
     switch (event.key) {
@@ -550,6 +655,7 @@ function initSituationalMap() {
   });
 
   window.addEventListener("resize", updateSituationalMapTransform);
+  void initGoogleSituationalMap();
 }
 
 function rectCenterX(node) {
@@ -613,6 +719,8 @@ function openWorkspaceView(modeKey) {
   const catalog = capabilityCatalog[modeKey];
   const view = document.getElementById("workspace-view");
   const features = document.getElementById("workspace-view-features");
+  const foForm = document.getElementById("shell-fo-form");
+  const howitzerPanel = document.getElementById("shell-howitzer-panel");
   if (!catalog || !view || !features) return;
 
   setMode(modeKey);
@@ -621,11 +729,47 @@ function openWorkspaceView(modeKey) {
   setText("workspace-view-mode", modeConfigs[modeKey].modeReadout);
   setChip(document.getElementById("workspace-view-state"), catalog.state[0], catalog.state[1]);
   features.replaceChildren(...catalog.items.map(createCapabilityCard));
+  if (foForm) foForm.hidden = modeKey !== "fo";
+  if (howitzerPanel) howitzerPanel.hidden = modeKey !== "readiness";
   view.hidden = false;
   document.body.classList.add("workspace-view-open");
   window.history.replaceState(null, "", `#workspace=${modeKey}`);
   document.getElementById("close-workspace-button")?.focus();
   appendLog(`เปิดพื้นที่ทำงาน ${modeConfigs[modeKey].modeReadout}`);
+}
+
+function updateHowitzerModule(moduleKey) {
+  const copy = {
+    overview: ["คลังความสามารถส่วนยิง", "เลือกโมดูลเพื่อดูขอบเขตงานฝึก M.17 สถานะปืน การตรวจมุม วิเคราะห์หลุมระเบิด และพรีวิว บขตป."],
+    m17: ["M.17 / วางแผนตำแหน่ง", "แสดงจุด ศก.ร้อย ปืนตัวอย่าง ๖ กระบอก และออฟเซ็ตในแผนผังฝึก"],
+    guns: ["ตารางสถานะปืน", "แสดงสถานะจำลองรายกระบอกและปุ่มตรวจทาน โดยไม่มีการส่งคำสั่งไปยังอุปกรณ์จริง"],
+    crater: ["วิเคราะห์หลุมระเบิด", "บันทึกข้อมูลสนามตัวอย่าง แสดง marker จุดฝึก และจัดทำรายงานเบื้องต้น"],
+    report: ["บขตป. ตอนที่ ๑", "พรีวิวข้อมูลจากชุดฝึกและคิวเอกสารร่วม ไม่สร้างพิกัดปืนจริงและไม่สั่งยิงตอบโต้"],
+  }[moduleKey] || [];
+  setText("shell-howitzer-title", copy[0] || "พื้นที่ทำงานส่วนยิง");
+  const readout = document.getElementById("shell-howitzer-readout");
+  if (!readout) return;
+  readout.replaceChildren();
+  const title = document.createElement("strong");
+  title.textContent = copy[0] || "พื้นที่ทำงานส่วนยิง";
+  const description = document.createElement("p");
+  description.textContent = copy[1] || "ข้อมูลฝึกเท่านั้น";
+  readout.append(title, description);
+  document.querySelectorAll("[data-howitzer-module]").forEach((button) => button.classList.toggle("is-active", button.getAttribute("data-howitzer-module") === moduleKey));
+}
+
+function updateFoFormReadout() {
+  const easting = document.getElementById("shell-fo-easting")?.value.trim() || "";
+  const northing = document.getElementById("shell-fo-northing")?.value.trim() || "";
+  const coordinate = document.getElementById("shell-fo-coordinate-readout");
+  const elevation = document.getElementById("shell-fo-elevation-readout");
+  if (!coordinate || !elevation) return;
+  coordinate.textContent = easting && northing ? `${easting} / ${northing}` : "รอพิกัดเป้าหมาย";
+  elevation.textContent = easting === "482110" && northing === "1562210"
+    ? "ความแตกต่างสูง (อัตโนมัติ): +25 ม."
+    : easting && northing
+      ? "ความแตกต่างสูง (อัตโนมัติ): รอข้อมูลระดับฝึก"
+      : "ความแตกต่างสูง (อัตโนมัติ): รอพิกัดเป้าหมาย";
 }
 
 function closeWorkspaceView() {
@@ -739,6 +883,38 @@ function setState(node, nextState) {
   appendLog(stateLogCopy[nextState] || `เปลี่ยนสถานะเป็น ${nextState}`);
 }
 
+function openDashboardView() {
+  const view = document.getElementById("dashboard-view");
+  if (!view) return;
+  closeWorkspaceView();
+  view.hidden = false;
+  document.body.classList.add("workspace-view-open");
+  window.history.replaceState(null, "", "#dashboard");
+  document.getElementById("shell-username")?.focus();
+  appendLog("เปิดหน้าแดชบอร์ดเข้าสู่ระบบ");
+}
+
+function closeDashboardView() {
+  const view = document.getElementById("dashboard-view");
+  if (!view) return;
+  view.hidden = true;
+  document.body.classList.remove("workspace-view-open");
+  window.history.replaceState(null, "", window.location.pathname);
+  document.querySelector('.mode-tile[data-shell-view="dashboard"]')?.focus();
+}
+
+function wireDashboardLogin() {
+  document.getElementById("close-dashboard-button")?.addEventListener("click", closeDashboardView);
+  document.getElementById("shell-login-form")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!(form instanceof HTMLFormElement) || !form.reportValidity()) return;
+    setText("shell-login-status", "ข้อมูลครบถ้วนแล้ว — ระบบหลักจะยืนยันบัญชีและสิทธิ์ก่อนเปิดพื้นที่ทำงาน");
+    appendLog("ส่งข้อมูลเข้าสู่ขั้นตอนยืนยันตัวตนของระบบหลัก");
+    form.reset();
+  });
+}
+
 function wireStateActions() {
   const buttons = document.querySelectorAll("[data-state-target]");
 
@@ -765,7 +941,15 @@ function wireStateActions() {
     openWorkspaceView(activeModeKey);
   });
 
+  document.getElementById("shell-fo-easting")?.addEventListener("input", updateFoFormReadout);
+  document.getElementById("shell-fo-northing")?.addEventListener("input", updateFoFormReadout);
+  updateFoFormReadout();
+
   document.getElementById("close-workspace-button")?.addEventListener("click", closeWorkspaceView);
+
+  document.querySelectorAll("[data-howitzer-module]").forEach((button) => {
+    button.addEventListener("click", () => updateHowitzerModule(button.getAttribute("data-howitzer-module") || "overview"));
+  });
 
   document.querySelectorAll(".mode-tile").forEach((button) => {
     button.addEventListener("click", () => {
@@ -774,9 +958,16 @@ function wireStateActions() {
         openWorkspaceView(activeModeKey);
         return;
       }
+      if (button.getAttribute("data-shell-view") === "dashboard") {
+        openDashboardView();
+        return;
+      }
       closeWorkspaceView();
+      closeDashboardView();
     });
   });
+
+  wireDashboardLogin();
 }
 
 function boot() {

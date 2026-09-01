@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arty-v2.local/schemas/ballistics-reference.schema.json",
+  "title": "ARTY V.2 Ballistics Reference Catalog",
+  "description": "โครงสร้างอ้างอิงจากสมุดตารางยิงสำหรับตรวจสอบ schema และ provenance เท่านั้น ไม่บรรจุค่าตารางยิงหรือสูตรที่ใช้สร้างคำสั่งยิงจริง",
+  "version": "1.0.0",
+  "classification": "TRAINING_REFERENCE_ONLY",
+  "operationalCalculationEnabled": false,
+  "provenance": [
+    { "document": "สมุดตารางยิง ขนาด 105 มม. เอ็ม 101 เอ1 (TFT 105-H-7)", "status": "source-identified / values-redacted" },
+    { "document": "รส. ๖-๔๐ / รส. ๖-๕๐ / ทบ.344", "status": "source-identified / values-redacted" }
+  ],
+  "tableCatalog": [
+    { "id": "A", "name": "ข่าวสภาพอากาศ", "inputFields": ["elevationReference"], "outputFields": ["metLineReference"] },
+    { "id": "B", "name": "ผลต่างระดับและระยะเพิ่มเติม", "inputFields": ["rangeReference", "altitudeDifferenceReference"], "outputFields": ["additionalRangeReference", "metLineReference"] },
+    { "id": "C", "name": "แรงลมแยกทางข้าง/ทางระยะ", "inputFields": ["windDirectionReference", "lineOfFireReference", "windSpeedReference"], "outputFields": ["crosswindReference", "rangeWindReference"] },
+    { "id": "E", "name": "อุณหภูมิดินขับ", "inputFields": ["propellantTemperatureReference"], "outputFields": ["velocityAdjustmentReference"] },
+    { "id": "F", "name": "ข้อมูลหลักและตัวแก้สภาพอากาศ", "inputFields": ["rangeReference", "environmentReference"], "outputFields": ["referenceRows"] },
+    { "id": "G", "name": "ย่านคาดคะเนและตัวคูณมุมพื้นที่", "inputFields": ["rangeReference", "siteReference"], "outputFields": ["referenceRows"] },
+    { "id": "H", "name": "ตัวแก้การหมุนของโลกทางระยะ", "inputFields": ["rangeReference", "azimuthReference", "latitudeReference"], "outputFields": ["correctionReference"] },
+    { "id": "I", "name": "ตัวแก้การหมุนของโลกทางมุมภาค", "inputFields": ["rangeReference", "azimuthReference", "latitudeReference"], "outputFields": ["correctionReference"] },
+    { "id": "J", "name": "ตัวแก้เวลาชนวนตามสภาพอากาศ", "inputFields": ["fuzeReference"], "outputFields": ["correctionReference"] },
+    { "id": "K", "name": "การแปลงชนวน", "inputFields": ["fuzeReference"], "outputFields": ["conversionReference"] }
+  ],
+  "fieldDefinitions": {
+    "rangeReference": { "type": "number", "unit": "m", "status": "redacted" },
+    "elevationReference": { "type": "number", "unit": "mils", "status": "redacted" },
+    "azimuthReference": { "type": "number", "unit": "mils", "status": "redacted" },
+    "altitudeDifferenceReference": { "type": "number", "unit": "m", "status": "redacted" },
+    "environmentReference": { "type": "object", "status": "redacted" },
+    "referenceRows": { "type": "array", "items": "restricted-reference-row", "status": "redacted" }
+  },
+  "validationRules": [
+    { "id": "VR-001", "rule": "ทุกแถวต้องมี sourceId และ revision", "severity": "error" },
+    { "id": "VR-002", "rule": "ห้ามรับค่าที่ไม่มีหน่วยกำกับ", "severity": "error" },
+    { "id": "VR-003", "rule": "ห้ามส่งต่อ payload ที่มี operationalCalculationEnabled เป็น true", "severity": "error" },
+    { "id": "VR-004", "rule": "ค่าที่ถูก redacted ใช้ได้เฉพาะการตรวจโครงสร้าง ไม่ใช้สร้างผลการยิง", "severity": "error" }
+  ],
+  "restrictedPayloadPolicy": {
+    "blockedFields": ["muzzleVelocity", "chargeData", "elevationSolution", "quadrantElevation", "timeOfFlight", "fuzeSetting", "fireCommand"],
+    "allowedUse": ["schema-validation", "provenance-check", "training-ui-metadata"],
+    "blockedUse": ["real-target-solution", "fire-command-generation", "weapon-control"]
+  }
+}
