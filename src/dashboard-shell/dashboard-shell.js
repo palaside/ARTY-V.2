@@ -947,6 +947,54 @@ function wireStateActions() {
 
   document.getElementById("close-workspace-button")?.addEventListener("click", closeWorkspaceView);
 
+  const m2Overlay = document.getElementById("static-m2-overlay");
+  const m2Needle = document.getElementById("static-m2-needle");
+  const m2Level = document.querySelector(".static-m2-level");
+  const m2LevelBubble = document.getElementById("static-m2-level-bubble");
+  const m2Heading = document.getElementById("static-m2-heading");
+  const m2State = document.getElementById("static-m2-state");
+  const m2LevelState = document.getElementById("static-m2-level-state");
+  let levelX = 0;
+  let levelY = 0;
+  const updateM2 = (event) => {
+    const heading = typeof event.webkitCompassHeading === "number" ? event.webkitCompassHeading : typeof event.alpha === "number" ? (360 - event.alpha + 360) % 360 : null;
+    const pitch = typeof event.beta === "number" && Number.isFinite(event.beta) ? event.beta : null;
+    const roll = typeof event.gamma === "number" && Number.isFinite(event.gamma) ? event.gamma : null;
+    if (heading !== null && Number.isFinite(heading)) {
+      if (m2Needle) m2Needle.style.transform = `translate(-50%, -31.25%) rotate(${heading}deg)`;
+      if (m2Heading) m2Heading.textContent = `${Math.round(heading)}°`;
+      if (m2State) m2State.textContent = "กำลังอ่านค่าทิศเหนือแม่เหล็กจากเซนเซอร์";
+    }
+    if (m2LevelBubble && pitch !== null && roll !== null) {
+      const rawX = -roll * 3.2;
+      const rawY = pitch * 3.2;
+      const distance = Math.hypot(rawX, rawY);
+      const ratio = distance > 12 ? 12 / distance : 1;
+      const targetX = rawX * ratio;
+      const targetY = rawY * ratio;
+      levelX += (targetX - levelX) * 0.15;
+      levelY += (targetY - levelY) * 0.15;
+      const x = Math.round(levelX);
+      const y = Math.round(levelY);
+      m2LevelBubble.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      const ready = distance <= 3.2;
+      m2Level?.classList.toggle("is-level", ready);
+      if (m2LevelState) m2LevelState.textContent = `${ready ? "ได้ระดับ" : "กำลังปรับระดับ"} · แกน X ${x > 0 ? "ขวา" : x < 0 ? "ซ้าย" : "กลาง"} · แกน Y ${y > 0 ? "ล่าง" : y < 0 ? "บน" : "กลาง"}`;
+    }
+  };
+  window.addEventListener("deviceorientation", updateM2, { passive: true });
+  document.getElementById("static-m2-button")?.addEventListener("click", async () => {
+    if (m2Overlay) m2Overlay.hidden = false;
+    const orientationApi = window.DeviceOrientationEvent;
+    if (typeof orientationApi?.requestPermission === "function") {
+      try {
+        const permission = await orientationApi.requestPermission();
+        if (m2State && permission !== "granted") m2State.textContent = "ไม่ได้รับอนุญาตเซนเซอร์ · โหมดฝึกยังเปิดดูหน้าปัดได้";
+      } catch { if (m2State) m2State.textContent = "ไม่สามารถอนุญาตเซนเซอร์ · โหมดฝึกยังเปิดดูหน้าปัดได้"; }
+    }
+  });
+  document.getElementById("static-m2-close")?.addEventListener("click", () => { if (m2Overlay) m2Overlay.hidden = true; });
+
   document.querySelectorAll("[data-howitzer-module]").forEach((button) => {
     button.addEventListener("click", () => updateHowitzerModule(button.getAttribute("data-howitzer-module") || "overview"));
   });

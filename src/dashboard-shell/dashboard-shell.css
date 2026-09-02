@@ -65,6 +65,21 @@ body {
   overflow-x: clip;
 }
 
+.static-m2-overlay { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.78); }
+.mode-tile--compass { border-color: rgba(255,157,46,.7); color: #ffd39a; }
+.static-m2-card { width: min(760px, 100%); padding: 18px; border: 1px solid rgba(255,157,46,.6); background: #080d0c; box-shadow: 0 18px 70px rgba(0,0,0,.65); }
+.static-m2-card__header { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; padding-bottom:12px; border-bottom:1px solid rgba(255,157,46,.22); }.static-m2-card h2 { margin:4px 0 0; color:#ffd39a; }.static-m2-body { display:grid; grid-template-columns:minmax(260px,420px) 1fr; align-items:center; gap:24px; padding-top:18px; }
+.static-m2-dial { position:relative; width:min(420px,72vw); aspect-ratio:1; overflow:hidden; border-radius:50%; background:#101410; box-shadow:inset 0 0 0 8px #1e2420,0 0 0 1px rgba(255,157,46,.45); }.static-m2-dial__face,.static-m2-dial__needle { position:absolute; top:50%; left:50%; width:220%; max-width:none; height:auto; pointer-events:none; user-select:none; }.static-m2-dial__face { z-index:1; transform:translate(-50%,-50%); mix-blend-mode:multiply; }.static-m2-dial__needle { z-index:2; transform:translate(-50%,-31.25%); transform-origin:50% 31.25%; transition:transform 120ms linear; mix-blend-mode:multiply; }
+.static-m2-readout { display:grid; gap:8px; padding:16px; border-left:3px solid #ff8a1f; background:rgba(255,138,31,.08); }.static-m2-readout span,.static-m2-readout small { color:#a9b8b0; }.static-m2-readout strong { color:#ffd39a; font-size:2rem; }
+@media (max-width:760px) { .static-m2-body { grid-template-columns:1fr; }.static-m2-dial { margin:auto; width:min(340px,82vw); } }
+
+.static-m2-dial__face { filter: brightness(2.2) saturate(1.25); }
+.static-m2-dial__needle { filter: brightness(2.4) contrast(1.15); }
+.static-m2-dial__needle { mix-blend-mode: normal; filter: none; }
+.static-m2-dial__face { filter: brightness(1.76) saturate(1.25); }
+.static-m2-dial { background: #aeb4b0; }
+.static-m2-level__mask { display:none; }.static-m2-level { position:absolute; z-index:4; top:31%; left:68%; width:80px; height:80px; border:3px solid rgba(24,205,255,.98); border-radius:50%; background:transparent; box-shadow:0 0 0 1px rgba(62,151,185,.8),0 0 12px rgba(24,205,255,.78),inset 0 0 10px rgba(24,205,255,.2); pointer-events:none; transform:translate(-50%,-50%); overflow:hidden; }.static-m2-level::before { display:none; }.static-m2-level::after { content:""; position:absolute; z-index:2; top:50%; left:50%; width:34px; height:34px; border:2px solid rgba(224,54,54,.98); border-radius:50%; background:transparent; transform:translate(-50%,-50%); box-shadow:0 0 5px rgba(224,54,54,.5); pointer-events:none; }.static-m2-level.is-level::after { border-color:rgba(224,54,54,.98); box-shadow:0 0 5px rgba(224,54,54,.5); }.static-m2-level.is-level .static-m2-level__bubble { box-shadow:inset 3px 3px 5px rgba(255,255,255,.72),inset -3px -4px 5px rgba(0,0,0,.46),0 0 9px rgba(159,232,255,.8); }.static-m2-level__bubble { display:none; }
+
 body::before {
   content: "";
   position: fixed;
@@ -1307,3 +1322,4 @@ p {
 .shell-howitzer-readout { padding: 14px; border-left: 3px solid #ffbf5a; background: rgba(255, 191, 90, .07); }
 .shell-howitzer-readout strong { color: #ffbf5a; }
 .shell-howitzer-readout p { margin: 6px 0 0; color: #a9b8b0; line-height: 1.5; }
+.static-m2-level::after { display: none; }

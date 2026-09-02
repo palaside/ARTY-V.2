@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { PanelKey, UserRole } from '../auth/auth-types';
 import { canViewPanel, filterVisibleEvents, panelOrder } from '../auth/role-visibility';
 import { FdcWorkspace } from '@/domains/fdc/FdcWorkspace';
@@ -21,9 +21,24 @@ import { CapabilityCatalog, type CapabilityItem } from '@/shared/components/Capa
 import { WeaponsWorkspace } from '@/domains/weapons/WeaponsWorkspace';
 import sharedMapGridReference from '../../../references/shared-map-grid.png';
 import m2Dial from '../../assets/m2/m2-dial.png';
-import m2Needle from '../../assets/m2/m2-needle.png';
+import m2Needle from '../../assets/m2/m2-needle-cutout.png';
 
 const workspaceStorageKey = (role: UserRole) => `arty-v2-workspace-${role}`;
+const levelVialRadius = 29;
+const levelBubbleRadius = 17;
+const levelMaxOffset = levelVialRadius - levelBubbleRadius;
+const levelSensitivity = 3.2;
+const levelDamping = 0.15;
+const levelTolerance = 1 * levelSensitivity;
+
+function calculateLevelTarget(pitch: number, roll: number) {
+  const rawX = -roll * levelSensitivity;
+  const rawY = pitch * levelSensitivity;
+  const distance = Math.hypot(rawX, rawY);
+  if (distance <= levelMaxOffset || distance === 0) return { x: rawX, y: rawY, distance };
+  const ratio = levelMaxOffset / distance;
+  return { x: rawX * ratio, y: rawY * ratio, distance: levelMaxOffset };
+}
 
 const mapCapabilities: CapabilityItem[] = [
   { title: '๑. ระยะลาด → ระยะราบ', description: 'แปลงระยะลาดและมุมดิ่งเป็นระยะราบสำหรับการวางจุดบนแผนที่ฝึก.', state: 'พร้อมแสดงผล' },
@@ -95,6 +110,11 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
   const [compassOpen, setCompassOpen] = useState(false);
   const [magneticHeading, setMagneticHeading] = useState<number | null>(null);
   const [magneticPitch, setMagneticPitch] = useState<number | null>(null);
+  const [magneticRoll, setMagneticRoll] = useState<number | null>(null);
+  const [levelBubble, setLevelBubble] = useState({ x: 0, y: 0 });
+  const [levelReady, setLevelReady] = useState(false);
+  const levelBubbleRef = useRef({ x: 0, y: 0 });
+  const [compassSensorState, setCompassSensorState] = useState<'รออนุญาต' | 'กำลังอ่านค่า' | 'ไม่พร้อมใช้งาน'>('รออนุญาต');
   const [friendlyRadius, setFriendlyRadius] = useState(18);
   const [fragmentRadius, setFragmentRadius] = useState(9);
   const visibleEvents = filterVisibleEvents(role, eventLog);
@@ -107,8 +127,22 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
         : typeof event.alpha === 'number'
           ? (360 - event.alpha) % 360
           : null;
-      if (heading !== null && Number.isFinite(heading)) setMagneticHeading(heading);
+      if (heading !== null && Number.isFinite(heading)) {
+        setMagneticHeading(heading);
+        setCompassSensorState('กำลังอ่านค่า');
+      }
       if (typeof event.beta === 'number' && Number.isFinite(event.beta)) setMagneticPitch(event.beta);
+      if (typeof event.gamma === 'number' && Number.isFinite(event.gamma)) setMagneticRoll(event.gamma);
+      if (typeof event.beta === 'number' && Number.isFinite(event.beta) && typeof event.gamma === 'number' && Number.isFinite(event.gamma)) {
+        const target = calculateLevelTarget(event.beta, event.gamma);
+        const next = {
+          x: levelBubbleRef.current.x + (target.x - levelBubbleRef.current.x) * levelDamping,
+          y: levelBubbleRef.current.y + (target.y - levelBubbleRef.current.y) * levelDamping,
+        };
+        levelBubbleRef.current = next;
+        setLevelBubble(next);
+        setLevelReady(target.distance <= levelTolerance);
+      }
     };
 
     window.addEventListener('deviceorientation', handleOrientation as EventListener);
@@ -120,12 +154,18 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
       requestPermission?: () => Promise<'granted' | 'denied'>;
     };
 
-    if (typeof orientationApi.requestPermission === 'function') {
+    if (typeof DeviceOrientationEvent === 'undefined') {
+      setCompassSensorState('ไม่พร้อมใช้งาน');
+    } else if (typeof orientationApi.requestPermission === 'function') {
       try {
-        await orientationApi.requestPermission();
+        const permission = await orientationApi.requestPermission();
+        setCompassSensorState(permission === 'granted' ? 'กำลังอ่านค่า' : 'ไม่พร้อมใช้งาน');
       } catch {
         setMagneticHeading(null);
+        setCompassSensorState('ไม่พร้อมใช้งาน');
       }
+    } else {
+      setCompassSensorState('กำลังอ่านค่า');
     }
 
     setCompassOpen(true);
@@ -136,6 +176,12 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
       setActivePanel(visiblePanels[0] ?? 'FO');
     }
   }, [activePanel, visiblePanels]);
+
+  const levelBubbleX = Math.round(levelBubble.x);
+  const levelBubbleY = Math.round(levelBubble.y);
+  const levelState = magneticPitch === null || magneticRoll === null
+    ? 'หลอดระดับอยู่กึ่งกลาง · โหมดฝึก ยังไม่ยืนยันค่าจากเซนเซอร์'
+    : `${levelReady ? 'ได้ระดับ' : 'กำลังปรับระดับ'} · แกน X ${levelBubbleX > 0 ? 'ขวา' : levelBubbleX < 0 ? 'ซ้าย' : 'กลาง'} · แกน Y ${levelBubbleY > 0 ? 'ล่าง' : levelBubbleY < 0 ? 'บน' : 'กลาง'}`;
 
   useEffect(() => {
     setRoleView(role);
@@ -480,15 +526,23 @@ export function WorkspaceShell({ role }: WorkspaceShellProps) {
                 src={m2Needle}
                 alt="เข็มทิศสองด้าน สีขาวและสีดำ"
                 className="m2-compass-dial__needle"
-                style={{ transform: `translate(-50%, -50%) rotate(${magneticHeading ?? 0}deg)` }}
+                style={{ transform: `translate(-50%, -31.25%) rotate(${magneticHeading ?? 0}deg)` }}
               />
-              <span className="m2-compass-dial__center" aria-hidden="true" />
+              <span className="m2-compass-level__mask" aria-hidden="true" />
+              <span className={`m2-compass-level${levelReady ? ' is-level' : ''}`} aria-label="หลอดระดับวงกลมจำลองสามมิติ">
+                <span
+                  className="m2-compass-level__bubble"
+                  aria-hidden="true"
+                  style={{ transform: `translate(calc(-50% + ${levelBubbleX}px), calc(-50% + ${levelBubbleY}px))` }}
+                />
+              </span>
               </div>
             <div className="m2-compass-readout" aria-live="polite">
               <span>ทิศเหนือแม่เหล็ก</span>
               <strong>{magneticHeading === null ? 'รอเซนเซอร์' : `${Math.round(magneticHeading)}°`}</strong>
-              <small>{magneticHeading === null ? 'อนุญาตการเข้าถึงเซนเซอร์ของอุปกรณ์เพื่อหมุนเข็มอัตโนมัติ' : 'เข็มสีขาวชี้ทิศเหนือแม่เหล็ก'}</small>
+              <small>{magneticHeading === null ? `${compassSensorState} · อนุญาตการเข้าถึงเซนเซอร์ของอุปกรณ์เพื่อหมุนเข็มอัตโนมัติ` : 'เข็มสีขาวชี้ทิศเหนือแม่เหล็ก'}</small>
               <small>มุมกลับทิศ: {magneticHeading === null ? '--' : `${Math.round((((magneticHeading / 360) * 6400) + 3200) % 6400)} มิล`} · เอียง {magneticPitch === null ? '--' : `${Math.round(magneticPitch)}°`}</small>
+              <small>{levelState}</small>
             </div>
           </div>
         </section>

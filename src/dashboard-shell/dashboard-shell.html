@@ -145,6 +145,7 @@
           <button type="button" class="mode-tile is-active" data-shell-view="owner">ผู้ดูแลระบบ / เจ้าของระบบ</button>
           <button type="button" class="mode-tile" data-shell-view="dashboard">แดชบอร์ด</button>
           <button type="button" class="mode-tile" data-shell-view="workspace">พื้นที่ผู้ใช้</button>
+          <button type="button" class="mode-tile mode-tile--compass" id="static-m2-button">M.2 · เปิดเข็มทิศ</button>
         </div>
         <div class="identity-footer-note">ชั้นบทบาทยังคงใช้ร่วมกัน / ตำแหน่งโดเมนถูกล็อก</div>
         <div class="identity-footer-note">ทำงานหลัก / จัดเตรียม / รอเรียกใช้งาน = สถานะมุมมองเท่านั้น</div>
@@ -328,6 +329,23 @@
           </div>
         </section>
         <div class="workspace-view__features" id="workspace-view-features"></div>
+      </section>
+
+      <section class="static-m2-overlay" id="static-m2-overlay" hidden aria-label="เข็มทิศ M.2" role="dialog" aria-modal="false">
+        <div class="static-m2-card">
+          <header class="static-m2-card__header">
+            <div><p class="zone-kicker">M.2 / เครื่องมือเบื้องหลัง</p><h2>เข็มทิศเหนือแม่เหล็ก</h2></div>
+            <button type="button" class="command-button" id="static-m2-close">ปิด</button>
+          </header>
+          <div class="static-m2-body">
+            <div class="static-m2-dial" id="static-m2-dial" aria-label="หน้าปัดเข็มทิศ M.2">
+              <img src="../assets/m2/m2-dial.png" alt="หน้าปัดเข็มทิศ M.2" class="static-m2-dial__face" />
+              <img src="../assets/m2/m2-needle-cutout.png" alt="เข็มทิศสองด้าน สีขาวและสีดำ" class="static-m2-dial__needle" id="static-m2-needle" />
+              <span class="static-m2-level__mask" aria-hidden="true"></span><span class="static-m2-level" aria-label="หลอดระดับวงกลมจำลองสามมิติ"><span class="static-m2-level__bubble" id="static-m2-level-bubble" aria-hidden="true"></span></span>
+            </div>
+            <div class="static-m2-readout" aria-live="polite"><span>ทิศเหนือแม่เหล็ก</span><strong id="static-m2-heading">รอเซนเซอร์</strong><small id="static-m2-state">กดเปิดเพื่ออนุญาตเซนเซอร์ หรือใช้โหมดฝึกบนอุปกรณ์ที่ไม่รองรับ</small><small id="static-m2-level-state">หลอดระดับอยู่กึ่งกลาง · โหมดฝึก</small><small>ระบบนี้ไม่ใช้ GPS และไม่ส่งคำสั่งไปยังอาวุธ</small></div>
+          </div>
+        </div>
       </section>
 
       <section class="dashboard-view" id="dashboard-view" aria-labelledby="dashboard-view-title" hidden>

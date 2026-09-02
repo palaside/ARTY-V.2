@@ -1021,26 +1021,30 @@ body {
 .m2-compass-dial__face {
   transform: translate(-50%, -50%);
   z-index: 1;
+  mix-blend-mode: multiply;
+  filter: brightness(2.2) saturate(1.25);
 }
 
 .m2-compass-dial__needle {
-  transform-origin: 50% 50%;
+  transform-origin: 50% 31.25%;
   transition: transform 120ms linear;
   z-index: 2;
+  mix-blend-mode: multiply;
+  filter: brightness(2.4) contrast(1.15);
 }
 
-.m2-compass-dial__center {
-  position: absolute;
-  z-index: 3;
-  top: 50%;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  border: 2px solid #f5f1dd;
-  border-radius: 50%;
-  background: #ff8a1f;
-  transform: translate(-50%, -50%);
-}
+.m2-compass-dial__needle { mix-blend-mode: normal; filter: none; }
+.m2-compass-dial__face { filter: brightness(1.76) saturate(1.25); }
+.m2-compass-dial { background: #aeb4b0; }
+.m2-compass-level__mask { display: none; }
+.m2-compass-level { position: absolute; z-index: 4; top: 31%; left: 68%; width: 80px; height: 80px; border: 3px solid rgba(24, 205, 255, .98); border-radius: 50%; background: transparent; box-shadow: 0 0 0 1px rgba(62, 151, 185, .8), 0 0 12px rgba(24, 205, 255, .78), inset 0 0 10px rgba(24, 205, 255, .2); pointer-events: none; transform: translate(-50%, -50%); overflow: hidden; }
+.m2-compass-level::before { content: ''; position: absolute; inset: 7px; border: 1px solid rgba(224,248,255,.42); border-radius: 50%; background: transparent; }
+.m2-compass-level::after { content: ''; position: absolute; z-index: 2; top: 50%; left: 50%; width: 34px; height: 34px; border: 2px solid rgba(224, 54, 54, .98); border-radius: 50%; background: transparent; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgba(224, 54, 54, .5); pointer-events: none; }
+.m2-compass-level::before { display: none; }
+.m2-compass-level.is-level::after { border-color: rgba(224, 54, 54, .98); box-shadow: 0 0 5px rgba(224, 54, 54, .5); }
+.m2-compass-level.is-level .m2-compass-level__bubble { box-shadow: inset 3px 3px 5px rgba(255,255,255,.72), inset -3px -4px 5px rgba(0,0,0,.46), 0 0 9px rgba(159,232,255,.8); }
+.m2-compass-level__bubble { display: none; }
+.m2-compass-level::after { display: none; }
 
 .m2-compass-readout {
   display: grid;
